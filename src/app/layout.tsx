@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const notoSans = Noto_Sans_JP({
 	subsets: ["latin"],
@@ -25,6 +27,9 @@ export default function RootLayout({
 	return (
 		<html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
 			<body className={`${notoSans.className} $antialiased `}>
+				<Analytics />
+				<SpeedInsights />
+
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"
