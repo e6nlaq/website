@@ -36,18 +36,20 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Nav />
+					<div className="min-h-screen flex flex-col">
+						<Nav />
 
-					<div className="flex justify-center items-center w-screen py-16">
-						{children}
-					</div>
-					<footer>
-						<div className="flex justify-center items-center py-4">
-							<p className={`${sourceCodePro.className}  text-sm`}>
-								(C) 2025 e6nlaq
-							</p>
+						<div className="flex justify-center items-center w-screen py-16">
+							{children}
 						</div>
-					</footer>
+						<footer className="mt-auto">
+							<div className="flex justify-center items-center py-4">
+								<p className={`${sourceCodePro.className}  text-sm`}>
+									(C) 2025 e6nlaq
+								</p>
+							</div>
+						</footer>
+					</div>
 				</ThemeProvider>
 			</body>
 		</html>
