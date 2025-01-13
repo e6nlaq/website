@@ -119,7 +119,7 @@ export default function Home() {
 
 			<Separator />
 
-			{/* <Store title="Coding" description="プログラミング系">
+			<Store title="Coding" description="プログラミング系">
 				{coding.map((k) => (
 					<Item
 						name={toolmetas[k].title}
@@ -128,7 +128,7 @@ export default function Home() {
 						key={k}
 					/>
 				))}
-			</Store> */}
+			</Store>
 
 			<Store title="Classic" description="旧作たち">
 				<Item
