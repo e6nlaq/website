@@ -6,8 +6,7 @@
 		"dev": "next dev --turbopack",
 		"build": "next build",
 		"start": "next start",
-		"format": "biome check --write ./src/**/*",
-		"postbuild": "next-sitemap"
+		"format": "biome check --write ./src/**/*"
 	},
 	"dependencies": {
 		"@radix-ui/react-dropdown-menu": "^2.1.4",
