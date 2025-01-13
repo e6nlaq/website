@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { type ReactNode, useEffect, useState } from "react";
 import { Source_Code_Pro } from "next/font/google";
 import Link from "next/link";
+import { toolmetas } from "@/text/meta";
+import { ChevronDown } from "lucide-react";
 
 const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
@@ -57,9 +59,11 @@ function Item({
 	);
 }
 
+type ToolUrls = keyof typeof toolmetas;
+
 export default function Home() {
 	const [greeting, setGreeting] = useState("\u200b");
-
+	const coding: ToolUrls[] = ["ajl-binoculars"];
 	useEffect(() => {
 		const hour = new Date().getHours();
 		if (hour <= 4) setGreeting("こんばんは");
@@ -111,8 +115,20 @@ export default function Home() {
 					url="https://scratch.mit.edu/users/sakamotor"
 				/>
 			</Store>
+			<ChevronDown />
 
 			<Separator />
+
+			{/* <Store title="Coding" description="プログラミング系">
+				{coding.map((k) => (
+					<Item
+						name={toolmetas[k].title}
+						description={toolmetas[k].description}
+						url={`/${k}`}
+						key={k}
+					/>
+				))}
+			</Store> */}
 
 			<Store title="Classic" description="旧作たち">
 				<Item

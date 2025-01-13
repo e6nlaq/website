@@ -5,6 +5,8 @@ import "./globals.css";
 import { Nav } from "@/components/nav";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { convertMetadata } from "@/lib/metadata";
+import { toolmetas } from "@/text/meta";
 
 const notoSans = Noto_Sans_JP({
 	subsets: ["latin"],
@@ -13,11 +15,7 @@ const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-	title: "e6nlaq's Lab",
-	description: "たくさんツールを出すよ",
-	icons: "/favicon.svg",
-};
+export const metadata = convertMetadata(toolmetas[""]);
 
 export default function RootLayout({
 	children,
