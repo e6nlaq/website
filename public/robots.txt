@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: *
-
-# Host
-Host: https://e6nlaq.vercel.app
-
-# Sitemaps
-Sitemap: https://e6nlaq.vercel.app/sitemap3.xml
