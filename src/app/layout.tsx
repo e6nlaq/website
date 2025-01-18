@@ -15,9 +15,11 @@ const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
 });
 
-export const metadata = Object.assign({}, convertMetadata(toolmetas[""]), {
-	title: "e6nlaq's Lab",
-});
+export const metadata = convertMetadata(
+	Object.assign({}, toolmetas[""], {
+		title: "e6nlaq's Lab",
+	})
+);
 
 export default function RootLayout({
 	children,
