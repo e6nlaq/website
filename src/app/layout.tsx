@@ -48,6 +48,15 @@ export default function RootLayout({
 							<div className="flex justify-center items-center py-4">
 								<p className={`${sourceCodePro.className}  text-sm`}>
 									(C) 2025 e6nlaq
+									<span>{" - "}</span>
+									<a
+										href="https://github.com/e6nlaq/website"
+										className="text-sky-500 font-semibold"
+										target="_blank"
+										rel="noreferrer"
+									>
+										Source
+									</a>
 								</p>
 							</div>
 						</footer>
