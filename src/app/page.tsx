@@ -110,6 +110,11 @@ export default function Home() {
 					url="https://qiita.com/e6nlaq"
 				/>
 				<Item
+					name="Duolingo (@e6nlaq)"
+					description="あいむ　すたでぃーんぐ　いんぐりっしゅ"
+					url="https://www.duolingo.com/profile/e6nlaq"
+				/>
+				<Item
 					name="Scratch (@sakamotor)"
 					description="遺産"
 					url="https://scratch.mit.edu/users/sakamotor"
