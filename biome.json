@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!**/.next", "!**/wasm/"]
+		"includes": ["**", "!**/.next", "!**/wasm/pkg/**"]
 	},
 	"formatter": {
 		"enabled": true,

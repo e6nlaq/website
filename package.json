@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"format": "biome check --write ./src/**/*",
-		"wasm": "wasm-pack build wasm"
+		"wasm": "wasm-pack build wasm && rm wasm/pkg/.gitignore && rm wasm/pkg/README.md"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.1.1",
