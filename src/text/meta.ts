@@ -14,6 +14,10 @@ export const toolmetas = {
 		title: "wind, hidden",
 		description: "?",
 	},
+	mod: {
+		title: "Reverse Mod",
+		description: "有理数modをいい感じに元に戻す",
+	},
 } as const satisfies Record<string, ToolMeta>;
 
 export const siteurl = "https://e6nlaq.vercel.app";
