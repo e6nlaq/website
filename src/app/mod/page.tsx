@@ -43,7 +43,7 @@ export default function Mod() {
 		defaultValues: {
 			val: 332748121,
 			mod: 998244353,
-			limit: 1000,
+			limit: 10000,
 		},
 	});
 
@@ -104,8 +104,14 @@ export default function Mod() {
 
 			<div className="flex flex-col items-center justify-center *:py-1">
 				<p>計算結果</p>
-				<p className={cn(sourceCodePro.className, "text-5xl font-bold")}>
-					{ans !== undefined ? ((val * ans) % mod) / ans : "なし"}
+
+				<p
+					className={cn(
+						sourceCodePro.className,
+						"text-2xl md:text-5xl font-bold",
+					)}
+				>
+					{ans !== undefined ? `${(val * ans) % mod} / ${ans}` : "N/A"}
 				</p>
 			</div>
 		</div>

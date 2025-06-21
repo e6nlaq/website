@@ -12,7 +12,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { toolmetas } from "@/text/meta";
+import { toolmetas } from "@/text/meta";
 
 const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
@@ -71,7 +71,7 @@ type ToolUrls = keyof typeof toolmetas;
 
 export default function Home() {
 	const [greeting, setGreeting] = useState("\u200b");
-	const _coding: ToolUrls[] = ["ajl-binoculars"];
+	const tech: ToolUrls[] = ["mod"];
 	useEffect(() => {
 		const hour = new Date().getHours();
 		if (hour <= 4) setGreeting("こんばんは");
@@ -91,6 +91,7 @@ export default function Home() {
 				<p>いっぱいツールを公開するよ</p>
 			</div>
 
+			<ChevronDown />
 			<Store title="Accounts" description="生活拠点">
 				<Item
 					name="X (@ru_milmil)"
@@ -128,12 +129,11 @@ export default function Home() {
 					url="https://scratch.mit.edu/users/sakamotor"
 				/>
 			</Store>
-			<ChevronDown />
 
 			<Separator />
 
-			{/* <Store title="Coding" description="プログラミング系">
-				{coding.map((k) => (
+			<Store title="Tech" description="技術系">
+				{tech.map((k) => (
 					<Item
 						name={toolmetas[k].title}
 						description={toolmetas[k].description}
@@ -141,7 +141,7 @@ export default function Home() {
 						key={k}
 					/>
 				))}
-			</Store> */}
+			</Store>
 
 			<Store title="Classic" description="旧作たち">
 				<Item
