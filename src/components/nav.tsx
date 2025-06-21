@@ -3,8 +3,8 @@
 import { Source_Code_Pro } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ModeToggle } from "./mode-toggle";
 import { toolmetas } from "@/text/meta";
+import { ModeToggle } from "./mode-toggle";
 
 const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],

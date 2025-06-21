@@ -42,5 +42,7 @@
 		"wasm": "workspace:wasm/pkg",
 		"webpack": "^5.99.9"
 	},
-	"workspaces": ["wasm/pkg"]
+	"workspaces": [
+		"wasm/pkg"
+	]
 }

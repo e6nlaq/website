@@ -1,5 +1,9 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
+import { Source_Code_Pro } from "next/font/google";
+import Link from "next/link";
+import { type ReactNode, useEffect, useState } from "react";
 import {
 	Card,
 	CardDescription,
@@ -8,11 +12,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { type ReactNode, useEffect, useState } from "react";
-import { Source_Code_Pro } from "next/font/google";
-import Link from "next/link";
-import { toolmetas } from "@/text/meta";
-import { ChevronDown } from "lucide-react";
+import type { toolmetas } from "@/text/meta";
 
 const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
@@ -22,7 +22,11 @@ function Store({
 	title,
 	description,
 	children,
-}: { title: string; description: string; children?: ReactNode }) {
+}: {
+	title: string;
+	description: string;
+	children?: ReactNode;
+}) {
 	return (
 		<div className="w-full px-8 *:my-4">
 			<div className="flex items-center *:mr-4">
@@ -40,7 +44,11 @@ function Item({
 	name,
 	description,
 	url,
-}: { name: string; description: string | ReactNode; url: string }) {
+}: {
+	name: string;
+	description: string | ReactNode;
+	url: string;
+}) {
 	return (
 		<>
 			<Link href={url}>
@@ -63,7 +71,7 @@ type ToolUrls = keyof typeof toolmetas;
 
 export default function Home() {
 	const [greeting, setGreeting] = useState("\u200b");
-	const coding: ToolUrls[] = ["ajl-binoculars"];
+	const _coding: ToolUrls[] = ["ajl-binoculars"];
 	useEffect(() => {
 		const hour = new Date().getHours();
 		if (hour <= 4) setGreeting("こんばんは");

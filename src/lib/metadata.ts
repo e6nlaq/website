@@ -1,6 +1,6 @@
+import type { Metadata } from "next";
 import { siteurl } from "@/text/meta";
 import type { ToolMeta } from "@/types/toolmeta";
-import type { Metadata } from "next";
 
 export function convertMetadata(meta: ToolMeta): Metadata {
 	const icon = meta.logo ?? "/favicon.svg";

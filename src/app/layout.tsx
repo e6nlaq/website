@@ -1,10 +1,9 @@
-import { ThemeProvider } from "@/components/theme-provider";
-import type { Metadata } from "next";
 import { Noto_Sans_JP, Source_Code_Pro } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-import { Nav } from "@/components/nav";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Nav } from "@/components/nav";
 import { convertMetadata } from "@/lib/metadata";
 import { toolmetas } from "@/text/meta";
 

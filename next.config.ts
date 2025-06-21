@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
 import { access, symlink } from "node:fs/promises";
 import { join } from "node:path";
+import type { NextConfig } from "next";
 import type { Compiler, Configuration, WebpackPluginInstance } from "webpack";
 
 const nextConfig: NextConfig = {
@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
 							try {
 								await access(from);
 								return;
-								// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+								// biome-ignore lint/suspicious/noExplicitAny: false positive
 							} catch (error: any) {
 								if (error?.code !== "ENOENT") {
 									throw error;

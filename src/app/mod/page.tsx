@@ -1,23 +1,23 @@
 "use client";
 
-import { solve } from "wasm";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Source_Code_Pro } from "next/font/google";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { solve } from "wasm";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
 	Form,
+	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
-	FormControl,
-	FormDescription,
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Source_Code_Pro } from "next/font/google";
 
 const schema = z
 	.object({

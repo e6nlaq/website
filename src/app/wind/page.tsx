@@ -1,16 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import useSWR, { type Fetcher } from "swr";
+import { Button } from "@/components/ui/button";
 
 const fetcher: Fetcher<string, string> = (url) =>
 	fetch(url).then((res) => res.text());
 
 export default function Wind() {
 	const { data: text, error } = useSWR<string>("/next.svaag", fetcher);
-	const { theme } = useTheme();
 	console.log(error);
 	// useEffect(() => {
 
