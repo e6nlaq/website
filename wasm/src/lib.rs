@@ -53,6 +53,9 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
                 val = (n * i) % m + i;
                 ans = i;
             }
+            if val<=i{
+                break;
+            }
         }
        
     }
@@ -91,7 +94,7 @@ fn is_prime(n: u128) -> bool {
 }
 
 #[test]
-fn min_test_solve() {
+fn min_test_solve_bunshi() {
     for i in 1..100u128 {
         for j in 2..100u128 {
             if i%j==0{
@@ -106,3 +109,21 @@ fn min_test_solve() {
         }
     }
 }
+
+#[test]
+fn min_test_solve_sum() {
+    for i in 1..100u128 {
+        for j in 2..100u128 {
+            if i%j==0{
+                continue
+            }
+            let m = Mint::new(i) / Mint::new(j);
+            let ans = solve(m.val().into(), 998244353, 10000, "sum");
+            let l = i / gcd(i, j);
+            let r = j / gcd(i, j);
+            assert_eq!(ans.unwrap(), r);
+            assert_eq!(((m.val() as u128) * ans.unwrap()) % 998244353, l);
+        }
+    }
+}
+
