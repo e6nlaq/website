@@ -35,8 +35,8 @@ export function greet() {
  * @returns {bigint | undefined}
  */
 export function solve(val, m, limit) {
-    const ret = wasm.solve(val, m, limit);
-    return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
+    const ret = wasm.solve(val, val >> BigInt(64), m, m >> BigInt(64), limit, limit >> BigInt(64));
+    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (BigInt.asUintN(64, ret[2]) << BigInt(64)));
 }
 
 export function __wbg_alert_23b26d9c7696891c(arg0, arg1) {

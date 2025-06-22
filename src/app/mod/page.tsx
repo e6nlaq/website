@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+
 const schema = z
 	.object({
 		val: z.coerce.number().int().positive(),
@@ -36,9 +37,9 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export default function Mod() {
-	const [val, setVal] = useState<number>(1);
-	const [mod, setMod] = useState<number>(998244353);
-	const [ans, setAns] = useState<number | undefined>(undefined);
+	const [val, setVal] = useState<bigint>(1n);
+	const [mod, setMod] = useState<bigint>(998244353n);
+	const [ans, setAns] = useState<bigint | undefined>(undefined);
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -50,14 +51,25 @@ export default function Mod() {
 	const modListId = useId();
 
 	const onSubmit = (data: z.infer<typeof schema>) => {
-		setVal(data.val);
-		setMod(data.mod);
+		if (data.limit >= 1e8) {
+			if (
+				!confirm(
+					"limitが10^8を超えると計算時間が長くなる可能性があります。本当に続けますか?"
+				)
+			) {
+				toast.info("計算を中止しました");
+				return;
+			}
+		}
+
+		setVal(BigInt(data.val));
+		setMod(BigInt(data.mod));
 		const new_ans = solve(
 			BigInt(data.val),
 			BigInt(data.mod),
 			BigInt(data.limit)
 		);
-		setAns(new_ans === undefined ? undefined : Number(new_ans));
+		setAns(new_ans === undefined ? undefined : new_ans);
 		if (new_ans === undefined) {
 			toast.error("解が見つかりませんでした");
 		} else {
@@ -122,7 +134,7 @@ export default function Mod() {
 								<FormControl>
 									<Input placeholder="1000" type="number" min={1} {...field} />
 								</FormControl>
-								<FormDescription>分母と分子の探索範囲</FormDescription>
+								<FormDescription>分母の探索範囲</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}

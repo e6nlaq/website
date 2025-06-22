@@ -13,15 +13,26 @@ pub fn greet() {
 }
 
 #[wasm_bindgen]
-pub fn solve(val: u64, m: u64, limit: u64) -> Option<u64> {
+pub fn solve(val: u128, m: u128, limit: u128) -> Option<u128> {
     if val >= m {
         return None;
     }
 
+    let mut bunsi=std::u128::MAX;
+    let mut ans=std::u128::MAX;
     for i in 1..limit {
-        if (val * i) % m <= limit {
-            return Some(i);
+        if bunsi>(val*i)%m {
+            bunsi=(val*i)%m;
+            ans=i;
+        }
+        if bunsi==1 {
+            break;
         }
     }
-    None
+    
+
+    if ans == std::u128::MAX {
+        return None;
+    }
+    Some(ans)
 }
