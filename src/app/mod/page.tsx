@@ -87,11 +87,11 @@ export default function Mod() {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center *:py-4">
+		<div className="flex flex-col items-center justify-center *:py-4 p-4">
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8 md:min-w-96 p-4"
+					className="space-y-8 md:min-w-96"
 				>
 					<FormField
 						control={form.control}
