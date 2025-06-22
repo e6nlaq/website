@@ -22,5 +22,8 @@ export function convertMetadata(meta: ToolMeta): Metadata {
 			description: meta.description,
 			images: `${siteurl}${twicon}`,
 		},
+		robots: {
+			index: meta.index ?? true,
+		},
 	};
 }

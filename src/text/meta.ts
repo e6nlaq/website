@@ -9,10 +9,12 @@ export const toolmetas = {
 		title: "AJL Binoculars",
 		description: "AJLで相手との差を確認する",
 		logo: "/icon/ajl.png",
+		index: false,
 	},
 	wind: {
 		title: "wind, hidden",
 		description: "?",
+		index: false,
 	},
 	mod: {
 		title: "Reverse Mod",
