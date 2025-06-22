@@ -24,6 +24,10 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
     let mut val = std::u128::MAX;
     let mut ans = std::u128::MAX;
     for i in 1..limit {
+        if gcd(m,i) != 1 {
+            continue;
+        }
+
         if mode == "bunshi" {
             if val > (n * i) % m {
                 val = (n * i) % m;
@@ -48,7 +52,6 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
     Some(ans)
 }
 
-#[cfg(test)]
 fn gcd(a: u128, b: u128) -> u128 {
     if b == 0 {
         return a;
