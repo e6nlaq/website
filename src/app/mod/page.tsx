@@ -127,7 +127,10 @@ export default function Mod() {
 							</FormItem>
 						)}
 					/>
-					<Button type="submit">計算</Button>
+					<FormItem>
+						<Button type="submit">計算</Button>
+						<FormDescription>計算量はO(limit)です。</FormDescription>
+					</FormItem>
 				</form>
 			</Form>
 
