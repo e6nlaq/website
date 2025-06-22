@@ -17,6 +17,7 @@ export const toolmetas = {
 	mod: {
 		title: "Reverse Mod",
 		description: "有理数modをいい感じに元に戻す",
+		logo: "/icon/mod.png",
 	},
 } as const satisfies Record<string, ToolMeta>;
 
