@@ -1,5 +1,6 @@
 mod utils;
 
+use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 #[cfg(test)]
@@ -23,25 +24,29 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
 
     let mut val = std::u128::MAX;
     let mut ans = std::u128::MAX;
-    let prime=is_prime(m);
+    let prime = is_prime(m);
     for i in 2..limit {
+        let mut l = (n * i) % m;
 
-        let l=(n*i)%m;
-        if l%i==0{
-            continue;
-        }
-        if prime{
-            if i%m==0{
+        if l % i == 0 {
+            // continue;
+            if m % i != 0 {
+                l += m;
+            } else {
                 continue;
             }
         }
-        else if gcd(m,i) != 1 {
+        if prime {
+            if i % m == 0 {
+                continue;
+            }
+        } else if gcd(m, i) != 1 {
             continue;
         }
 
         if mode == "bunshi" {
-            if val > (n * i) % m {
-                val = (n * i) % m;
+            if val > l {
+                val = l;
                 ans = i;
             }
             if val == 1 {
@@ -49,15 +54,14 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
             }
         }
         if mode == "sum" {
-            if val > (n* i) % m + i {
-                val = (n * i) % m + i;
+            if val > l + i {
+                val = l + i;
                 ans = i;
             }
-            if val<=i{
+            if val <= i {
                 break;
             }
         }
-       
     }
 
     if ans == std::u128::MAX {
@@ -72,7 +76,6 @@ fn gcd(a: u128, b: u128) -> u128 {
     }
     gcd(b, a % b)
 }
-
 
 fn is_prime(n: u128) -> bool {
     if n < 2 {
@@ -97,8 +100,8 @@ fn is_prime(n: u128) -> bool {
 fn min_test_solve_bunshi() {
     for i in 1..100u128 {
         for j in 2..100u128 {
-            if i%j==0{
-                continue
+            if i % j == 0 {
+                continue;
             }
             let m = Mint::new(i) / Mint::new(j);
             let ans = solve(m.val().into(), 998244353, 10000, "bunshi");
@@ -114,8 +117,8 @@ fn min_test_solve_bunshi() {
 fn min_test_solve_sum() {
     for i in 1..100u128 {
         for j in 2..100u128 {
-            if i%j==0{
-                continue
+            if i % j == 0 {
+                continue;
             }
             let m = Mint::new(i) / Mint::new(j);
             let ans = solve(m.val().into(), 998244353, 10000, "sum");
@@ -127,3 +130,9 @@ fn min_test_solve_sum() {
     }
 }
 
+
+#[test]
+fn test_solve_const(){
+    assert_eq!(solve(1,10000,10000,"bunshi"),Some(3));
+    assert_eq!(solve(2,10,100,"bunshi"),Some(11));
+}

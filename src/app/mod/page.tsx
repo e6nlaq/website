@@ -196,7 +196,9 @@ export default function Mod() {
 						"text-2xl md:text-5xl font-bold"
 					)}
 				>
-					{ans !== undefined ? `${(val * ans) % mod} / ${ans}` : "N/A"}
+					{ans !== undefined
+						? `${((val * ans) % mod) % ans === 0n ? ((val * ans) % mod) + mod : (val * ans) % mod} / ${ans}`
+						: "N/A"}
 				</p>
 			</div>
 		</div>
