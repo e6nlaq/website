@@ -1,6 +1,5 @@
 mod utils;
 
-use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 #[cfg(test)]
@@ -27,6 +26,15 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
     let prime = is_prime(m);
     for i in 2..limit {
         let mut l = (n * i) % m;
+        if prime {
+            if i % m == 0 {
+                continue;
+            }
+        } else {
+            if gcd(m, i) != 1 {
+                continue;
+            }
+        }
 
         if l % i == 0 {
             // continue;
@@ -35,13 +43,6 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
             } else {
                 continue;
             }
-        }
-        if prime {
-            if i % m == 0 {
-                continue;
-            }
-        } else if gcd(m, i) != 1 {
-            continue;
         }
 
         if mode == "bunshi" {
@@ -130,9 +131,11 @@ fn min_test_solve_sum() {
     }
 }
 
-
 #[test]
-fn test_solve_const(){
-    assert_eq!(solve(1,10000,10000,"bunshi"),Some(3));
-    assert_eq!(solve(2,10,100,"bunshi"),Some(11));
+fn test_solve_const() {
+    assert_eq!(solve(1, 10000, 10000, "bunshi"), Some(3));
+    assert_eq!(solve(2, 10, 100, "bunshi"), Some(11));
+    let an = 117288381359406970983270u128;
+    assert_eq!(gcd(an, 3), 3);
+    assert!(!is_prime(an));
 }

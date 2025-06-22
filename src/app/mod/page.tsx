@@ -29,12 +29,12 @@ import {
 
 const schema = z
 	.object({
-		val: z.coerce.number().int().positive(),
-		mod: z.coerce.number().int().positive(),
-		limit: z.coerce.number().int().positive(),
+		val: z.string().max(30),
+		mod: z.string().max(30),
+		limit: z.string().max(30),
 		type: z.enum(["bunshi", "sum"]),
 	})
-	.refine((data) => data.val < data.mod, {
+	.refine((data) => BigInt(data.val) < BigInt(data.mod), {
 		message: "val < modである必要があります",
 		path: ["val"],
 	});
@@ -50,16 +50,16 @@ export default function Mod() {
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
 		defaultValues: {
-			val: 332748121,
-			mod: 998244353,
-			limit: 10000,
+			val: "332748121",
+			mod: "998244353",
+			limit: "10000",
 			type: "bunshi",
 		},
 	});
 	const modListId = useId();
 
 	const onSubmit = (data: z.infer<typeof schema>) => {
-		if (data.limit >= 1e8) {
+		if (BigInt(data.limit) >= 1e8) {
 			if (
 				!confirm(
 					"limitが10^8を超えると計算時間が長くなる可能性があります。本当に続けますか?"
