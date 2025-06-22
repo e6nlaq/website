@@ -23,8 +23,19 @@ pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
 
     let mut val = std::u128::MAX;
     let mut ans = std::u128::MAX;
-    for i in 1..limit {
-        if gcd(m,i) != 1 {
+    let prime=is_prime(m);
+    for i in 2..limit {
+
+        let l=(n*i)%m;
+        if l%i==0{
+            continue;
+        }
+        if prime{
+            if i%m==0{
+                continue;
+            }
+        }
+        else if gcd(m,i) != 1 {
             continue;
         }
 
@@ -59,12 +70,35 @@ fn gcd(a: u128, b: u128) -> u128 {
     gcd(b, a % b)
 }
 
+
+fn is_prime(n: u128) -> bool {
+    if n < 2 {
+        false
+    } else if n == 2 {
+        true
+    } else if n % 2 == 0 {
+        false
+    } else {
+        let mut i = 3;
+        while i * i <= n {
+            if n % i == 0 {
+                return false;
+            }
+            i += 2;
+        }
+        true
+    }
+}
+
 #[test]
 fn min_test_solve() {
     for i in 1..100u128 {
-        for j in 1..100u128 {
+        for j in 2..100u128 {
+            if i%j==0{
+                continue
+            }
             let m = Mint::new(i) / Mint::new(j);
-            let ans = solve(m.val().into(), 998244353, 100000, "bunshi");
+            let ans = solve(m.val().into(), 998244353, 10000, "bunshi");
             let l = i / gcd(i, j);
             let r = j / gcd(i, j);
             assert_eq!(ans.unwrap(), r);

@@ -91,7 +91,7 @@ export default function Mod() {
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8 md:min-w-96"
+					className="space-y-8 md:min-w-96 p-4"
 				>
 					<FormField
 						control={form.control}
@@ -179,7 +179,10 @@ export default function Mod() {
 					/>
 					<FormItem>
 						<Button type="submit">計算</Button>
-						<FormDescription>計算量はO(limit)です。</FormDescription>
+						<FormDescription className="text-xs">
+							計算量はO(√mod + limit log
+							mod)です。また、解は非整数になると仮定して計算します。
+						</FormDescription>
 					</FormItem>
 				</form>
 			</Form>
