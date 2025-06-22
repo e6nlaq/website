@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Source_Code_Pro } from "next/font/google";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
-import { solve } from "wasm";
+import { toast } from "sonner";
+import { solve } from "wasm/wasm";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,11 +47,22 @@ export default function Mod() {
 			limit: 10000,
 		},
 	});
+	const modListId = useId();
 
 	const onSubmit = (data: z.infer<typeof schema>) => {
 		setVal(data.val);
 		setMod(data.mod);
-		setAns(solve(data.val, data.mod, data.limit));
+		const new_ans = solve(
+			BigInt(data.val),
+			BigInt(data.mod),
+			BigInt(data.limit)
+		);
+		setAns(new_ans === undefined ? undefined : Number(new_ans));
+		if (new_ans === undefined) {
+			toast.error("解が見つかりませんでした");
+		} else {
+			toast.success("計算が完了しました");
+		}
 	};
 
 	return (
@@ -64,7 +76,12 @@ export default function Mod() {
 							<FormItem>
 								<FormLabel>val</FormLabel>
 								<FormControl>
-									<Input placeholder="831870305" {...field} />
+									<Input
+										placeholder="831870305"
+										type="number"
+										min={1}
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription>有理数mod後の値</FormDescription>
 								<FormMessage />
@@ -78,7 +95,19 @@ export default function Mod() {
 							<FormItem>
 								<FormLabel>mod</FormLabel>
 								<FormControl>
-									<Input placeholder="998244353" {...field} />
+									<div>
+										<Input
+											placeholder="998244353"
+											type="number"
+											min={1}
+											list={modListId}
+											{...field}
+										/>
+										<datalist id={modListId}>
+											<option value="998244353" />
+											<option value="1000000007" />
+										</datalist>
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -91,7 +120,7 @@ export default function Mod() {
 							<FormItem>
 								<FormLabel>limit</FormLabel>
 								<FormControl>
-									<Input placeholder="1000" {...field} />
+									<Input placeholder="1000" type="number" min={1} {...field} />
 								</FormControl>
 								<FormDescription>分母と分子の探索範囲</FormDescription>
 								<FormMessage />
@@ -108,7 +137,7 @@ export default function Mod() {
 				<p
 					className={cn(
 						sourceCodePro.className,
-						"text-2xl md:text-5xl font-bold",
+						"text-2xl md:text-5xl font-bold"
 					)}
 				>
 					{ans !== undefined ? `${(val * ans) % mod} / ${ans}` : "N/A"}

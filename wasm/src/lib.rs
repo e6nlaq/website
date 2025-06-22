@@ -13,7 +13,7 @@ pub fn greet() {
 }
 
 #[wasm_bindgen]
-pub fn solve(val: u32, m: u32, limit: u32) -> Option<u32> {
+pub fn solve(val: u64, m: u64, limit: u64) -> Option<u64> {
     if val >= m {
         return None;
     }

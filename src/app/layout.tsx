@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Nav } from "@/components/nav";
+import { Toaster } from "@/components/ui/sonner";
 import { convertMetadata } from "@/lib/metadata";
 import { toolmetas } from "@/text/meta";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
 
 						<div className="flex justify-center items-center w-screen py-16">
 							{children}
+							<Toaster richColors />
 						</div>
 						<footer className="mt-auto">
 							<div className="flex justify-center items-center py-4">

@@ -29,14 +29,14 @@ export function greet() {
 }
 
 /**
- * @param {number} val
- * @param {number} m
- * @param {number} limit
- * @returns {number | undefined}
+ * @param {bigint} val
+ * @param {bigint} m
+ * @param {bigint} limit
+ * @returns {bigint | undefined}
  */
 export function solve(val, m, limit) {
     const ret = wasm.solve(val, m, limit);
-    return ret === 0x100000001 ? undefined : ret;
+    return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
 }
 
 export function __wbg_alert_23b26d9c7696891c(arg0, arg1) {
