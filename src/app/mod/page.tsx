@@ -1,10 +1,10 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Source_Code_Pro } from "next/font/google";
 import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { solve } from "wasm/wasm";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import {
 	Select,
 	SelectContent,
@@ -26,6 +25,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const schema = z
 	.object({
