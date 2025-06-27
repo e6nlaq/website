@@ -26,27 +26,56 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
 
 const schema = z
 	.object({
-		val: z.string().max(30),
-		mod: z.string().max(30),
-		limit: z.string().max(30),
+		val: z.string().regex(/[0-9]+/, "数値を入力してください"),
+		mod: z
+			.string()
+			.regex(/^[0-9]+$/, "数値を入力してください")
+			.max(30, "30桁以内で入力してください"),
+		limit: z
+			.string()
+			.regex(/^[0-9]+$/, "数値を入力してください")
+			.max(30, "30桁以内で入力してください"),
 		type: z.enum(["bunshi", "sum"]),
 	})
-	.refine((data) => BigInt(data.val) < BigInt(data.mod), {
-		message: "val < modである必要があります",
-		path: ["val"],
-	});
+	.refine(
+		(data) => {
+			const vals = data.val
+				.split("\n")
+				.filter((val) => val !== "")
+				.map((val) => BigInt(val));
+			return vals.every((val) => val < BigInt(data.mod));
+		},
+		{
+			message: "val < modである必要があります",
+			path: ["val"],
+		}
+	)
+	.refine(
+		(data) => {
+			const vals = data.val.split("\n").filter((val) => val !== "");
+			return vals.every((val) => val.length <= 30);
+		},
+		{
+			message: "valは30桁以内で入力してください",
+			path: ["val"],
+		}
+	);
 
 const sourceCodePro = Source_Code_Pro({
 	subsets: ["latin"],
 });
 
+
+
 export default function Mod() {
-	const [val, setVal] = useState<bigint>(1n);
+	const [val, setVal] = useState<bigint[]>([]);
 	const [mod, setMod] = useState<bigint>(998244353n);
-	const [ans, setAns] = useState<bigint | undefined>(undefined);
+	const [ans, setAns] = useState<(bigint | undefined)[]>([]);
+	const [loading, setLoading] = useState(false);
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -70,20 +99,50 @@ export default function Mod() {
 			}
 		}
 
-		setVal(BigInt(data.val));
+		const new_val = data.val
+			.split("\n")
+			.filter((val) => val !== "")
+			.map((val) => BigInt(val));
+		setVal(new_val);
 		setMod(BigInt(data.mod));
-		const new_ans = solve(
-			BigInt(data.val),
-			BigInt(data.mod),
-			BigInt(data.limit),
-			data.type
-		);
-		setAns(new_ans === undefined ? undefined : new_ans);
-		if (new_ans === undefined) {
-			toast.error("解が見つかりませんでした");
-		} else {
-			toast.success("計算が完了しました");
+		setAns(new Array<bigint | undefined>(val.length).fill(undefined));
+
+		let ok = 0;
+		setLoading(true);
+		for (let i = 0; i < new_val.length; i++) {
+			new Promise<bigint | undefined>((resolve) => {
+				const new_ans = solve(
+					new_val[i],
+					BigInt(data.mod),
+					BigInt(data.limit),
+					data.type
+				);
+				console.log(new_ans, i, new_val[i]);
+				resolve(new_ans);
+			}).then((new_ans) => {
+				setAns((prev) => {
+					const new_ans_arr = prev;
+					new_ans_arr[i] = new_ans;
+					return new_ans_arr;
+				});
+				ok++;
+
+				if (new_ans === undefined) {
+					toast.error(
+						`No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
+					);
+				} else {
+					toast.success(
+						`No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
+					);
+				}
+				if (ok === new_val.length) {
+					toast.success("計算が全て完了しました");
+				} else {
+				}
+			});
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -100,14 +159,11 @@ export default function Mod() {
 							<FormItem>
 								<FormLabel>val</FormLabel>
 								<FormControl>
-									<Input
-										placeholder="831870305"
-										type="number"
-										min={1}
-										{...field}
-									/>
+									<Textarea placeholder="831870305" {...field} />
 								</FormControl>
-								<FormDescription>有理数mod後の値</FormDescription>
+								<FormDescription>
+									有理数mod後の値、改行区切りで複数入力できます
+								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -178,28 +234,43 @@ export default function Mod() {
 						)}
 					/>
 					<FormItem>
-						<Button type="submit">計算</Button>
+						<Button type="submit" disabled={loading}>
+							{loading ? "計算中..." : "計算"}
+						</Button>
 						<FormDescription className="text-xs">
 							計算量はO(√mod + limit log
-							mod)です。また、解は非整数になると仮定して計算します。
+							mod)です。また、解は正の非整数になると仮定して計算します。
 						</FormDescription>
 					</FormItem>
 				</form>
 			</Form>
 
-			<div className="flex flex-col items-center justify-center *:py-1">
-				<p>計算結果</p>
+			<div className="flex flex-col items-center justify-center gap-y-16">
+				{ans.length > 0 && <p>計算結果</p>}
 
-				<p
-					className={cn(
-						sourceCodePro.className,
-						"text-2xl md:text-5xl font-bold"
-					)}
-				>
-					{ans !== undefined
-						? `${((val * ans) % mod) % ans === 0n ? ((val * ans) % mod) + mod : (val * ans) % mod} / ${ans}`
-						: "N/A"}
-				</p>
+				{ans.map((dat, i) => {
+					let ret: string;
+					if (dat === undefined) {
+						ret = "N/A";
+					} else {
+						ret = `${((val[i] * dat) % mod) % dat === 0n ? ((val[i] * dat) % mod) + mod : (val[i] * dat) % mod} / ${dat}`;
+					}
+					return (
+						<div key={`no-${i}-${val[i]}`}>
+							<p className={cn(sourceCodePro.className, "md:text-sm text-xs")}>
+								No.{i + 1} {val[i]}
+							</p>
+							<p
+								className={cn(
+									sourceCodePro.className,
+									"text-2xl md:text-5xl font-bold"
+								)}
+							>
+								{ret}
+							</p>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);

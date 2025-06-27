@@ -78,6 +78,7 @@ fn gcd(a: u128, b: u128) -> u128 {
     gcd(b, a % b)
 }
 
+// ある程度で打ち切り
 fn is_prime(n: u128) -> bool {
     if n < 2 {
         false
@@ -87,7 +88,7 @@ fn is_prime(n: u128) -> bool {
         false
     } else {
         let mut i = 3;
-        while i * i <= n {
+        while i * i <= n && i <= 100000 {
             if n % i == 0 {
                 return false;
             }
