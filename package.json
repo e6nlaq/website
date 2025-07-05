@@ -37,13 +37,14 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.0",
+		"@tailwindcss/postcss": "^4.1.11",
 		"@types/bun": "^1.2.17",
 		"@types/node": "^20.19.1",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
 		"ac-library-js": "^0.1.1",
 		"postcss": "^8.5.6",
-		"tailwindcss": "^3.4.17",
+		"tailwindcss": "^4.1.11",
 		"typescript": "^5.8.3",
 		"wasm": "workspace:wasm/pkg",
 		"webpack": "^5.99.9"

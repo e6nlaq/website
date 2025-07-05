@@ -82,7 +82,7 @@ export default function Home() {
 
 	return (
 		<div className="flex flex-col items-center *:my-10 w-full mx-16">
-			<h1 className="text-6xl font-black inline-block text-transparent bg-clip-text bg-gradient-to-br from-sky-400 from-0% via-fuchsia-500 via-100%">
+			<h1 className="text-6xl font-black inline-block text-transparent bg-clip-text bg-linear-to-br from-sky-400 from-0% via-fuchsia-500 via-100%">
 				{greeting}
 			</h1>
 
