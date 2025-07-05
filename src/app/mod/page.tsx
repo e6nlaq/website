@@ -27,6 +27,11 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const schema = z
 	.object({
@@ -250,24 +255,38 @@ export default function Mod() {
 
 				{ans.map((dat, i) => {
 					let ret: string;
+					let bunsi = 0n;
 					if (dat === undefined) {
 						ret = "N/A";
 					} else {
-						ret = `${((val[i] * dat) % mod) % dat === 0n ? ((val[i] * dat) % mod) + mod : (val[i] * dat) % mod} / ${dat}`;
+						bunsi =
+							((val[i] * dat) % mod) % dat === 0n
+								? ((val[i] * dat) % mod) + mod
+								: (val[i] * dat) % mod;
+						ret = `${bunsi} / ${dat}`;
 					}
 					return (
 						<div key={`no-${i}-${val[i]}`}>
 							<p className={cn(sourceCodePro.className, "md:text-sm text-xs")}>
 								No.{i + 1} {val[i]}
 							</p>
-							<p
-								className={cn(
-									sourceCodePro.className,
-									"text-2xl md:text-5xl font-bold"
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<p
+										className={cn(
+											sourceCodePro.className,
+											"text-2xl md:text-5xl font-bold"
+										)}
+									>
+										{ret}
+									</p>
+								</TooltipTrigger>
+								{dat !== undefined && (
+									<TooltipContent>
+										≈ {Number(bunsi) / Number(dat)}
+									</TooltipContent>
 								)}
-							>
-								{ret}
-							</p>
+							</Tooltip>
 						</div>
 					);
 				})}

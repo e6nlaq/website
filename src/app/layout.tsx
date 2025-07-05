@@ -7,6 +7,7 @@ import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
 import { convertMetadata } from "@/lib/metadata";
 import { toolmetas } from "@/text/meta";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const notoSans = Noto_Sans_JP({
 	subsets: ["latin"],
@@ -38,30 +39,32 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<div className="min-h-screen flex flex-col">
-						<Nav />
+					<TooltipProvider delayDuration={100}>
+						<div className="min-h-screen flex flex-col">
+							<Nav />
 
-						<div className="flex justify-center items-center w-screen py-16">
-							{children}
-							<Toaster richColors />
-						</div>
-						<footer className="mt-auto">
-							<div className="flex justify-center items-center py-4">
-								<p className={`${sourceCodePro.className}  text-sm`}>
-									(C) 2025 e6nlaq
-									<span>{" - "}</span>
-									<a
-										href="https://github.com/e6nlaq/website"
-										className="text-sky-500 font-semibold"
-										target="_blank"
-										rel="noreferrer"
-									>
-										Source
-									</a>
-								</p>
+							<div className="flex justify-center items-center w-screen py-16">
+								{children}
+								<Toaster richColors />
 							</div>
-						</footer>
-					</div>
+							<footer className="mt-auto">
+								<div className="flex justify-center items-center py-4">
+									<p className={`${sourceCodePro.className}  text-sm`}>
+										(C) 2025 e6nlaq
+										<span>{" - "}</span>
+										<a
+											href="https://github.com/e6nlaq/website"
+											className="text-sky-500 font-semibold"
+											target="_blank"
+											rel="noreferrer"
+										>
+											Source
+										</a>
+									</p>
+								</div>
+							</footer>
+						</div>
+					</TooltipProvider>
 				</ThemeProvider>
 			</body>
 		</html>
