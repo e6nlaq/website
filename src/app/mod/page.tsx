@@ -283,7 +283,7 @@ export default function Mod() {
 								</TooltipTrigger>
 								{dat !== undefined && (
 									<TooltipContent>
-										≈ {Number(bunsi) / Number(dat)}
+										≈ {(Number(bunsi) / Number(dat)).toFixed(10)}
 									</TooltipContent>
 								)}
 							</Tooltip>
