@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"format": "biome check --write ./src/**/*",
-		"wasm": "wasm-pack build wasm && rm wasm/pkg/.gitignore && rm wasm/pkg/README.md"
+		"wasm": "wasm-pack build wasm && rm wasm/pkg/.gitignore && rm wasm/pkg/README.md",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.1.1",
@@ -37,12 +38,16 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"@commitlint/cli": "^20.1.0",
+		"@commitlint/config-conventional": "^20.0.0",
 		"@tailwindcss/postcss": "^4.1.11",
 		"@types/bun": "^1.2.18",
 		"@types/node": "^24.0.10",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
 		"ac-library-js": "^0.1.1",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
 		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.11",
 		"typescript": "^5.8.3",
