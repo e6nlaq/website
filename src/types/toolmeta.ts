@@ -1,6 +1,6 @@
 export interface ToolMeta {
-	title: string;
-	description: string;
-	logo?: string;
-	index?: boolean;
+    title: string;
+    description: string;
+    logo?: string;
+    index?: boolean;
 }
