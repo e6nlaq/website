@@ -3,28 +3,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Source_Code_Pro } from "next/font/google";
 import { useId, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { solve } from "wasm/wasm";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+    Field,
+    FieldDescription,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
@@ -35,7 +26,20 @@ import { cn } from "@/lib/utils";
 
 const schema = z
     .object({
-        val: z.string().regex(/[0-9]+/, "数値を入力してください"),
+        val: z
+            .string()
+            .nonempty("値を入力してください")
+            .refine((vals) => {
+                return vals.split("\n").every((val) => /^\d*$/.test(val));
+            }, "数値を入力してください")
+            .refine((data) => {
+                try {
+                    const vals = data.split("\n").filter((val) => val !== "");
+                    return vals.every((val) => val.length <= 30);
+                } catch {
+                    return false;
+                }
+            }, "valは30桁以内で入力してください"),
         mod: z
             .string()
             .regex(/^[0-9]+$/, "数値を入力してください")
@@ -46,26 +50,21 @@ const schema = z
             .max(30, "30桁以内で入力してください"),
         type: z.enum(["bunshi", "sum"]),
     })
+
     .refine(
         (data) => {
-            const vals = data.val
-                .split("\n")
-                .filter((val) => val !== "")
-                .map((val) => BigInt(val));
-            return vals.every((val) => val < BigInt(data.mod));
+            try {
+                const vals = data.val
+                    .split("\n")
+                    .filter((val) => val !== "")
+                    .map((val) => BigInt(val));
+                return vals.every((val) => val < BigInt(data.mod));
+            } catch {
+                return false;
+            }
         },
         {
             message: "val < modである必要があります",
-            path: ["val"],
-        }
-    )
-    .refine(
-        (data) => {
-            const vals = data.val.split("\n").filter((val) => val !== "");
-            return vals.every((val) => val.length <= 30);
-        },
-        {
-            message: "valは30桁以内で入力してください",
             path: ["val"],
         }
     );
@@ -73,6 +72,67 @@ const schema = z
 const sourceCodePro = Source_Code_Pro({
     subsets: ["latin"],
 });
+
+function Result({
+    ans,
+    val,
+    mod,
+}: {
+    ans: (bigint | undefined)[];
+    val: bigint[];
+    mod: bigint;
+}) {
+    console.log(ans);
+    return (
+        <div className="flex flex-col items-center justify-center gap-y-16">
+            {ans.length > 0 && <p>計算結果</p>}
+
+            {ans.map((dat, i) => {
+                let ret: string;
+                let bunsi = 0n;
+                if (dat === undefined) {
+                    ret = "N/A";
+                } else {
+                    bunsi =
+                        ((val[i] * dat) % mod) % dat === 0n
+                            ? ((val[i] * dat) % mod) + mod
+                            : (val[i] * dat) % mod;
+                    ret = `${bunsi} / ${dat}`;
+                }
+                return (
+                    <div key={`no-${i}-${val[i]}`}>
+                        <p
+                            className={cn(
+                                sourceCodePro.className,
+                                "md:text-sm text-xs"
+                            )}
+                        >
+                            No.{i + 1} {val[i]}
+                        </p>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <p
+                                    className={cn(
+                                        sourceCodePro.className,
+                                        "text-2xl md:text-5xl font-bold"
+                                    )}
+                                >
+                                    {ret}
+                                </p>
+                            </TooltipTrigger>
+                            {dat !== undefined && (
+                                <TooltipContent>
+                                    ≈{" "}
+                                    {(Number(bunsi) / Number(dat)).toFixed(10)}
+                                </TooltipContent>
+                            )}
+                        </Tooltip>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
 
 export default function Mod() {
     const [val, setVal] = useState<bigint[]>([]);
@@ -82,11 +142,12 @@ export default function Mod() {
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
-            val: "332748121",
+            val: "",
             mod: "998244353",
             limit: "10000",
             type: "bunshi",
         },
+        mode: "onChange",
     });
     const modListId = useId();
 
@@ -124,7 +185,7 @@ export default function Mod() {
                 resolve(new_ans);
             }).then((new_ans) => {
                 setAns((prev) => {
-                    const new_ans_arr = prev;
+                    const new_ans_arr = [...prev];
                     new_ans_arr[i] = new_ans;
                     return new_ans_arr;
                 });
@@ -146,59 +207,66 @@ export default function Mod() {
             });
         }
         setLoading(false);
+        console.log(ans);
     };
 
     return (
         <div className="flex flex-col items-center justify-center *:py-4 p-4">
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8 md:min-w-96"
-                >
-                    <FormField
-                        control={form.control}
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 md:min-w-96"
+                id="mod-form"
+            >
+                <FieldGroup>
+                    <Controller
                         name="val"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>val</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="831870305"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                    val
+                                </FieldLabel>
+                                <Textarea
+                                    {...field}
+                                    id={field.name}
+                                    placeholder={"831870305\n332748121"}
+                                    aria-invalid={fieldState.invalid}
+                                />
+                                <FieldDescription>
                                     有理数mod後の値、改行区切りで複数入力できます
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
+                                </FieldDescription>
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
                         )}
                     />
-                    <FormField
+                    <Controller
                         control={form.control}
                         name="mod"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>mod</FormLabel>
-                                <FormControl>
-                                    <div>
-                                        <Input
-                                            placeholder="998244353"
-                                            type="number"
-                                            min={1}
-                                            list={modListId}
-                                            {...field}
-                                        />
-                                        <datalist id={modListId}>
-                                            <option value="998244353" />
-                                            <option value="1000000007" />
-                                        </datalist>
-                                    </div>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                    mod
+                                </FieldLabel>
+                                <div>
+                                    <Input
+                                        placeholder="998244353"
+                                        type="number"
+                                        min={1}
+                                        list={modListId}
+                                        {...field}
+                                    />
+                                    <datalist id={modListId}>
+                                        <option value="998244353" />
+                                        <option value="1000000007" />
+                                    </datalist>
+                                </div>
+                                <FieldError errors={[fieldState.error]} />
+                            </Field>
                         )}
                     />
+                    {/* 
                     <FormField
                         control={form.control}
                         name="limit"
@@ -247,68 +315,20 @@ export default function Mod() {
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />
-                    <FormItem>
-                        <Button type="submit" disabled={loading}>
-                            {loading ? "計算中..." : "計算"}
-                        </Button>
-                        <FormDescription className="text-xs">
-                            計算量はO(√mod + limit log
-                            mod)です。また、解は正の非整数になると仮定して計算します。
-                        </FormDescription>
-                    </FormItem>
-                </form>
-            </Form>
+                    /> */}
+                </FieldGroup>
+                <Field orientation="horizontal">
+                    <Button type="submit" form="mod-form" disabled={loading}>
+                        {loading ? "計算中..." : "計算"}
+                    </Button>
+                    <FieldDescription className="text-xs">
+                        計算量はO(√mod + limit log
+                        mod)です。また、解は正の非整数になると仮定して計算します。
+                    </FieldDescription>
+                </Field>
+            </form>
 
-            <div className="flex flex-col items-center justify-center gap-y-16">
-                {ans.length > 0 && <p>計算結果</p>}
-
-                {ans.map((dat, i) => {
-                    let ret: string;
-                    let bunsi = 0n;
-                    if (dat === undefined) {
-                        ret = "N/A";
-                    } else {
-                        bunsi =
-                            ((val[i] * dat) % mod) % dat === 0n
-                                ? ((val[i] * dat) % mod) + mod
-                                : (val[i] * dat) % mod;
-                        ret = `${bunsi} / ${dat}`;
-                    }
-                    return (
-                        <div key={`no-${i}-${val[i]}`}>
-                            <p
-                                className={cn(
-                                    sourceCodePro.className,
-                                    "md:text-sm text-xs"
-                                )}
-                            >
-                                No.{i + 1} {val[i]}
-                            </p>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <p
-                                        className={cn(
-                                            sourceCodePro.className,
-                                            "text-2xl md:text-5xl font-bold"
-                                        )}
-                                    >
-                                        {ret}
-                                    </p>
-                                </TooltipTrigger>
-                                {dat !== undefined && (
-                                    <TooltipContent>
-                                        ≈{" "}
-                                        {(Number(bunsi) / Number(dat)).toFixed(
-                                            10
-                                        )}
-                                    </TooltipContent>
-                                )}
-                            </Tooltip>
-                        </div>
-                    );
-                })}
-            </div>
+            {!loading && <Result ans={ans} val={val} mod={mod} />}
         </div>
     );
 }
