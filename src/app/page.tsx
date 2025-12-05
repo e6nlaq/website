@@ -12,7 +12,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { toolmetas } from "@/text/meta";
+import { toolMeta } from "@/text/meta";
 
 const sourceCodePro = Source_Code_Pro({
     subsets: ["latin"],
@@ -65,7 +65,7 @@ function Item({
     );
 }
 
-type ToolUrls = keyof typeof toolmetas;
+type ToolUrls = keyof typeof toolMeta;
 
 export default function Home() {
     const [greeting, setGreeting] = useState("\u200b");
@@ -133,8 +133,8 @@ export default function Home() {
             <Store title="Tech" description="技術系">
                 {tech.map((k) => (
                     <Item
-                        name={toolmetas[k].title}
-                        description={toolmetas[k].description}
+                        name={toolMeta[k].title}
+                        description={toolMeta[k].description}
                         url={`/${k}`}
                         key={k}
                     />

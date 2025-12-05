@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteurl } from "@/text/meta";
+import { siteUrl } from "@/text/meta";
 import type { ToolMeta } from "@/types/toolmeta";
 
 export function convertMetadata(meta: ToolMeta): Metadata {
@@ -14,13 +14,13 @@ export function convertMetadata(meta: ToolMeta): Metadata {
             description: meta.description,
             card: "summary",
             site: "ru_milmil",
-            images: `${siteurl}${twicon}`,
+            images: `${siteUrl}${twicon}`,
         },
         openGraph: {
             type: "website",
             title: meta.title,
             description: meta.description,
-            images: `${siteurl}${twicon}`,
+            images: `${siteUrl}${twicon}`,
         },
         robots: {
             index: meta.index ?? true,

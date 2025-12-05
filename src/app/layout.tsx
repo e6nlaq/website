@@ -3,21 +3,44 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import localFont from "next/font/local";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { convertMetadata } from "@/lib/metadata";
-import { toolmetas } from "@/text/meta";
+import { toolMeta } from "@/text/meta";
 
-const notoSans = Noto_Sans_JP({
+const _notoSans = Noto_Sans_JP({
     subsets: ["latin"],
 });
+
+const lineSeed = localFont({
+    src: [
+        {
+            path: "../font/seed/LINESeedJP_OTF_Bd.woff2",
+            weight: "700",
+        },
+        {
+            path: "../font/seed/LINESeedJP_OTF_Eb.woff2",
+            weight: "800",
+        },
+        {
+            path: "../font/seed/LINESeedJP_OTF_Rg.woff2",
+            weight: "400",
+        },
+        {
+            path: "../font/seed/LINESeedJP_OTF_Th.woff2",
+            weight: "100",
+        },
+    ],
+});
+
 const sourceCodePro = Source_Code_Pro({
     subsets: ["latin"],
 });
 
 export const metadata = convertMetadata(
-    Object.assign({}, toolmetas[""], {
+    Object.assign({}, toolMeta[""], {
         title: "e6nlaq's Lab",
     })
 );
@@ -31,7 +54,7 @@ export default function RootLayout({
 
     return (
         <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
-            <body className={`${notoSans.className} $antialiased `}>
+            <body className={`${lineSeed.className} $antialiased `}>
                 <Analytics />
                 <SpeedInsights />
 

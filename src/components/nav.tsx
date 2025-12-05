@@ -3,7 +3,7 @@
 import { Source_Code_Pro } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { toolmetas } from "@/text/meta";
+import { toolMeta } from "@/text/meta";
 import { ModeToggle } from "./mode-toggle";
 
 const sourceCodePro = Source_Code_Pro({
@@ -12,7 +12,7 @@ const sourceCodePro = Source_Code_Pro({
 
 export function Nav() {
     const pathname = usePathname();
-    const path = pathname.split("/")[1] as keyof typeof toolmetas;
+    const path = pathname.split("/")[1] as keyof typeof toolMeta;
     return (
         <div className="flex items-center justify-center w-screen pt-4 px-4">
             <p className={`${sourceCodePro.className} text-lg`}>
@@ -23,9 +23,9 @@ export function Nav() {
                 <span>{" - "}</span>
                 <wbr />
                 <span>
-                    {toolmetas[path] === undefined
+                    {toolMeta[path] === undefined
                         ? "404"
-                        : toolmetas[path].title}
+                        : toolMeta[path].title}
                 </span>
             </p>
 
