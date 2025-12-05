@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { toolmetas } from "@/text/meta";
+import { toolMeta } from "@/text/meta";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const urls = Object.keys(toolmetas).map((key) => ({
+    const urls = Object.keys(toolMeta).map((key) => ({
         url: `https://e6nlaq.vercel.app/${key}`,
         lastModified: new Date().toISOString(),
     }));

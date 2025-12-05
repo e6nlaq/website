@@ -1,6 +1,6 @@
 import type { ToolMeta } from "@/types/toolmeta";
 
-export const toolmetas = {
+export const toolMeta = {
     "": {
         title: "The Home",
         description: "いろんなツールを公開するよ",
@@ -23,4 +23,4 @@ export const toolmetas = {
     },
 } as const satisfies Record<string, ToolMeta>;
 
-export const siteurl = "https://e6nlaq.vercel.app";
+export const siteUrl = "https://e6nlaq.vercel.app";

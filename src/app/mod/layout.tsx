@@ -1,6 +1,6 @@
 import NoneStyle from "@/lib/layout";
 import { convertMetadata } from "@/lib/metadata";
-import { toolmetas } from "@/text/meta";
+import { toolMeta } from "@/text/meta";
 
-export const metadata = convertMetadata(toolmetas.mod);
+export const metadata = convertMetadata(toolMeta.mod);
 export default NoneStyle;
