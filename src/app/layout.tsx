@@ -27,6 +27,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const buildYear = new Date().getFullYear();
+
     return (
         <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
             <body className={`${notoSans.className} $antialiased `}>
@@ -52,7 +54,7 @@ export default function RootLayout({
                                     <p
                                         className={`${sourceCodePro.className}  text-sm`}
                                     >
-                                        (C) 2025 e6nlaq
+                                        (C) {buildYear} e6nlaq
                                         <span>{" - "}</span>
                                         <a
                                             href="https://github.com/e6nlaq/website"
