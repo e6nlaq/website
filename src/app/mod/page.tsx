@@ -155,14 +155,15 @@ export default function Mod() {
     const [mod, setMod] = useState<bigint>(998244353n);
     const [ans, setAns] = useState<(bigint | undefined)[]>([]);
     const [loading, setLoading] = useState(false);
+    const defaultValues: z.infer<typeof schema> = {
+        val: "",
+        mod: "998244353",
+        limit: "10000",
+        type: "bunshi",
+    };
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
-        defaultValues: {
-            val: "",
-            mod: "998244353",
-            limit: "10000",
-            type: "bunshi",
-        },
+        defaultValues: defaultValues,
         mode: "onChange",
     });
     const modListId = useId();
@@ -351,7 +352,7 @@ export default function Mod() {
                                         </FieldLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="計算方法を選択してください" />
@@ -391,8 +392,14 @@ export default function Mod() {
                             onClick={() => {
                                 form.reset();
                                 setAns([]);
-                                setVal([]);
-                                setMod(998244353n);
+                                setVal(
+                                    defaultValues.val
+                                        .split("\n")
+                                        .filter((val) => val !== "")
+                                        .map((val) => BigInt(val))
+                                );
+                                setMod(BigInt(defaultValues.mod));
+                                toast.success("リセットしました");
                             }}
                             variant="outline"
                         >
