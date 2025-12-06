@@ -9,6 +9,14 @@ import { solve } from "wasm/wasm";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
     Field,
     FieldDescription,
     FieldError,
@@ -16,6 +24,14 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
@@ -151,7 +167,7 @@ export default function Mod() {
     });
     const modListId = useId();
 
-    const onSubmit = (data: z.infer<typeof schema>) => {
+    const onSubmit = async (data: z.infer<typeof schema>) => {
         if (BigInt(data.limit) >= 1e8) {
             if (
                 !confirm(
@@ -202,133 +218,176 @@ export default function Mod() {
                 }
                 if (ok === new_val.length) {
                     toast.success("計算が全て完了しました");
+                    setLoading(false);
                 } else {
                 }
             });
         }
-        setLoading(false);
         console.log(ans);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center *:py-4 p-4">
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 md:min-w-96"
-                id="mod-form"
-            >
-                <FieldGroup>
-                    <Controller
-                        name="val"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name}>
-                                    val
-                                </FieldLabel>
-                                <Textarea
-                                    {...field}
-                                    id={field.name}
-                                    placeholder={"831870305\n332748121"}
-                                    aria-invalid={fieldState.invalid}
-                                />
-                                <FieldDescription>
-                                    有理数mod後の値、改行区切りで複数入力できます
-                                </FieldDescription>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
+        <div className="flex flex-col items-center justify-center gap-y-8 max-w-full">
+            <Card className="w-2xl max-w-full">
+                <CardHeader>
+                    <CardTitle>Reverse Mod</CardTitle>
+                    <CardDescription>
+                        <p>有理数modから、元の有理数を復元します。</p>
+                        <p>
+                            計算量はO(√mod + limit log
+                            mod)です。また、解は正の非整数になると仮定して計算します。
+                        </p>
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-8 md:min-w-96"
+                        id="mod-form"
+                    >
+                        <FieldGroup>
+                            <Controller
+                                name="val"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor={field.name}>
+                                            val
+                                        </FieldLabel>
+                                        <Textarea
+                                            {...field}
+                                            id={field.name}
+                                            placeholder={"831870305\n332748121"}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <FieldDescription>
+                                            有理数mod後の値、改行区切りで複数入力できます
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
                                 )}
-                            </Field>
-                        )}
-                    />
-                    <Controller
-                        control={form.control}
-                        name="mod"
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name}>
-                                    mod
-                                </FieldLabel>
-                                <div>
-                                    <Input
-                                        placeholder="998244353"
-                                        type="number"
-                                        min={1}
-                                        list={modListId}
-                                        {...field}
-                                    />
-                                    <datalist id={modListId}>
-                                        <option value="998244353" />
-                                        <option value="1000000007" />
-                                    </datalist>
-                                </div>
-                                <FieldError errors={[fieldState.error]} />
-                            </Field>
-                        )}
-                    />
-                    {/* 
-                    <FormField
-                        control={form.control}
-                        name="limit"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>limit</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="1000"
-                                        type="number"
-                                        min={1}
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    分母の探索範囲
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="type"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>計算方法</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="計算方法を選択してください" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="bunshi">
-                                            分子が最小となるもの
-                                        </SelectItem>
-                                        <SelectItem value="sum">
-                                            分子と分母の和が最小となるもの
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    /> */}
-                </FieldGroup>
-                <Field orientation="horizontal">
-                    <Button type="submit" form="mod-form" disabled={loading}>
-                        {loading ? "計算中..." : "計算"}
-                    </Button>
-                    <FieldDescription className="text-xs">
-                        計算量はO(√mod + limit log
-                        mod)です。また、解は正の非整数になると仮定して計算します。
-                    </FieldDescription>
-                </Field>
-            </form>
+                            />
+                            <Controller
+                                control={form.control}
+                                name="mod"
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor={field.name}>
+                                            mod
+                                        </FieldLabel>
+                                        <div>
+                                            <Input
+                                                placeholder="998244353"
+                                                type="number"
+                                                min={1}
+                                                list={modListId}
+                                                {...field}
+                                            />
+                                            <datalist id={modListId}>
+                                                <option value="998244353" />
+                                                <option value="1000000007" />
+                                            </datalist>
+                                        </div>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                control={form.control}
+                                name="limit"
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor={field.name}>
+                                            limit
+                                        </FieldLabel>
+                                        <Input
+                                            placeholder="1000"
+                                            type="number"
+                                            min={1}
+                                            {...field}
+                                        />
+                                        <FieldDescription>
+                                            分母の探索範囲
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                control={form.control}
+                                name="type"
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor={field.name}>
+                                            計算方法
+                                        </FieldLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="計算方法を選択してください" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="bunshi">
+                                                    分子が最小となるもの
+                                                </SelectItem>
+                                                <SelectItem value="sum">
+                                                    分子と分母の和が最小となるもの
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+                    </form>
+                </CardContent>
+                <CardFooter>
+                    <Field orientation="horizontal">
+                        <Button
+                            type="submit"
+                            form="mod-form"
+                            disabled={loading}
+                        >
+                            {loading && <Spinner />}
+                            {loading ? "計算中..." : "計算"}
+                        </Button>
+                        <Button
+                            form="mod-form"
+                            type="reset"
+                            onClick={() => {
+                                form.reset();
+                                setAns([]);
+                                setVal([]);
+                                setMod(998244353n);
+                            }}
+                            variant="outline"
+                        >
+                            リセット
+                        </Button>
+                    </Field>
+                </CardFooter>
+            </Card>
 
-            {!loading && <Result ans={ans} val={val} mod={mod} />}
+            <Result ans={ans} val={val} mod={mod} />
         </div>
     );
 }

@@ -68,7 +68,7 @@ export default function RootLayout({
                         <div className="min-h-screen flex flex-col">
                             <Nav />
 
-                            <div className="flex justify-center items-center w-screen py-16">
+                            <div className="flex justify-center items-center w-screen py-16 px-4">
                                 {children}
                                 <Toaster richColors />
                             </div>

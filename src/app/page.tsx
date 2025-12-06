@@ -121,11 +121,6 @@ export default function Home() {
                     description="あいむ　すたでぃーんぐ　いんぐりっしゅ"
                     url="https://www.duolingo.com/profile/e6nlaq"
                 />
-                <Item
-                    name="Scratch (@sakamotor)"
-                    description="遺産"
-                    url="https://scratch.mit.edu/users/sakamotor"
-                />
             </Store>
 
             <Separator />
