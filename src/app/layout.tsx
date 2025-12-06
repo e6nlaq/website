@@ -92,7 +92,11 @@ export default function RootLayout({
                                                 </TooltipTrigger>
                                                 <TooltipContent>
                                                     {buildTime.toLocaleString(
-                                                        "ja-JP"
+                                                        "ja-JP",
+                                                        {
+                                                            timeZone:
+                                                                "Asia/Tokyo",
+                                                        }
                                                     )}
                                                 </TooltipContent>
                                             </Tooltip>{" "}
