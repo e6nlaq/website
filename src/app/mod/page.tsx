@@ -38,6 +38,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 import { cn } from "@/lib/utils";
 
 const schema = z
@@ -166,13 +167,21 @@ export default function Mod() {
         mode: "onChange",
     });
     const modListId = useId();
+    const confirm = useConfirm();
 
     const onSubmit = async (data: z.infer<typeof schema>) => {
         if (BigInt(data.limit) >= 1e8) {
             if (
-                !confirm(
-                    "limitが10^8を超えると計算時間が長くなる可能性があります。本当に続けますか?"
-                )
+                !(await confirm({
+                    title: "警告",
+                    description: (
+                        <span>
+                            limitが10<sup>8</sup>
+                            を超えると計算時間が長くなる可能性があります。本当に続けますか?
+                        </span>
+                    ),
+                    ok: "続行",
+                }))
             ) {
                 toast.info("計算を中止しました");
                 return;
@@ -234,7 +243,8 @@ export default function Mod() {
                     <CardDescription>
                         <p>有理数modから、元の有理数を復元します。</p>
                         <p>
-                            計算量はO(√mod + limit log
+                            計算量はO(√mod + limit{" "}
+                            <span className="italic">log</span>{" "}
                             mod)です。また、解は正の非整数になると仮定して計算します。
                         </p>
                     </CardDescription>
