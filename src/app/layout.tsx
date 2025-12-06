@@ -7,6 +7,7 @@ import localFont from "next/font/local";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
 
@@ -65,32 +66,34 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <TooltipProvider delayDuration={100}>
-                        <div className="min-h-screen flex flex-col">
-                            <Nav />
+                        <ConfirmDialogProvider>
+                            <div className="min-h-screen flex flex-col">
+                                <Nav />
 
-                            <div className="flex justify-center items-center w-screen py-16 px-4">
-                                {children}
-                                <Toaster richColors />
-                            </div>
-                            <footer className="mt-auto">
-                                <div className="flex justify-center items-center py-4">
-                                    <p
-                                        className={`${sourceCodePro.className}  text-sm`}
-                                    >
-                                        (C) {buildYear} e6nlaq
-                                        <span>{" - "}</span>
-                                        <a
-                                            href="https://github.com/e6nlaq/website"
-                                            className="text-sky-500 font-semibold"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            Source
-                                        </a>
-                                    </p>
+                                <div className="flex justify-center items-center w-screen py-16 px-4">
+                                    {children}
+                                    <Toaster richColors />
                                 </div>
-                            </footer>
-                        </div>
+                                <footer className="mt-auto">
+                                    <div className="flex justify-center items-center py-4">
+                                        <p
+                                            className={`${sourceCodePro.className}  text-sm`}
+                                        >
+                                            (C) {buildYear} e6nlaq
+                                            <span>{" - "}</span>
+                                            <a
+                                                href="https://github.com/e6nlaq/website"
+                                                className="text-sky-500 font-semibold"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                Source
+                                            </a>
+                                        </p>
+                                    </div>
+                                </footer>
+                            </div>
+                        </ConfirmDialogProvider>
                     </TooltipProvider>
                 </ThemeProvider>
             </body>
