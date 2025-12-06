@@ -98,6 +98,7 @@ export default function RootLayout({
                                                                 "Asia/Tokyo",
                                                         }
                                                     )}
+                                                    (UTC+9)
                                                 </TooltipContent>
                                             </Tooltip>{" "}
                                             e6nlaq
