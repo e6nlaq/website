@@ -243,10 +243,10 @@ export default function Mod() {
                     <CardTitle>Reverse Mod</CardTitle>
                     <CardDescription>
                         <p>
-                            有理数modから、元の有理数を復元します。
-                            <span className="font-bold text-red-500 underline">
-                                計算中は一切の操作を受け付けません。
-                            </span>
+                            有理数modから元の有理数として考えられるものを1つ復元します。
+                        </p>
+                        <p className="font-bold text-red-500 underline">
+                            計算中は一切の操作を受け付けません。
                         </p>
                         <p>
                             計算量はO(√mod + limit{" "}
