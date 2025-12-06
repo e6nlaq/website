@@ -6,7 +6,12 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import localFont from "next/font/local";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
@@ -51,7 +56,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const buildYear = new Date().getFullYear();
+    const buildTime = new Date();
+    const buildYear = buildTime.getFullYear();
 
     return (
         <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
@@ -75,11 +81,22 @@ export default function RootLayout({
                                     <Toaster richColors />
                                 </div>
                                 <footer className="mt-auto">
-                                    <div className="flex justify-center items-center py-4">
+                                    <div className="flex flex-col justify-center items-center py-4">
                                         <p
                                             className={`${sourceCodePro.className}  text-sm`}
                                         >
-                                            (C) {buildYear} e6nlaq
+                                            (C){" "}
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span>{buildYear}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    {buildTime.toLocaleString(
+                                                        "ja-JP"
+                                                    )}
+                                                </TooltipContent>
+                                            </Tooltip>{" "}
+                                            e6nlaq
                                             <span>{" - "}</span>
                                             <a
                                                 href="https://github.com/e6nlaq/website"
