@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
 import { Source_Code_Pro } from "next/font/google";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -25,13 +26,18 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupTextarea,
+} from "@/components/ui/input-group";
+import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
     TooltipContent,
@@ -271,12 +277,115 @@ export default function Mod() {
                                         <FieldLabel htmlFor={field.name}>
                                             val
                                         </FieldLabel>
-                                        <Textarea
-                                            {...field}
-                                            id={field.name}
-                                            placeholder={"831870305\n332748121"}
-                                            aria-invalid={fieldState.invalid}
-                                        />
+                                        <InputGroup>
+                                            <InputGroupTextarea
+                                                {...field}
+                                                id={field.name}
+                                                placeholder={
+                                                    "831870305\n332748121"
+                                                }
+                                                aria-invalid={
+                                                    fieldState.invalid
+                                                }
+                                            />
+                                            <InputGroupAddon
+                                                align="inline-end"
+                                                className="pl-2 inline space-y-1"
+                                            >
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <InputGroupButton
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                navigator.clipboard
+                                                                    .readText()
+                                                                    .then(
+                                                                        (
+                                                                            text
+                                                                        ) => {
+                                                                            field.onChange(
+                                                                                text
+                                                                            );
+                                                                            toast.success(
+                                                                                "クリップボードを貼り付けました"
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        () => {
+                                                                            toast.error(
+                                                                                "クリップボードの内容を取得できませんでした",
+                                                                                {
+                                                                                    description:
+                                                                                        "ブラウザの権限を確認してください",
+                                                                                }
+                                                                            );
+                                                                        }
+                                                                    );
+                                                            }}
+                                                        >
+                                                            <ClipboardIcon />
+                                                        </InputGroupButton>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        貼り付け
+                                                    </TooltipContent>
+                                                </Tooltip>
+
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <InputGroupButton
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                navigator.clipboard
+                                                                    .readText()
+                                                                    .then(
+                                                                        (
+                                                                            text
+                                                                        ) => {
+                                                                            const val =
+                                                                                field.value;
+                                                                            if (
+                                                                                val !==
+                                                                                ""
+                                                                            )
+                                                                                field.onChange(
+                                                                                    val +
+                                                                                        "\n" +
+                                                                                        text
+                                                                                );
+                                                                            else
+                                                                                field.onChange(
+                                                                                    text
+                                                                                );
+                                                                            toast.success(
+                                                                                "クリップボードを貼り付けました"
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        () => {
+                                                                            toast.error(
+                                                                                "クリップボードの内容を取得できませんでした",
+                                                                                {
+                                                                                    description:
+                                                                                        "ブラウザの権限を確認してください",
+                                                                                }
+                                                                            );
+                                                                        }
+                                                                    );
+                                                            }}
+                                                        >
+                                                            <ClipboardPlusIcon />
+                                                        </InputGroupButton>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="bottom">
+                                                        貼り付けして追加
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </InputGroupAddon>
+                                        </InputGroup>
+
                                         <FieldDescription>
                                             有理数mod後の値、改行区切りで複数入力できます
                                         </FieldDescription>
