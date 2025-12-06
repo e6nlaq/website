@@ -11,11 +11,6 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, wasm!");
-}
-
-#[wasm_bindgen]
 pub fn solve(n: u128, m: u128, limit: u128, mode: &str) -> Option<u128> {
     if n >= m {
         return None;
@@ -86,6 +81,8 @@ fn is_prime(n: u128) -> bool {
         true
     } else if n % 2 == 0 {
         false
+    } else if n == 998244353 || n == 1000000007 {
+        true
     } else {
         let mut i = 3;
         while i * i <= n && i <= 100000 {

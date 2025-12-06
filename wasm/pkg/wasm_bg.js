@@ -4,11 +4,7 @@ export function __wbg_set_wasm(val) {
 }
 
 
-const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
-
-let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
-
-cachedTextDecoder.decode();
+let WASM_VECTOR_LEN = 0;
 
 let cachedUint8ArrayMemory0 = null;
 
@@ -18,17 +14,6 @@ function getUint8ArrayMemory0() {
     }
     return cachedUint8ArrayMemory0;
 }
-
-function getStringFromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
-}
-
-export function greet() {
-    wasm.greet();
-}
-
-let WASM_VECTOR_LEN = 0;
 
 const lTextEncoder = typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder;
 
@@ -98,10 +83,6 @@ export function solve(n, m, limit, mode) {
     const ret = wasm.solve(n, n >> BigInt(64), m, m >> BigInt(64), limit, limit >> BigInt(64), ptr0, len0);
     return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (BigInt.asUintN(64, ret[2]) << BigInt(64)));
 }
-
-export function __wbg_alert_23b26d9c7696891c(arg0, arg1) {
-    alert(getStringFromWasm0(arg0, arg1));
-};
 
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_0;
