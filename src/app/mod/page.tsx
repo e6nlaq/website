@@ -52,11 +52,13 @@ const schema = z
             .string()
             .nonempty("値を入力してください")
             .refine((vals) => {
-                return vals.split("\n").every((val) => /^\d*$/.test(val));
+                return vals.split(/\r?\n/).every((val) => /^\d*$/.test(val));
             }, "数値を入力してください")
             .refine((data) => {
                 try {
-                    const vals = data.split("\n").filter((val) => val !== "");
+                    const vals = data
+                        .split(/\r?\n/)
+                        .filter((val) => val !== "");
                     return vals.every((val) => val.length <= 30);
                 } catch {
                     return false;
@@ -77,7 +79,7 @@ const schema = z
         (data) => {
             try {
                 const vals = data.val
-                    .split("\n")
+                    .split(/\r?\n/)
                     .filter((val) => val !== "")
                     .map((val) => BigInt(val));
                 return vals.every((val) => val < BigInt(data.mod));
@@ -358,6 +360,7 @@ export default function Mod() {
                                                                                 field.onChange(
                                                                                     text
                                                                                 );
+
                                                                             toast.success(
                                                                                 "クリップボードを貼り付けました"
                                                                             );
