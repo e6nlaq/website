@@ -31,7 +31,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Tooltip,
@@ -198,41 +197,43 @@ export default function Mod() {
 
         let ok = 0;
         setLoading(true);
-        for (let i = 0; i < new_val.length; i++) {
-            new Promise<bigint | undefined>((resolve) => {
-                const new_ans = solve(
-                    new_val[i],
-                    BigInt(data.mod),
-                    BigInt(data.limit),
-                    data.type
-                );
-                console.log(new_ans, i, new_val[i]);
-                resolve(new_ans);
-            }).then((new_ans) => {
-                setAns((prev) => {
-                    const new_ans_arr = [...prev];
-                    new_ans_arr[i] = new_ans;
-                    return new_ans_arr;
-                });
-                ok++;
+        setTimeout(() => {
+            for (let i = 0; i < new_val.length; i++) {
+                new Promise<bigint | undefined>((resolve) => {
+                    const new_ans = solve(
+                        new_val[i],
+                        BigInt(data.mod),
+                        BigInt(data.limit),
+                        data.type
+                    );
+                    console.log(new_ans, i, new_val[i]);
+                    resolve(new_ans);
+                }).then((new_ans) => {
+                    setAns((prev) => {
+                        const new_ans_arr = [...prev];
+                        new_ans_arr[i] = new_ans;
+                        return new_ans_arr;
+                    });
+                    ok++;
 
-                if (new_ans === undefined) {
-                    toast.error(
-                        `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
-                    );
-                } else {
-                    toast.success(
-                        `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
-                    );
-                }
-                if (ok === new_val.length) {
-                    toast.success("計算が全て完了しました");
-                    setLoading(false);
-                } else {
-                }
-            });
-        }
-        console.log(ans);
+                    if (new_ans === undefined) {
+                        toast.error(
+                            `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
+                        );
+                    } else {
+                        toast.success(
+                            `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
+                        );
+                    }
+                    if (ok === new_val.length) {
+                        toast.success("計算が全て完了しました");
+                        setLoading(false);
+                    } else {
+                    }
+                });
+            }
+            console.log(ans);
+        }, 10);
     };
 
     return (
@@ -241,7 +242,12 @@ export default function Mod() {
                 <CardHeader>
                     <CardTitle>Reverse Mod</CardTitle>
                     <CardDescription>
-                        <p>有理数modから、元の有理数を復元します。</p>
+                        <p>
+                            有理数modから、元の有理数を復元します。
+                            <span className="font-bold text-red-500 underline">
+                                計算中は一切の操作を受け付けません。
+                            </span>
+                        </p>
                         <p>
                             計算量はO(√mod + limit{" "}
                             <span className="italic">log</span>{" "}
@@ -377,7 +383,6 @@ export default function Mod() {
                             form="mod-form"
                             disabled={loading}
                         >
-                            {loading && <Spinner />}
                             {loading ? "計算中..." : "計算"}
                         </Button>
                         <Button
