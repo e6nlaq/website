@@ -1,9 +1,10 @@
-import type { ToolMeta } from "@/types/toolmeta";
+import type { ToolMeta } from "@/types/meta";
 
 export const toolMeta = {
     "": {
-        title: "The Home",
+        title: "Home",
         description: "いろんなツールを公開するよ",
+        keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
     },
     "ajl-binoculars": {
         title: "AJL Binoculars",
@@ -20,7 +21,16 @@ export const toolMeta = {
         title: "Reverse Mod",
         description: "有理数modをいい感じに元に戻す",
         logo: "/icon/mod.png",
+        keywords: [
+            "e6nlaq",
+            "有理数mod",
+            "逆元",
+            "mod",
+            "復元",
+            "競プロ",
+            "競技プログラミング",
+        ],
     },
-} as const satisfies Record<string, ToolMeta>;
+} satisfies Record<string, ToolMeta>;
 
 export const siteUrl = "https://e6nlaq.vercel.app";

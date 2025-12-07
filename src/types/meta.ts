@@ -3,4 +3,5 @@ export interface ToolMeta {
     description: string;
     logo?: string;
     index?: boolean;
+    keywords?: string[];
 }
