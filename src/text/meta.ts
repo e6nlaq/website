@@ -24,6 +24,7 @@ export const toolMeta = {
         keywords: [
             "e6nlaq",
             "有理数mod",
+            "確率mod",
             "逆元",
             "mod",
             "復元",
