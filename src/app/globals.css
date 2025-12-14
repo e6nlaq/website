@@ -3,15 +3,26 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
-
+/* 
 .hidden-scrollbar {
   scrollbar-width: none;
+} */
+::-webkit-scrollbar {
+  width: 6px;
+  padding: 5px;
 }
 
-/* 
-  .hidden-scrollbar::-webkit-scrollbar {
-    display: none;
-  } */
+::-webkit-scrollbar-thumb {
+  border-radius: var(--radius);
+  background: var(--scrollbar);
+}
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+body {
+  overflow-x: hidden;
+}
 
 /* 
   ---break--- */
@@ -90,6 +101,7 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+  --scrollbar: oklch(88.647% 0.00553 286.021);
 }
 
 /* 
@@ -127,6 +139,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  --scrollbar: oklch(23.97% 0.00191 286.049);
 }
 
 /* 
@@ -140,4 +153,3 @@
     @apply bg-background text-foreground;
   }
 }
-
