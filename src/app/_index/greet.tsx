@@ -7,10 +7,19 @@ export default function Greet() {
     const [words, setWords] = useState<string[]>(["Hello"]);
 
     useEffect(() => {
-        const hour = new Date().getHours();
+        const date = new Date();
+        const hour = date.getHours();
         let timeSpecificWords: string[];
 
-        if (hour >= 5 && hour < 12) {
+        if (date.getMonth() === 1 && date.getDate() === 1) {
+            timeSpecificWords = [
+                "Happy New Year!",
+                "あけましておめでとうございます!",
+                "新年快乐!",
+                "새해 복 많이 받으세요!",
+                "สวัสดีปีใหม่!",
+            ];
+        } else if (hour >= 5 && hour < 12) {
             // Morning
             timeSpecificWords = [
                 "Good Morning",
