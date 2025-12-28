@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Icon from "@/assets/icon.svg";
 import { SpinningText } from "@/components/ui/spinning-text";
 import Accounts from "./_index/accounts";
 import Greet from "./_index/greet";
@@ -11,12 +11,11 @@ export default function Page() {
                     e6nlaq • e6nlaq • e6nlaq •
                 </SpinningText>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <Image
-                        src="/favicon.svg"
+                    <Icon
                         alt="logo"
                         width={48}
                         height={48}
-                        className="w-12 h-12"
+                        className="w-18 h-18"
                     />
                 </div>
             </div>
