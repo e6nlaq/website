@@ -1,35 +1,105 @@
-import { SiX } from "@icons-pack/react-simple-icons";
+import {
+    SiCodeforces,
+    SiDiscord,
+    SiDuolingo,
+    SiGithub,
+    SiQiita,
+    SiScratch,
+    SiX,
+    SiZenn,
+} from "@icons-pack/react-simple-icons";
+import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AccountsProps {
     node: React.ReactNode;
-    title: string;
+    key: string;
     id: string;
     href: string;
 }
 
-const accounts: AccountsProps[] = [
-    {
-        node: <SiX />,
-        title: "X (@ru_milmil)",
-        id: "x",
-        href: "https://x.com/ru_milmil",
-    },
-];
+function AtCoder() {
+    return <p>AC</p>;
+}
 
 export default function Accounts() {
+    const accounts: AccountsProps[] = [
+        {
+            node: <SiX />,
+            key: "x",
+            id: "ru_milmil",
+            href: "https://x.com/ru_milmil",
+        },
+        {
+            node: <AtCoder />,
+            key: "atcoder",
+            id: "x__0",
+            href: "https://atcoder.jp/users/x__0",
+        },
+        {
+            node: <SiCodeforces />,
+            key: "codeforces",
+            id: "e6nlaq",
+            href: "https://codeforces.com/profile/e6nlaq",
+        },
+        {
+            node: <SiGithub />,
+            key: "github",
+            id: "e6nlaq",
+            href: "https://github.com/e6nlaq",
+        },
+        {
+            node: <SiDiscord />,
+            key: "discord",
+            id: "e6nlaq",
+            href: "https://discord.com/users/1171719078352785452",
+        },
+        {
+            node: <SiQiita />,
+            key: "qiita",
+            id: "e6nlaq",
+            href: "https://qiita.com/e6nlaq",
+        },
+        {
+            node: <SiZenn />,
+            key: "zenn",
+            id: "e6nlaq",
+            href: "https://zenn.dev/e6nlaq",
+        },
+        {
+            node: <SiDuolingo />,
+            key: "duolingo",
+            id: "e6nlaq",
+            href: "https://www.duolingo.com/profile/e6nlaq",
+        },
+        {
+            node: <SiScratch />,
+            key: "scratch",
+            id: "sakamotor",
+            href: "https://scratch.mit.edu/users/sakamotor",
+        },
+    ];
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2 flex-wrap justify-center">
             {accounts.map((account) => (
-                <a
-                    key={account.id}
-                    href={account.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                >
-                    {account.node}
-                    <span>{account.title}</span>
-                </a>
+                <Tooltip key={account.key}>
+                    <TooltipTrigger asChild>
+                        <Button asChild size="icon-lg" variant="outline">
+                            <a
+                                href={account.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {account.node}
+                            </a>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">{account.id}</TooltipContent>
+                </Tooltip>
             ))}
         </div>
     );

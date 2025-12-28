@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toolMeta } from "@/text/meta";
-import Accounts from "./_index/accounts";
 
 const sourceCodePro = Source_Code_Pro({
     subsets: ["latin"],
@@ -89,7 +88,7 @@ export default function Home() {
                 <p>いっぱいツールを公開するよ</p>
             </div>
 
-            {/* <Store title="Accounts" description="生活拠点">
+            <Store title="Accounts" description="生活拠点">
                 <Item
                     name="X (@ru_milmil)"
                     description="たまに呟く...?"
@@ -120,9 +119,8 @@ export default function Home() {
                     description="あいむ　すたでぃーんぐ　いんぐりっしゅ"
                     url="https://www.duolingo.com/profile/e6nlaq"
                 />
-            </Store> */}
+            </Store>
 
-            <Accounts />
             <Separator />
 
             <Store title="Tech" description="技術系">

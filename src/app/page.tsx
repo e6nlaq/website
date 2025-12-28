@@ -1,7 +1,6 @@
-// import Accounts from "./_index/accounts";
-
 import Image from "next/image";
 import { SpinningText } from "@/components/ui/spinning-text";
+import Accounts from "./_index/accounts";
 import Greet from "./_index/greet";
 
 export default function Page() {
@@ -23,7 +22,7 @@ export default function Page() {
             </div>
 
             <Greet />
-            {/* <Accounts></Accounts> */}
+            <Accounts />
         </div>
     );
 }
