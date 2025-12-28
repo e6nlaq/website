@@ -1,7 +1,9 @@
+import dynamic from "next/dynamic";
 import Icon from "@/assets/icon.svg";
 import { SpinningText } from "@/components/ui/spinning-text";
 import Accounts from "./_index/accounts";
-import Greet from "./_index/greet";
+
+const Greet = dynamic(() => import("./_index/greet"));
 
 export default function Page() {
     return (
