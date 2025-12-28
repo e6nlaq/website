@@ -11,12 +11,7 @@ export default function Page() {
                     e6nlaq • e6nlaq • e6nlaq •
                 </SpinningText>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <Icon
-                        alt="logo"
-                        width={48}
-                        height={48}
-                        className="w-18 h-18"
-                    />
+                    <Icon width={48} height={48} className="w-18 h-18" />
                 </div>
             </div>
 
