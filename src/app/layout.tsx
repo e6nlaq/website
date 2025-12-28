@@ -72,10 +72,10 @@ export default function RootLayout({
                             <div className="min-h-screen flex flex-col">
                                 <Nav fontClass={sourceCodePro.className} />
 
-                                <div className="flex justify-center items-center w-screen py-16 px-4 grow">
-                                    <main>{children}</main>
+                                <main className="flex justify-center items-center w-screen py-16 px-4 grow">
+                                    {children}
                                     <Toaster richColors />
-                                </div>
+                                </main>
                                 <footer className="mt-auto">
                                     <div className="flex flex-col justify-center items-center py-4">
                                         <p
