@@ -8,6 +8,7 @@ import {
     SiX,
     SiZenn,
 } from "@icons-pack/react-simple-icons";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -23,7 +24,22 @@ interface AccountsProps {
 }
 
 function AtCoder() {
-    return <p>AC</p>;
+    return (
+        <div className="relative h-5 w-5">
+            <Image
+                src="/atcoder/logo_white.png"
+                alt="AtCoder"
+                fill
+                className="hidden object-contain dark:block"
+            />
+            <Image
+                src="/atcoder/logo_transparent.png"
+                alt="AtCoder"
+                fill
+                className="block object-contain dark:hidden"
+            />
+        </div>
+    );
 }
 
 export default function Accounts() {
