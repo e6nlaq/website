@@ -1,4 +1,4 @@
-import { Noto_Sans_JP, Source_Code_Pro } from "next/font/google";
+import { Source_Code_Pro } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -15,10 +15,6 @@ import {
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
-
-const _notoSans = Noto_Sans_JP({
-    subsets: ["latin"],
-});
 
 const lineSeed = localFont({
     src: [
