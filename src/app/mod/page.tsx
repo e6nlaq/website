@@ -106,7 +106,6 @@ function Result({
     val: bigint[];
     mod: bigint;
 }) {
-    console.log(ans);
     return (
         <div className="flex flex-col items-center justify-center gap-y-16">
             {ans.length > 0 && <p>計算結果</p>}

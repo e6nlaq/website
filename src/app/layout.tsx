@@ -70,7 +70,7 @@ export default function RootLayout({
                     <TooltipProvider delayDuration={100}>
                         <ConfirmDialogProvider>
                             <div className="min-h-screen flex flex-col">
-                                <Nav />
+                                <Nav fontClass={sourceCodePro.className} />
 
                                 <div className="flex justify-center items-center w-screen py-16 px-4 grow">
                                     <main>{children}</main>
