@@ -73,7 +73,7 @@ export default function RootLayout({
                                 <Nav />
 
                                 <div className="flex justify-center items-center w-screen py-16 px-4 grow">
-                                    {children}
+                                    <main>{children}</main>
                                     <Toaster richColors />
                                 </div>
                                 <footer className="mt-auto">
