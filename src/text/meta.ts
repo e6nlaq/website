@@ -3,10 +3,10 @@ import type { ToolMeta } from "@/types/meta";
 export const toolMeta = {
     "": {
         title: "Home",
-        description: "いろんなツールを公開するよ",
+        description: "e6nlaqのホームページ・ツール公開場所",
         keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
     },
-    "ajl-binoculars": {
+    "tools/ajl-binoculars": {
         title: "AJL Binoculars",
         description: "AJLで相手との差を確認する",
         logo: "/icon/ajl.png",
@@ -32,6 +32,12 @@ export const toolMeta = {
             "競技プログラミング",
         ],
     },
+    tools: {
+        title: "Tools",
+        description: "いろんなツールを公開するよ",
+        keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
+    },
 } satisfies Record<string, ToolMeta>;
 
 export const siteUrl = "https://e6nlaq.vercel.app";
+export type ToolKeys = keyof typeof toolMeta;
