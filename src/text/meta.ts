@@ -17,7 +17,7 @@ export const toolMeta = {
         description: "?",
         index: false,
     },
-    mod: {
+    "tools/mod": {
         title: "Reverse Mod",
         description: "有理数modをいい感じに元に戻す",
         logo: "/icon/mod.png",

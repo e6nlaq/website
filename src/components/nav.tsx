@@ -7,7 +7,10 @@ import { ModeToggle } from "./mode-toggle";
 
 export function Nav({ fontClass }: { fontClass: string }) {
     const pathname = usePathname();
-    const path = pathname.split("/")[1] as keyof typeof toolMeta;
+    const path = pathname
+        .split("/")
+        .slice(1)
+        .join("/") as keyof typeof toolMeta;
     return (
         <div className="flex items-center justify-center w-screen pt-4 px-4">
             <p className={`${fontClass} text-lg`}>

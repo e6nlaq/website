@@ -29,9 +29,7 @@ function Store({
     return (
         <div className="w-full px-8 *:my-4">
             <div className="flex items-center *:mr-4">
-                <h2 className={`text-3xl font-bold ${sourceCodePro.className}`}>
-                    {title}
-                </h2>
+                <h2 className={"text-3xl font-black"}>{title}</h2>
                 <p className="text-xs">{description}</p>
             </div>
             <div className="flex flex-wrap *:mr-8 *:mb-8">{children}</div>
@@ -68,7 +66,7 @@ type ToolUrls = keyof typeof toolMeta;
 
 export default function Home() {
     const [greeting, setGreeting] = useState("\u200b");
-    const tech: ToolUrls[] = ["mod"];
+    const tech: ToolUrls[] = ["tools/mod"];
     useEffect(() => {
         const hour = new Date().getHours();
         if (hour <= 4) setGreeting("こんばんは");
