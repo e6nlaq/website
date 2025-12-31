@@ -53,7 +53,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     const buildTime = new Date();
-    const buildYear = buildTime.getFullYear();
+    const buildYear = buildTime
+        .toLocaleDateString("ja-JP", {
+            timeZone: "Asia/Tokyo",
+        })
+        .substring(0, 4);
 
     return (
         <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
