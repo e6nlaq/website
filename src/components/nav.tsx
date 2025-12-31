@@ -2,6 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { toolMeta } from "@/text/meta";
 import { ModeToggle } from "./mode-toggle";
 
@@ -17,7 +24,6 @@ export function Nav({ fontClass }: { fontClass: string }) {
                 <Link href="/">
                     <span className="font-bold">e6nlaq's Lab</span>
                 </Link>
-                {/* <span>{` - ${pages[pathname.split("/")[1]]}`}</span> */}
                 <span>{" - "}</span>
                 <wbr />
                 <span>
@@ -27,7 +33,27 @@ export function Nav({ fontClass }: { fontClass: string }) {
                 </span>
             </p>
 
-            <div className="ml-auto">
+            <div className="flex items-center gap-x-3 ml-auto">
+                <NavigationMenu className="hidden sm:flex">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink
+                                asChild
+                                className={navigationMenuTriggerStyle()}
+                            >
+                                <Link href="/">Home</Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink
+                                asChild
+                                className={navigationMenuTriggerStyle()}
+                            >
+                                <Link href="/tools">Tools</Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
                 <ModeToggle />
             </div>
         </div>
