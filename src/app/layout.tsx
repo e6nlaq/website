@@ -1,4 +1,4 @@
-import { Noto_Sans_JP, Source_Code_Pro } from "next/font/google";
+import { Source_Code_Pro } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -15,10 +15,6 @@ import {
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
-
-const _notoSans = Noto_Sans_JP({
-    subsets: ["latin"],
-});
 
 const lineSeed = localFont({
     src: [
@@ -74,12 +70,12 @@ export default function RootLayout({
                     <TooltipProvider delayDuration={100}>
                         <ConfirmDialogProvider>
                             <div className="min-h-screen flex flex-col">
-                                <Nav />
+                                <Nav fontClass={sourceCodePro.className} />
 
-                                <div className="flex justify-center items-center w-screen py-16 px-4">
+                                <main className="flex justify-center items-center w-screen py-16 px-4 grow">
                                     {children}
                                     <Toaster richColors />
-                                </div>
+                                </main>
                                 <footer className="mt-auto">
                                     <div className="flex flex-col justify-center items-center py-4">
                                         <p
