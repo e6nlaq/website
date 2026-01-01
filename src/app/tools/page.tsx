@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     Item,
     ItemContent,
@@ -27,15 +28,19 @@ function Store({
     children?: ReactNode;
 }) {
     return (
-        <div className="w-full px-8 flex flex-col gap-y-4">
-            <div className="flex items-center gap-x-4">
-                <h2 className="text-3xl font-black">{title}</h2>
-                <p className="text-xs">{description}</p>
-            </div>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {children}
-            </div>
-        </div>
+        <Card className="w-full py-16">
+            <CardContent className="px-12">
+                <div className="flex flex-col gap-y-4">
+                    <div className="flex items-center gap-x-4">
+                        <h2 className="text-3xl font-black">{title}</h2>
+                        <p className="text-xs">{description}</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {children}
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -92,7 +97,7 @@ function ToolItem({
 export default function Tools() {
     const math: ToolKeys[] = ["tools/mod"];
     return (
-        <div className="flex flex-col items-start w-full gap-y-20">
+        <div className="flex flex-col items-start w-full gap-y-8">
             <Store title="Math" description="数学系">
                 {math.map((k) => (
                     <ToolItem
