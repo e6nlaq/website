@@ -25,7 +25,7 @@
 		"@vercel/speed-insights": "^1.3.1",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"hono": "^4.11.3",
+		"elysia": "^1.4.22",
 		"lucide-react": "^0.562.0",
 		"motion": "^12.23.26",
 		"next": "^16.1.1",

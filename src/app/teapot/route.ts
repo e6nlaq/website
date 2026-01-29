@@ -1,14 +1,8 @@
-import { Hono } from "hono";
-import { handle } from "hono/vercel";
+import { Elysia } from "elysia";
 
-const app = new Hono().basePath("/teapot");
-
-app.get("/", (c) => {
-    c.status(418);
-    return c.text(
-        "418 I'm a teapot\nティーポットになっちゃった!\n\n余談ですが、このページを作るためだけにHonoを導入しました。\nなのでたくさんリクエストが来るとVercelの制限に引っかかるので、広めないでくださいね...\n\n\ne6nlaq 2025/12/18"
-    );
+const app = new Elysia({ prefix: "/teapot" }).get("/", ({ status }) => {
+    return status(418, "418 I'm a teapot!!!!");
 });
 
-export const GET = handle(app);
-export const POST = handle(app);
+export const GET = app.fetch;
+export const POST = app.fetch;
