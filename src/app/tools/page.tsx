@@ -109,6 +109,13 @@ export default function Tools() {
                     />
                 ))}
             </Store>
+            <Store title="Script" description="ユーザースクリプト">
+                <ToolItem
+                    name="AtCoder AWC Tab"
+                    description="AtCoderのナビゲーションバーに今日のAWCへのリンクを追加する"
+                    href="https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab"
+                />
+            </Store>
             <Store title="Classic" description="旧作たち">
                 <ToolItem
                     name="rinu.jp Checker"
