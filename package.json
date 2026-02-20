@@ -39,7 +39,7 @@
 		"zod": "^4.2.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
+		"@biomejs/biome": "2.4.4",
 		"@commitlint/cli": "^20.2.0",
 		"@commitlint/config-conventional": "^20.2.0",
 		"@svgr/webpack": "^8.1.0",
