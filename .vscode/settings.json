@@ -12,5 +12,6 @@
         "สวัสดีตอนเช้า",
         "สวัสดีตอนเย็น",
         "สวัสดีปีใหม่"
-    ]
+    ],
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
