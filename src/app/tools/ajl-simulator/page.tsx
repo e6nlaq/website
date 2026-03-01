@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeftToLine } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -14,6 +15,7 @@ import {
 } from "recharts";
 import { z } from "zod";
 import { ToolCard } from "@/components/tool-card";
+import { Button } from "@/components/ui/button";
 import {
     type ChartConfig,
     ChartContainer,
@@ -28,6 +30,16 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+    InputGroup,
+    InputGroupButton,
+    InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const schema = z
     .object({
@@ -105,7 +117,7 @@ export default function AjlSimulator() {
         currentScore: "0",
         lowestPerf: "",
         minPerf: "0",
-        maxPerf: "4000",
+        maxPerf: "3000",
     };
 
     const form = useForm<FormValues>({
@@ -180,7 +192,26 @@ export default function AjlSimulator() {
             <ToolCard
                 title="AJL Simulator"
                 description="次回のパフォーマンスに応じたAJLスコアの推移をシミュレーションします。"
-                onReset={() => form.reset(defaultValues)}
+                className="w-full"
+                footer={
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => form.reset(defaultValues)}
+                        >
+                            すべてリセット
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                form.setValue("minPerf", defaultValues.minPerf);
+                                form.setValue("maxPerf", defaultValues.maxPerf);
+                            }}
+                        >
+                            最小/最大のみリセット
+                        </Button>
+                    </div>
+                }
             >
                 <form className="space-y-6">
                     <FieldGroup>
@@ -218,7 +249,7 @@ export default function AjlSimulator() {
                                         {...field}
                                         id={field.name}
                                         type="number"
-                                        placeholder="空欄なら参加数D個未満"
+                                        placeholder="参加回数がD個未満なら空欄"
                                     />
                                     <FieldDescription>
                                         上位D個の中で最も低いperf。空欄の場合は単純加算されます。
@@ -240,11 +271,41 @@ export default function AjlSimulator() {
                                         <FieldLabel htmlFor={field.name}>
                                             最小perf
                                         </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id={field.name}
-                                            type="number"
-                                        />
+                                        <InputGroup>
+                                            <InputGroupInput
+                                                {...field}
+                                                id={field.name}
+                                                type="number"
+                                            />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <InputGroupButton
+                                                        onClick={() => {
+                                                            const val =
+                                                                form.getValues(
+                                                                    "lowestPerf"
+                                                                );
+                                                            if (val) {
+                                                                form.setValue(
+                                                                    "minPerf",
+                                                                    val
+                                                                );
+                                                            }
+                                                        }}
+                                                        disabled={
+                                                            !form.getValues(
+                                                                "lowestPerf"
+                                                            )
+                                                        }
+                                                    >
+                                                        <ArrowLeftToLine />
+                                                    </InputGroupButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    対象内の最低パフォーマンスをセット
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </InputGroup>
                                         {fieldState.invalid && (
                                             <FieldError
                                                 errors={[fieldState.error]}
