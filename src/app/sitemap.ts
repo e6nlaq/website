@@ -2,10 +2,7 @@ import type { MetadataRoute } from "next";
 import { toolMeta } from "@/text/meta";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const exclude: string[] = [
-    "tools/ajl-binoculars",
-    "wind",
-  ] satisfies (keyof typeof toolMeta)[];
+  const exclude: string[] = ["wind"] satisfies (keyof typeof toolMeta)[];
   const urls = Object.keys(toolMeta)
     .filter((key) => !exclude.includes(key))
     .map((key) => ({
