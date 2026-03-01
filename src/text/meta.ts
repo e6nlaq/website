@@ -6,7 +6,7 @@ export const toolMeta = {
         description: "e6nlaqのホームページ・ツール公開場所",
         keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
     },
-    "tools/ajl-binoculars": {
+    "tools/ajl-simulator": {
         title: "AJL Binoculars",
         description: "AJLで相手との差を確認する",
         logo: "/icon/ajl.png",

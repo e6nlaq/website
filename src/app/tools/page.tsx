@@ -7,7 +7,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Item,
     ItemContent,
@@ -28,13 +28,17 @@ function Store({
     children?: ReactNode;
 }) {
     return (
-        <Card className="w-full py-16">
-            <CardContent className="px-12">
-                <div className="flex flex-col gap-y-4">
+        <Card className="w-full md:py-16 md:px-8">
+            <CardHeader>
+                <CardTitle>
                     <div className="flex items-center gap-x-4">
                         <h2 className="text-3xl font-black">{title}</h2>
-                        <p className="text-xs">{description}</p>
+                        <p className="text-xs font-normal">{description}</p>
                     </div>
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col gap-y-4">
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {children}
                     </div>
