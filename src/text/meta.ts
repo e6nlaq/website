@@ -7,10 +7,11 @@ export const toolMeta = {
         keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
     },
     "tools/ajl-simulator": {
-        title: "AJL Binoculars",
-        description: "AJLで相手との差を確認する",
+        title: "AJL Simulator",
+        description:
+            "次回のパフォーマンスからAJLスコアの推移をシミュレーションする",
         logo: "/icon/ajl.png",
-        index: false,
+        keywords: ["AJL", "AtCoder", "シミュレーター", "スコア", "推移"],
     },
     wind: {
         title: "wind, hidden",

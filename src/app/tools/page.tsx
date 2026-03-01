@@ -99,7 +99,7 @@ function ToolItem({
 }
 
 export default function Tools() {
-    const math: ToolKeys[] = ["tools/mod"];
+    const math: ToolKeys[] = ["tools/mod", "tools/ajl-simulator"];
     return (
         <div className="flex flex-col items-start w-full gap-y-8">
             <Store title="Math" description="数学系">

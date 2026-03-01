@@ -8,15 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { solve } from "wasm/wasm";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { ToolCard } from "@/components/tool-card";
 import {
     Field,
     FieldDescription,
@@ -246,10 +238,10 @@ export default function Mod() {
 
     return (
         <div className="flex flex-col items-center justify-center gap-y-8 max-w-full">
-            <Card className="w-2xl max-w-full">
-                <CardHeader>
-                    <CardTitle>Reverse Mod</CardTitle>
-                    <CardDescription>
+            <ToolCard
+                title="Reverse Mod"
+                description={
+                    <>
                         <p>
                             有理数modから元の有理数として考えられるものを1つ復元します。
                         </p>
@@ -261,264 +253,235 @@ export default function Mod() {
                             <span className="italic">log</span>{" "}
                             mod)です。また、解は正の非整数になると仮定して計算します。
                         </p>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 md:min-w-96"
-                        id="mod-form"
-                    >
-                        <FieldGroup>
-                            <Controller
-                                name="val"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor={field.name}>
-                                            val
-                                        </FieldLabel>
-                                        <InputGroup>
-                                            <InputGroupTextarea
-                                                {...field}
-                                                id={field.name}
-                                                placeholder={
-                                                    "831870305\n332748121"
-                                                }
-                                                aria-invalid={
-                                                    fieldState.invalid
-                                                }
-                                            />
-                                            <InputGroupAddon
-                                                align="inline-end"
-                                                className="pl-2 inline space-y-1"
-                                            >
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <InputGroupButton
-                                                            variant="outline"
-                                                            onClick={() => {
-                                                                navigator.clipboard
-                                                                    .readText()
-                                                                    .then(
-                                                                        (
+                    </>
+                }
+                formId="mod-form"
+                loading={loading}
+                onReset={() => {
+                    form.reset();
+                    setAns([]);
+                    setVal(
+                        defaultValues.val
+                            .split("\n")
+                            .filter((val) => val !== "")
+                            .map((val) => BigInt(val))
+                    );
+                    setMod(BigInt(defaultValues.mod));
+                    toast.success("リセットしました");
+                }}
+            >
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8 md:min-w-96"
+                    id="mod-form"
+                >
+                    <FieldGroup>
+                        <Controller
+                            name="val"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name}>
+                                        val
+                                    </FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupTextarea
+                                            {...field}
+                                            id={field.name}
+                                            placeholder={"831870305\n332748121"}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <InputGroupAddon
+                                            align="inline-end"
+                                            className="pl-2 inline space-y-1"
+                                        >
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <InputGroupButton
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            navigator.clipboard
+                                                                .readText()
+                                                                .then(
+                                                                    (text) => {
+                                                                        field.onChange(
                                                                             text
-                                                                        ) => {
+                                                                        );
+                                                                        toast.success(
+                                                                            "クリップボードを貼り付けました"
+                                                                        );
+                                                                    }
+                                                                )
+                                                                .catch(() => {
+                                                                    toast.error(
+                                                                        "クリップボードの内容を取得できませんでした",
+                                                                        {
+                                                                            description:
+                                                                                "ブラウザの権限を確認してください",
+                                                                        }
+                                                                    );
+                                                                });
+                                                        }}
+                                                    >
+                                                        <ClipboardIcon />
+                                                    </InputGroupButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    貼り付け
+                                                </TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <InputGroupButton
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            navigator.clipboard
+                                                                .readText()
+                                                                .then(
+                                                                    (text) => {
+                                                                        const val =
+                                                                            field.value;
+                                                                        if (
+                                                                            val !==
+                                                                            ""
+                                                                        )
+                                                                            field.onChange(
+                                                                                val +
+                                                                                    "\n" +
+                                                                                    text
+                                                                            );
+                                                                        else
                                                                             field.onChange(
                                                                                 text
                                                                             );
-                                                                            toast.success(
-                                                                                "クリップボードを貼り付けました"
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        () => {
-                                                                            toast.error(
-                                                                                "クリップボードの内容を取得できませんでした",
-                                                                                {
-                                                                                    description:
-                                                                                        "ブラウザの権限を確認してください",
-                                                                                }
-                                                                            );
+
+                                                                        toast.success(
+                                                                            "クリップボードを貼り付けました"
+                                                                        );
+                                                                    }
+                                                                )
+                                                                .catch(() => {
+                                                                    toast.error(
+                                                                        "クリップボードの内容を取得できませんでした",
+                                                                        {
+                                                                            description:
+                                                                                "ブラウザの権限を確認してください",
                                                                         }
                                                                     );
-                                                            }}
-                                                        >
-                                                            <ClipboardIcon />
-                                                        </InputGroupButton>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        貼り付け
-                                                    </TooltipContent>
-                                                </Tooltip>
+                                                                });
+                                                        }}
+                                                    >
+                                                        <ClipboardPlusIcon />
+                                                    </InputGroupButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="bottom">
+                                                    貼り付けして追加
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </InputGroupAddon>
+                                    </InputGroup>
 
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <InputGroupButton
-                                                            variant="outline"
-                                                            onClick={() => {
-                                                                navigator.clipboard
-                                                                    .readText()
-                                                                    .then(
-                                                                        (
-                                                                            text
-                                                                        ) => {
-                                                                            const val =
-                                                                                field.value;
-                                                                            if (
-                                                                                val !==
-                                                                                ""
-                                                                            )
-                                                                                field.onChange(
-                                                                                    val +
-                                                                                        "\n" +
-                                                                                        text
-                                                                                );
-                                                                            else
-                                                                                field.onChange(
-                                                                                    text
-                                                                                );
-
-                                                                            toast.success(
-                                                                                "クリップボードを貼り付けました"
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        () => {
-                                                                            toast.error(
-                                                                                "クリップボードの内容を取得できませんでした",
-                                                                                {
-                                                                                    description:
-                                                                                        "ブラウザの権限を確認してください",
-                                                                                }
-                                                                            );
-                                                                        }
-                                                                    );
-                                                            }}
-                                                        >
-                                                            <ClipboardPlusIcon />
-                                                        </InputGroupButton>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent side="bottom">
-                                                        貼り付けして追加
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </InputGroupAddon>
-                                        </InputGroup>
-
-                                        <FieldDescription>
-                                            有理数mod後の値、改行区切りで複数入力できます
-                                        </FieldDescription>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                control={form.control}
-                                name="mod"
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor={field.name}>
-                                            mod
-                                        </FieldLabel>
-                                        <div>
-                                            <Input
-                                                placeholder="998244353"
-                                                type="number"
-                                                min={1}
-                                                list={modListId}
-                                                {...field}
-                                            />
-                                            <datalist id={modListId}>
-                                                <option value="998244353" />
-                                                <option value="1000000007" />
-                                            </datalist>
-                                        </div>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                control={form.control}
-                                name="limit"
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor={field.name}>
-                                            limit
-                                        </FieldLabel>
+                                    <FieldDescription>
+                                        有理数mod後の値、改行区切りで複数入力できます
+                                    </FieldDescription>
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="mod"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name}>
+                                        mod
+                                    </FieldLabel>
+                                    <div>
                                         <Input
-                                            placeholder="1000"
+                                            placeholder="998244353"
                                             type="number"
                                             min={1}
+                                            list={modListId}
                                             {...field}
                                         />
-                                        <FieldDescription>
-                                            分母の探索範囲
-                                        </FieldDescription>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                            <Controller
-                                control={form.control}
-                                name="type"
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor={field.name}>
-                                            計算方法
-                                        </FieldLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="計算方法を選択してください" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="bunshi">
-                                                    分子が最小となるもの
-                                                </SelectItem>
-                                                <SelectItem value="sum">
-                                                    分子と分母の和が最小となるもの
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-                        </FieldGroup>
-                    </form>
-                </CardContent>
-                <CardFooter>
-                    <Field orientation="horizontal">
-                        <Button
-                            type="submit"
-                            form="mod-form"
-                            disabled={loading}
-                        >
-                            {loading ? "計算中..." : "計算"}
-                        </Button>
-                        <Button
-                            form="mod-form"
-                            type="reset"
-                            onClick={() => {
-                                form.reset();
-                                setAns([]);
-                                setVal(
-                                    defaultValues.val
-                                        .split("\n")
-                                        .filter((val) => val !== "")
-                                        .map((val) => BigInt(val))
-                                );
-                                setMod(BigInt(defaultValues.mod));
-                                toast.success("リセットしました");
-                            }}
-                            variant="outline"
-                        >
-                            リセット
-                        </Button>
-                    </Field>
-                </CardFooter>
-            </Card>
+                                        <datalist id={modListId}>
+                                            <option value="998244353" />
+                                            <option value="1000000007" />
+                                        </datalist>
+                                    </div>
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="limit"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name}>
+                                        limit
+                                    </FieldLabel>
+                                    <Input
+                                        placeholder="1000"
+                                        type="number"
+                                        min={1}
+                                        {...field}
+                                    />
+                                    <FieldDescription>
+                                        分母の探索範囲
+                                    </FieldDescription>
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="type"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name}>
+                                        計算方法
+                                    </FieldLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="計算方法を選択してください" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="bunshi">
+                                                分子が最小となるもの
+                                            </SelectItem>
+                                            <SelectItem value="sum">
+                                                分子と分母の和が最小となるもの
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
+                </form>
+            </ToolCard>
 
             <Result ans={ans} val={val} mod={mod} />
         </div>
