@@ -49,6 +49,7 @@ const schema = z
     lowestPerf: z
       .string()
       .regex(/^\d+$/, "数値を入力してください")
+      .max(4, "4桁以下の数値を入力してください")
       .or(z.literal("")),
     minPerf: z
       .string()
