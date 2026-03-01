@@ -37,8 +37,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
-      "trailingCommas": "es5",
-      "indentWidth": 4
+      "trailingCommas": "es5"
     }
   },
   "css": {
