@@ -98,7 +98,8 @@ function ToolItem({
 }
 
 export default function Tools() {
-  const math: ToolKeys[] = ["tools/mod", "tools/ajl-simulator"];
+  const math: ToolKeys[] = ["tools/mod"];
+  const cp: ToolKeys[] = ["tools/ajl-simulator"];
   return (
     <div className="flex flex-col items-start w-full gap-y-8">
       <Store title="Math" description="数学系">
@@ -112,10 +113,19 @@ export default function Tools() {
           />
         ))}
       </Store>
-      <Store title="Script" description="ユーザースクリプト">
+      <Store title="Competitive Programming" description="競プロ系">
+        {cp.map((k) => (
+          <ToolItem
+            name={toolMeta[k].title}
+            description={toolMeta[k].description}
+            icon={(toolMeta[k] as ToolMeta).logo}
+            href={`/${k}`}
+            key={k}
+          />
+        ))}
         <ToolItem
           name="AtCoder AWC Tab"
-          description="AtCoderのナビゲーションバーに今日のAWCへのリンクを追加する"
+          description="AtCoderのナビゲーションバーに、今日のAWCへのリンクを追加するスクリプト"
           href="https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab"
         />
       </Store>
