@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/chart";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -251,17 +250,14 @@ export default function AjlSimulator() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>
-                    対象内の最低パフォーマンス (任意)
+                    スコア対象内の最低パフォーマンス
                   </FieldLabel>
                   <Input
                     {...field}
                     id={field.name}
                     type="number"
-                    placeholder="参加回数がD個未満なら空欄"
+                    placeholder="参加回数がD回未満なら空欄にしてください"
                   />
-                  <FieldDescription>
-                    上位D個の中で最も低いperf。空欄の場合は単純加算されます。
-                  </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
