@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
-import { Source_Code_Pro } from "next/font/google";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,7 +35,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
-import { cn } from "@/lib/utils";
 
 const schema = z
     .object({
@@ -85,10 +83,6 @@ const schema = z
         }
     );
 
-const sourceCodePro = Source_Code_Pro({
-    subsets: ["latin"],
-});
-
 function Result({
     ans,
     val,
@@ -116,22 +110,12 @@ function Result({
                 }
                 return (
                     <div key={`no-${i}-${val[i]}`}>
-                        <p
-                            className={cn(
-                                sourceCodePro.className,
-                                "md:text-sm text-xs"
-                            )}
-                        >
+                        <p className="md:text-sm text-xs font-code">
                             No.{i + 1} {val[i]}
                         </p>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <p
-                                    className={cn(
-                                        sourceCodePro.className,
-                                        "text-2xl md:text-5xl font-bold"
-                                    )}
-                                >
+                                <p className="text-2xl md:text-5xl font-bold font-code">
                                     {ret}
                                 </p>
                             </TooltipTrigger>

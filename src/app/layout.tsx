@@ -39,6 +39,7 @@ const lineSeed = localFont({
 
 const sourceCodePro = Source_Code_Pro({
     subsets: ["latin"],
+    variable: "--font-code",
 });
 
 export const metadata = convertMetadata(
@@ -61,7 +62,9 @@ export default function RootLayout({
 
     return (
         <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
-            <body className={`${lineSeed.className} $antialiased `}>
+            <body
+                className={`${lineSeed.className} ${sourceCodePro.variable} antialiased `}
+            >
                 <Analytics />
                 <SpeedInsights />
 

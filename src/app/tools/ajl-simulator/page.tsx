@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
     CartesianGrid,
@@ -29,22 +29,38 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-const schema = z.object({
-    currentScore: z.string().regex(/^\d+$/, "数値を入力してください"),
-    lowestPerf: z
-        .string()
-        .regex(/^\d*$/, "数値を入力してください")
-        .optional()
-        .or(z.literal("")),
-    minPerf: z
-        .string()
-        .regex(/^\d+$/, "数値を入力してください")
-        .max(4, "4桁以下の数値を入力してください"),
-    maxPerf: z
-        .string()
-        .regex(/^\d+$/, "数値を入力してください")
-        .max(4, "4桁以下の数値を入力してください"),
-});
+const schema = z
+    .object({
+        currentScore: z.string().regex(/^\d+$/, "数値を入力してください"),
+        lowestPerf: z
+            .string()
+            .regex(/^\d+$/, "数値を入力してください")
+            .or(z.literal("")),
+        minPerf: z
+            .string()
+            .regex(/^\d+$/, "数値を入力してください")
+            .max(4, "4桁以下の数値を入力してください"),
+        maxPerf: z
+            .string()
+            .regex(/^\d+$/, "数値を入力してください")
+            .max(4, "4桁以下の数値を入力してください"),
+    })
+    .superRefine((data, ctx) => {
+        const min = Number.parseInt(data.minPerf, 10);
+        const max = Number.parseInt(data.maxPerf, 10);
+        if (min > max) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "最小perfは最大perf以下にしてください",
+                path: ["minPerf"],
+            });
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "最小perfは最大perf以下にしてください",
+                path: ["maxPerf"],
+            });
+        }
+    });
 
 type FormValues = z.infer<typeof schema>;
 
@@ -82,6 +98,8 @@ function calculateScore(
     return currentScore + Math.max(0, perfScore - lowestPerfScore);
 }
 
+const STORAGE_KEY = "ajl-simulator-form";
+
 export default function AjlSimulator() {
     const defaultValues: FormValues = {
         currentScore: "0",
@@ -97,6 +115,28 @@ export default function AjlSimulator() {
     });
 
     const watchAll = form.watch();
+
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Load saved data from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                form.reset(parsed);
+            } catch (e) {
+                console.error("Failed to parse saved form state", e);
+            }
+        }
+        setIsLoaded(true);
+    }, [form]);
+
+    // Save data to localStorage on changes
+    useEffect(() => {
+        if (!isLoaded) return;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(watchAll));
+    }, [watchAll, isLoaded]);
 
     const chartData = useMemo(() => {
         const min = Number.parseInt(watchAll.minPerf ?? "0", 10) || 0;
@@ -243,7 +283,7 @@ export default function AjlSimulator() {
                 <ToolCard title="スコア推移グラフ" className="w-full">
                     <ChartContainer
                         config={chartConfig}
-                        className="min-h-[400px] w-full"
+                        className="min-h-[400px] w-full font-code"
                     >
                         <LineChart
                             accessibilityLayer
