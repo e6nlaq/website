@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
     CartesianGrid,
@@ -9,13 +9,17 @@ import {
     LineChart,
     ReferenceArea,
     ReferenceLine,
-    ResponsiveContainer,
-    Tooltip,
     XAxis,
     YAxis,
 } from "recharts";
 import { z } from "zod";
 import { ToolCard } from "@/components/tool-card";
+import {
+    type ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart";
 import {
     Field,
     FieldDescription,
@@ -26,14 +30,20 @@ import {
 import { Input } from "@/components/ui/input";
 
 const schema = z.object({
-    currentScore: z.string().regex(/^\d+(\.\d+)?$/, "数値を入力してください"),
+    currentScore: z.string().regex(/^\d+$/, "数値を入力してください"),
     lowestPerf: z
         .string()
         .regex(/^\d*$/, "数値を入力してください")
         .optional()
         .or(z.literal("")),
-    minPerf: z.string().regex(/^\d+$/, "数値を入力してください"),
-    maxPerf: z.string().regex(/^\d+$/, "数値を入力してください"),
+    minPerf: z
+        .string()
+        .regex(/^\d+$/, "数値を入力してください")
+        .max(4, "4桁以下の数値を入力してください"),
+    maxPerf: z
+        .string()
+        .regex(/^\d+$/, "数値を入力してください")
+        .max(4, "4桁以下の数値を入力してください"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -48,6 +58,16 @@ const RATE_COLORS = [
     { threshold: 2400, color: "#FF8000", label: "橙" },
     { threshold: 2800, color: "#FF0000", label: "赤" },
 ];
+
+const chartConfig = {
+    score: {
+        label: "Score",
+        color: "var(--chart-1)",
+    },
+    perf: {
+        label: "Perf",
+    },
+} satisfies ChartConfig;
 
 function calculateScore(
     perf: number,
@@ -178,13 +198,18 @@ export default function AjlSimulator() {
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel htmlFor={field.name}>
-                                            最小 perf
+                                            最小perf
                                         </FieldLabel>
                                         <Input
                                             {...field}
                                             id={field.name}
                                             type="number"
                                         />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
                                     </Field>
                                 )}
                             />
@@ -194,13 +219,18 @@ export default function AjlSimulator() {
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel htmlFor={field.name}>
-                                            最大 perf
+                                            最大perf
                                         </FieldLabel>
                                         <Input
                                             {...field}
                                             id={field.name}
                                             type="number"
                                         />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
                                     </Field>
                                 )}
                             />
@@ -209,10 +239,14 @@ export default function AjlSimulator() {
                 </form>
             </ToolCard>
 
-            {chartData.length > 0 && (
+            {chartData.length > 0 && form.formState.isValid && (
                 <ToolCard title="スコア推移グラフ" className="w-full">
-                    <ResponsiveContainer width="100%" height={400}>
+                    <ChartContainer
+                        config={chartConfig}
+                        className="min-h-[400px] w-full"
+                    >
                         <LineChart
+                            accessibilityLayer
                             data={chartData}
                             margin={{
                                 top: 20,
@@ -254,28 +288,17 @@ export default function AjlSimulator() {
                                     offset: -10,
                                 }}
                             />
-                            <Tooltip
-                                formatter={(
-                                    value: number | string | undefined
-                                ) => [
-                                    Number(value ?? 0).toLocaleString(),
-                                    "Score",
-                                ]}
-                                labelFormatter={(label: ReactNode) =>
-                                    `Perf: ${label}`
+                            <ChartTooltip
+                                content={
+                                    <ChartTooltipContent
+                                        nameKey="score"
+                                        labelFormatter={(_label, payload) => {
+                                            const perf =
+                                                payload?.[0]?.payload?.perf;
+                                            return `Perf: ${perf}`;
+                                        }}
+                                    />
                                 }
-                                contentStyle={{
-                                    backgroundColor: "var(--popover)",
-                                    borderColor: "var(--border)",
-                                    borderRadius: "0.5rem",
-                                    color: "var(--popover-foreground)",
-                                }}
-                                labelStyle={{
-                                    color: "var(--popover-foreground)",
-                                }}
-                                itemStyle={{
-                                    color: "var(--popover-foreground)",
-                                }}
                             />
 
                             {/* Rate Backgrounds */}
@@ -338,13 +361,13 @@ export default function AjlSimulator() {
                             <Line
                                 type="monotone"
                                 dataKey="score"
-                                stroke="var(--chart-1)"
+                                stroke="var(--color-score)"
                                 strokeWidth={3}
                                 dot={false}
                                 activeDot={{ r: 6 }}
                             />
                         </LineChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </ToolCard>
             )}
         </div>
