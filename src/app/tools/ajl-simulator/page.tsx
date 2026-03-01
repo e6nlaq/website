@@ -32,6 +32,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   InputGroup,
+  InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
@@ -117,13 +118,13 @@ export default function AjlSimulator() {
     currentScore: "0",
     lowestPerf: "",
     minPerf: "0",
-    maxPerf: "3000",
+    maxPerf: "4000",
   };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
-    mode: "onChange",
+    mode: "all",
   });
 
   const watchAll = form.watch();
@@ -188,7 +189,7 @@ export default function AjlSimulator() {
     <div className="flex flex-col items-center justify-center gap-y-8 w-full max-w-4xl mx-auto p-4">
       <ToolCard
         title="AJL Simulator"
-        description="次回のパフォーマンスに応じたAJLスコアの推移をシミュレーションします。"
+        description="次回のパフォーマンスに応じたAJLスコアの推移をシミュレーションします。PCでの閲覧を推奨します。"
         className="w-full"
         footer={
           <div className="flex gap-2">
@@ -258,24 +259,27 @@ export default function AjlSimulator() {
                         id={field.name}
                         type="number"
                       />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InputGroupButton
-                            onClick={() => {
-                              const val = form.getValues("lowestPerf");
-                              if (val) {
-                                form.setValue("minPerf", val);
-                              }
-                            }}
-                            disabled={!form.getValues("lowestPerf")}
-                          >
-                            <ArrowLeftToLine />
-                          </InputGroupButton>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          対象内の最低パフォーマンスをセット
-                        </TooltipContent>
-                      </Tooltip>
+                      <InputGroupAddon align="inline-end">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InputGroupButton
+                              onClick={() => {
+                                const val = form.getValues("lowestPerf");
+                                if (val) {
+                                  form.setValue("minPerf", val);
+                                }
+                              }}
+                              disabled={!form.getValues("lowestPerf")}
+                              size="icon-xs"
+                            >
+                              <ArrowLeftToLine />
+                            </InputGroupButton>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            対象内の最低パフォーマンスにセット
+                          </TooltipContent>
+                        </Tooltip>
+                      </InputGroupAddon>
                     </InputGroup>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
