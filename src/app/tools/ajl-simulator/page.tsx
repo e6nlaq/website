@@ -41,6 +41,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 
 const schema = z
   .object({
@@ -69,7 +70,7 @@ const schema = z
       });
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "最小perfは最大perf以下にしてください",
+        message: "最大perfは最小perf以上にしてください",
         path: ["maxPerf"],
       });
     }
@@ -138,6 +139,7 @@ export default function AjlSimulator() {
       try {
         const parsed = JSON.parse(saved);
         form.reset(parsed);
+        form.trigger();
       } catch (e) {
         console.error("Failed to parse saved form state", e);
       }
@@ -185,6 +187,8 @@ export default function AjlSimulator() {
       ? null
       : Number.parseInt(watchAll.lowestPerf, 10);
 
+  const confirm = useConfirm();
+
   return (
     <div className="flex flex-col items-center justify-center gap-y-8 w-full max-w-4xl mx-auto p-4">
       <ToolCard
@@ -192,18 +196,35 @@ export default function AjlSimulator() {
         description="次回のパフォーマンスに応じたAJLスコアの推移をシミュレーションします。PCでの閲覧を推奨します。"
         className="w-full"
         footer={
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => form.reset(defaultValues)}>
-              すべてリセット
-            </Button>
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               onClick={() => {
-                form.setValue("minPerf", defaultValues.minPerf);
-                form.setValue("maxPerf", defaultValues.maxPerf);
+                form.setValue("minPerf", defaultValues.minPerf, {
+                  shouldValidate: true,
+                });
+                form.setValue("maxPerf", defaultValues.maxPerf, {
+                  shouldValidate: true,
+                });
               }}
             >
               最小/最大のみリセット
+            </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                if (
+                  await confirm({
+                    title: "確認",
+                    description:
+                      "本当にリセットしますか? この操作は取り消しできません。",
+                  })
+                ) {
+                  form.reset(defaultValues);
+                }
+              }}
+            >
+              すべてリセット
             </Button>
           </div>
         }
@@ -252,10 +273,14 @@ export default function AjlSimulator() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>最小perf</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>グラフ最小perf</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          form.trigger("maxPerf");
+                        }}
                         id={field.name}
                         type="number"
                       />
@@ -266,7 +291,9 @@ export default function AjlSimulator() {
                               onClick={() => {
                                 const val = form.getValues("lowestPerf");
                                 if (val) {
-                                  form.setValue("minPerf", val);
+                                  form.setValue("minPerf", val, {
+                                    shouldValidate: true,
+                                  });
                                 }
                               }}
                               disabled={!form.getValues("lowestPerf")}
@@ -292,8 +319,16 @@ export default function AjlSimulator() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>最大perf</FieldLabel>
-                    <Input {...field} id={field.name} type="number" />
+                    <FieldLabel htmlFor={field.name}>グラフ最大perf</FieldLabel>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.trigger("minPerf");
+                      }}
+                      id={field.name}
+                      type="number"
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -342,7 +377,7 @@ export default function AjlSimulator() {
                   value: "Score",
                   angle: -90,
                   position: "insideLeft",
-                  offset: -10,
+                  offset: -20,
                 }}
               />
               <ChartTooltip
