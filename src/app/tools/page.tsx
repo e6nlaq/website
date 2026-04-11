@@ -129,6 +129,14 @@ export default function Tools() {
           href="https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab"
         />
       </Store>
+      <Store title="Maker" description="作成系">
+        <ToolItem
+          name="e6nlaq式路線図メーカー"
+          description="きれいな路線図を簡単に作成できるツール"
+          href="https://e6nlaq.github.io/trainmap-maker"
+          icon="https://e6nlaq.github.io/trainmap-maker/favicon.png"
+        />
+      </Store>
       <Store title="Classic" description="旧作たち">
         <ToolItem
           name="rinu.jp Checker"
