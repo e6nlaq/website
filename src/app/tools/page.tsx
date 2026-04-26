@@ -125,8 +125,18 @@ export default function Tools() {
         ))}
         <ToolItem
           name="AtCoder AWC Tab"
-          description="AtCoderのナビゲーションバーに、今日のAWCへのリンクを追加するスクリプト"
+          description="AtCoderのナビゲーションバーに、今日のAWCへのリンクを追加するUserScript"
           href="https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab"
+        />
+        <ToolItem
+          name="AtCoder Shorter Affiliation"
+          description="AtCoderの順位表の「所属」列をスリムにするUserScript"
+          href="https://greasyfork.org/ja/scripts/575455-atcoder-shorter-affiliation"
+        />
+        <ToolItem
+          name="AtCoder Zip Copy"
+          description="AtCoderの問題文中の .zip リンクの横にコピーボタンを追加するUserScript"
+          href="https://greasyfork.org/ja/scripts/575504-atcoder-zip-copy"
         />
       </Store>
       <Store title="Maker" description="作成系">
