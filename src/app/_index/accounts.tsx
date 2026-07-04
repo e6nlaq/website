@@ -3,7 +3,6 @@
 import {
   SiCodeforces,
   SiDiscord,
-  SiDuolingo,
   SiGithub,
   SiQiita,
   SiScratch,
@@ -87,12 +86,6 @@ export default function Accounts() {
       key: "zenn",
       id: "e6nlaq",
       href: "https://zenn.dev/e6nlaq",
-    },
-    {
-      node: <SiDuolingo />,
-      key: "duolingo",
-      id: "e6nlaq",
-      href: "https://www.duolingo.com/profile/e6nlaq",
     },
     {
       node: <SiScratch />,
