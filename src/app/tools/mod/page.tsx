@@ -107,7 +107,12 @@ function Result({
           ret = `${bunsi} / ${dat}`;
         }
         return (
-          <div key={`no-${i}-${val[i]}`}>
+          <div
+            key={`no-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: off
+              i
+            }-${val[i]}`}
+          >
             <p className="md:text-sm text-xs font-code">
               No.{i + 1} {val[i]}
             </p>
