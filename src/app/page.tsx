@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
-import Icon from "@/assets/icon.svg";
 import { Button } from "@/components/ui/button";
 import { SpinningText } from "@/components/ui/spinning-text";
 import Accounts from "./_index/accounts";
@@ -15,7 +15,14 @@ export default function Page() {
           e6nlaq • e6nlaq • e6nlaq •
         </SpinningText>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <Icon width={48} height={48} className="w-18 h-18" />
+          <Image
+            src="/icon.svg"
+            width={48}
+            height={48}
+            className="w-18 h-18"
+            alt="icon"
+            loading="eager"
+          />
         </div>
       </div>
 

@@ -32,12 +32,14 @@ function AtCoder() {
         alt="AtCoder"
         fill
         className="hidden object-contain dark:block"
+        sizes="20px"
       />
       <Image
         src="/atcoder/logo_transparent.png"
         alt="AtCoder"
         fill
         className="block object-contain dark:hidden"
+        sizes="20px"
       />
     </div>
   );

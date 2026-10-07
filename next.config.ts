@@ -8,15 +8,7 @@ const nextConfig: NextConfig = {
       new URL("https://maji-alarm.vercel.app/**"),
       new URL("https://study-typing.vercel.app/**"),
     ],
-  },
-  turbopack: {
-    rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
-      },
-    },
-  },
+  }
 };
 
 export default nextConfig;
