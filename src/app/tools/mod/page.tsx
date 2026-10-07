@@ -179,8 +179,9 @@ export default function Mod() {
       .map((val) => BigInt(val));
     setVal(new_val);
     setMod(BigInt(data.mod));
-    setAns(new Array<bigint | undefined>(val.length).fill(undefined));
-
+    setAns(
+      Array.from<bigint | undefined>({ length: val.length }).fill(undefined)
+    );
     let ok = 0;
     setLoading(true);
     setTimeout(() => {
