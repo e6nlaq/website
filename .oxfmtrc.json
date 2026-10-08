@@ -11,4 +11,5 @@
   "arrowParens": "always",
   "bracketSameLine": false,
   "bracketSpacing": true,
+  "ignorePatterns": ["./packages/wasm/pkg/**/*"]
 }

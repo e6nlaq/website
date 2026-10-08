@@ -2,14 +2,16 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/wasm/pkg"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "format": "oxfmt ./src/**/*",
+    "format": "oxfmt",
     "lint": "oxlint",
     "wasm": "cd packages && wasm-pack build wasm && rm wasm/pkg/.gitignore && rm wasm/pkg/README.md",
-    "prepare": "husky",
     "knip": "knip",
     "typecheck": "tsc --noEmit"
   },
@@ -52,9 +54,8 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "ac-library-js": "^0.1.1",
-    "husky": "^9.1.7",
     "knip": "^6.40.0",
-    "lint-staged": "^17.6.0",
+    "lefthook": "^2.1.17",
     "oxfmt": "^0.72.0",
     "oxlint": "^1.87.0",
     "postcss": "^8.5.29",
@@ -63,9 +64,6 @@
     "typescript": "^7.0.2",
     "wasm": "workspace:"
   },
-  "workspaces": [
-    "packages/wasm/pkg"
-  ],
   "overrides": {
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4"

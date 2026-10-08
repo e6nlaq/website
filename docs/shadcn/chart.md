@@ -1,5 +1,4 @@
-
----
+***
 
 title: Chart
 description: Beautiful charts. Built using Recharts. Copy and paste into your apps.
@@ -33,9 +32,9 @@ We use [Recharts](https://recharts.org/) under the hood.
 We designed the `chart` component with composition in mind. **You build your charts using Recharts components and only bring in custom components, such as `ChartTooltip`, when and where you need it**.
 
 ```tsx showLineNumbers /ChartContainer/ /ChartTooltipContent/
-import { Bar, BarChart } from "recharts"
+import { Bar, BarChart } from "recharts";
 
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 export function MyChart() {
   return (
@@ -45,7 +44,7 @@ export function MyChart() {
         <ChartTooltip content={<ChartTooltipContent />} />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }
 ```
 
@@ -139,7 +138,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-]
+];
 ```
 
 <Step>Define your chart config</Step>
@@ -147,7 +146,7 @@ const chartData = [
 The chart config holds configuration for the chart. This is where you place human-readable strings, such as labels, icons and color tokens for theming.
 
 ```tsx title="components/example-chart.tsx" showLineNumbers
-import { type ChartConfig } from "@/components/ui/chart"
+import { type ChartConfig } from "@/components/ui/chart";
 
 const chartConfig = {
   desktop: {
@@ -158,7 +157,7 @@ const chartConfig = {
     label: "Mobile",
     color: "#60a5fa",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 <Step>Build your chart</Step>
@@ -188,7 +187,7 @@ Let's add a grid to the chart.
 <Step>Import the `CartesianGrid` component.</Step>
 
 ```tsx /CartesianGrid/
-import { Bar, BarChart, CartesianGrid } from "recharts"
+import { Bar, BarChart, CartesianGrid } from "recharts";
 ```
 
 <Step>Add the `CartesianGrid` component to your chart.</Step>
@@ -220,7 +219,7 @@ To add an x-axis to the chart, we'll use the `XAxis` component.
 <Step>Import the `XAxis` component.</Step>
 
 ```tsx /XAxis/
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 ```
 
 <Step>Add the `XAxis` component to your chart.</Step>
@@ -261,7 +260,7 @@ To add a tooltip, we'll use the custom `ChartTooltip` and `ChartTooltipContent` 
 <Step>Import the `ChartTooltip` and `ChartTooltipContent` components.</Step>
 
 ```tsx
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 ```
 
 <Step>Add the components to your chart.</Step>
@@ -303,7 +302,7 @@ We'll do the same for the legend. We'll use the `ChartLegend` and `ChartLegendCo
 <Step>Import the `ChartLegend` and `ChartLegendContent` components.</Step>
 
 ```tsx
-import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+import { ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 ```
 
 <Step>Add the components to your chart.</Step>
@@ -350,9 +349,9 @@ It is intentionally decoupled from chart data.
 This allows you to share config and color tokens between charts. It can also work independently for cases where your data or color tokens live remotely or in a different format.
 
 ```tsx showLineNumbers /ChartConfig/
-import { Monitor } from "lucide-react"
+import { Monitor } from "lucide-react";
 
-import { type ChartConfig } from "@/components/ui/chart"
+import { type ChartConfig } from "@/components/ui/chart";
 
 const chartConfig = {
   desktop: {
@@ -366,7 +365,7 @@ const chartConfig = {
       dark: "#dc2626",
     },
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 ## Theming
@@ -405,7 +404,7 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 </Steps>
@@ -432,7 +431,7 @@ const chartConfig = {
     label: "Laptop",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 ### Using Colors
@@ -451,7 +450,7 @@ To use the theme colors in your chart, reference the colors using the format `va
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
+];
 ```
 
 #### Tailwind
@@ -473,7 +472,7 @@ Use `labelKey` and `nameKey` to use a custom key for the tooltip label and name.
 Chart comes with the `<ChartTooltip>` and `<ChartTooltipContent>` components. You can use these two components to add custom tooltips to your chart.
 
 ```tsx title="components/example-chart.tsx"
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 ```
 
 ```tsx title="components/example-chart.tsx"
@@ -504,7 +503,7 @@ To use a custom key for tooltip label and names, use the `labelKey` and `nameKey
 const chartData = [
   { browser: "chrome", visitors: 187, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
+];
 
 const chartConfig = {
   visitors: {
@@ -518,7 +517,7 @@ const chartConfig = {
     label: "Safari",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 ```tsx title="components/example-chart.tsx"
@@ -534,7 +533,7 @@ This will use `Total Visitors` for label and `Chrome` and `Safari` for the toolt
 You can use the custom `<ChartLegend>` and `<ChartLegendContent>` components to add a legend to your chart.
 
 ```tsx title="components/example-chart.tsx"
-import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+import { ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 ```
 
 ```tsx title="components/example-chart.tsx"
@@ -553,7 +552,7 @@ To use a custom key for legend names, use the `nameKey` prop.
 const chartData = [
   { browser: "chrome", visitors: 187, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
+];
 
 const chartConfig = {
   chrome: {
@@ -564,7 +563,7 @@ const chartConfig = {
     label: "Safari",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 ```
 
 ```tsx title="components/example-chart.tsx"

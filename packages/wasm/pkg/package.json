@@ -1,9 +1,5 @@
 {
   "name": "wasm",
-  "type": "module",
-  "collaborators": [
-    "e6nlaq <120777733+e6nlaq@users.noreply.github.com>"
-  ],
   "version": "0.1.0",
   "files": [
     "wasm_bg.wasm",
@@ -11,10 +7,14 @@
     "wasm_bg.js",
     "wasm.d.ts"
   ],
-  "main": "wasm.js",
-  "types": "wasm.d.ts",
+  "type": "module",
   "sideEffects": [
     "./wasm.js",
     "./snippets/*"
+  ],
+  "main": "wasm.js",
+  "types": "wasm.d.ts",
+  "collaborators": [
+    "e6nlaq <120777733+e6nlaq@users.noreply.github.com>"
   ]
 }
