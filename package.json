@@ -29,7 +29,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "cn": "^0.4.0",
     "elysia": "^1.4.30",
     "lucide-react": "^1.52.0",
     "motion": "^13.5.1",
@@ -40,7 +40,6 @@
     "react-hook-form": "^7.89.0",
     "recharts": "3.10.1",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.7.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.6.5"
   },
