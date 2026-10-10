@@ -39,7 +39,11 @@ import {
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
 import { WorkerRequest, WorkerResponse } from "./solve.worker";
-import { Progress } from "@/components/ui/progress";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress";
 
 const schema = z
   .object({
@@ -122,11 +126,13 @@ function Result({
               No.{i + 1} {val[i]}
             </p>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="text-2xl md:text-5xl font-bold font-code">
-                  {ret}
-                </p>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <p className="text-2xl md:text-5xl font-bold font-code">
+                    {ret}
+                  </p>
+                }
+              />
               {dat !== undefined && (
                 <TooltipContent>
                   ≈ {(Number(bunsi) / Number(dat)).toFixed(10)}
@@ -270,7 +276,11 @@ export default function Mod() {
                   (100 * ans.filter((val) => val !== undefined).length) /
                   ans.length
                 }
-              ></Progress>
+                className="w-full"
+              >
+                <ProgressLabel>計算進捗</ProgressLabel>
+                <ProgressValue />
+              </Progress>
             )}
           </>
         }
@@ -299,66 +309,70 @@ export default function Mod() {
                       className="pl-2 inline space-y-1"
                     >
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InputGroupButton
-                            variant="outline"
-                            onClick={() => {
-                              navigator.clipboard
-                                .readText()
-                                .then((text) => {
-                                  field.onChange(text);
-                                  toast.success(
-                                    "クリップボードを貼り付けました"
-                                  );
-                                })
-                                .catch(() => {
-                                  toast.error(
-                                    "クリップボードの内容を取得できませんでした",
-                                    {
-                                      description:
-                                        "ブラウザの権限を確認してください",
-                                    }
-                                  );
-                                });
-                            }}
-                          >
-                            <ClipboardIcon />
-                          </InputGroupButton>
-                        </TooltipTrigger>
+                        <TooltipTrigger
+                          render={
+                            <InputGroupButton
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard
+                                  .readText()
+                                  .then((text) => {
+                                    field.onChange(text);
+                                    toast.success(
+                                      "クリップボードを貼り付けました"
+                                    );
+                                  })
+                                  .catch(() => {
+                                    toast.error(
+                                      "クリップボードの内容を取得できませんでした",
+                                      {
+                                        description:
+                                          "ブラウザの権限を確認してください",
+                                      }
+                                    );
+                                  });
+                              }}
+                            >
+                              <ClipboardIcon />
+                            </InputGroupButton>
+                          }
+                        />
                         <TooltipContent>貼り付け</TooltipContent>
                       </Tooltip>
 
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InputGroupButton
-                            variant="outline"
-                            onClick={() => {
-                              navigator.clipboard
-                                .readText()
-                                .then((text) => {
-                                  const val = field.value;
-                                  if (val !== "")
-                                    field.onChange(`${val}\n${text}`);
-                                  else field.onChange(text);
+                        <TooltipTrigger
+                          render={
+                            <InputGroupButton
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard
+                                  .readText()
+                                  .then((text) => {
+                                    const val = field.value;
+                                    if (val !== "")
+                                      field.onChange(`${val}\n${text}`);
+                                    else field.onChange(text);
 
-                                  toast.success(
-                                    "クリップボードを貼り付けました"
-                                  );
-                                })
-                                .catch(() => {
-                                  toast.error(
-                                    "クリップボードの内容を取得できませんでした",
-                                    {
-                                      description:
-                                        "ブラウザの権限を確認してください",
-                                    }
-                                  );
-                                });
-                            }}
-                          >
-                            <ClipboardPlusIcon />
-                          </InputGroupButton>
-                        </TooltipTrigger>
+                                    toast.success(
+                                      "クリップボードを貼り付けました"
+                                    );
+                                  })
+                                  .catch(() => {
+                                    toast.error(
+                                      "クリップボードの内容を取得できませんでした",
+                                      {
+                                        description:
+                                          "ブラウザの権限を確認してください",
+                                      }
+                                    );
+                                  });
+                              }}
+                            >
+                              <ClipboardPlusIcon />
+                            </InputGroupButton>
+                          }
+                        />
                         <TooltipContent side="bottom">
                           貼り付けして追加
                         </TooltipContent>
@@ -422,7 +436,11 @@ export default function Mod() {
                   <FieldLabel htmlFor={field.name}>計算方法</FieldLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="計算方法を選択してください" />
+                      <SelectValue placeholder="計算方法を選択してください">
+                        {field.value === "bunshi"
+                          ? "分子が最小となるもの"
+                          : "分子と分母の和が最小となるもの"}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="bunshi">

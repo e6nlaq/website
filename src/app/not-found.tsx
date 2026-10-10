@@ -7,9 +7,11 @@ export default function NotFound() {
       <h1 className="text-9xl font-bold">404</h1>
 
       <div className="flex gap-4">
-        <Button asChild variant="outline">
-          <Link href="/">Home</Link>
-        </Button>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<Link href="/">Home</Link>}
+        />
       </div>
     </div>
   );

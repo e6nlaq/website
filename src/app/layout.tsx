@@ -79,7 +79,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider delayDuration={100}>
+          <TooltipProvider delay={100}>
             <ConfirmDialogProvider>
               <div className="min-h-svh flex flex-col">
                 <Nav fontClass={sourceCodePro.className} />
@@ -93,9 +93,7 @@ export default function RootLayout({
                     <p className={`${sourceCodePro.className}  text-sm`}>
                       (C){" "}
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span>{buildYear}</span>
-                        </TooltipTrigger>
+                        <TooltipTrigger render={<span>{buildYear}</span>} />
                         <TooltipContent>
                           {buildTime.toLocaleString("ja-JP", {
                             timeZone: "Asia/Tokyo",

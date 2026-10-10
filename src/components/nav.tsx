@@ -33,19 +33,15 @@ export function Nav({ fontClass }: { fontClass: string }) {
           <NavigationMenuList className="flex gap-x-1">
             <NavigationMenuItem>
               <NavigationMenuLink
-                asChild
+                render={<Link href="/">Home</Link>}
                 className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/">Home</Link>
-              </NavigationMenuLink>
+              />
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink
-                asChild
+                render={<Link href="/tools">Tools</Link>}
                 className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/tools">Tools</Link>
-              </NavigationMenuLink>
+              />
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

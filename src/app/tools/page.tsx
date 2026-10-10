@@ -60,33 +60,36 @@ function ToolItem({
   const LinkComponent = outerLink ? "a" : Link;
 
   return (
-    <Item asChild variant="outline">
-      <LinkComponent
-        href={href}
-        target={outerLink ? "_blank" : undefined}
-        rel={outerLink ? "noopener noreferrer" : undefined}
-      >
-        {icon !== undefined && (
-          <ItemMedia variant="image">
-            <Image
-              src={icon}
-              alt={name}
-              width={128}
-              height={128}
-              className="object-cover"
-            />
-          </ItemMedia>
-        )}
-        <ItemContent>
-          <ItemTitle>
-            {name} {outerLink && <PopupIcon className="inline w-3 h-3" />}
-          </ItemTitle>
-          <ItemDescription className="text-pretty">
-            {description}
-          </ItemDescription>
-        </ItemContent>
-      </LinkComponent>
-    </Item>
+    <Item
+      variant="outline"
+      render={
+        <LinkComponent
+          href={href}
+          target={outerLink ? "_blank" : undefined}
+          rel={outerLink ? "noopener noreferrer" : undefined}
+        >
+          {icon !== undefined && (
+            <ItemMedia variant="image">
+              <Image
+                src={icon}
+                alt={name}
+                width={128}
+                height={128}
+                className="object-cover"
+              />
+            </ItemMedia>
+          )}
+          <ItemContent>
+            <ItemTitle>
+              {name} {outerLink && <PopupIcon className="inline w-3 h-3" />}
+            </ItemTitle>
+            <ItemDescription className="text-pretty">
+              {description}
+            </ItemDescription>
+          </ItemContent>
+        </LinkComponent>
+      }
+    ></Item>
   );
 }
 

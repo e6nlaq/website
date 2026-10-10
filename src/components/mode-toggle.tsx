@@ -21,17 +21,19 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          {show_theme === "" ? null : show_theme === "light" ? (
-            <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
-          ) : show_theme === "dark" ? (
-            <Moon className=" h-[1.2rem] w-[1.2rem] transition-all" />
-          ) : (
-            <Monitor className="h-[1.2rem] w-[1.2rem] transition-all" />
-          )}
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="icon">
+            {show_theme === "" ? null : show_theme === "light" ? (
+              <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
+            ) : show_theme === "dark" ? (
+              <Moon className=" h-[1.2rem] w-[1.2rem] transition-all" />
+            ) : (
+              <Monitor className="h-[1.2rem] w-[1.2rem] transition-all" />
+            )}
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
