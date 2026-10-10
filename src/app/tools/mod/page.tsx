@@ -5,7 +5,6 @@ import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { solve } from "./solve";
 import { z } from "zod";
 import { ToolCard } from "@/components/tool-card";
 import {
@@ -180,45 +179,51 @@ export default function Mod() {
     setVal(new_val);
     setMod(BigInt(data.mod));
     setAns(
-      Array.from<bigint | undefined>({ length: val.length }).fill(undefined)
+      Array.from<bigint | undefined>({ length: new_val.length }).fill(undefined)
     );
-    let ok = 0;
     setLoading(true);
-    for (let i = 0; i < new_val.length; i++) {
-      new Promise<bigint | undefined>((resolve) => {
-        const new_ans = solve(
-          new_val[i],
-          BigInt(data.mod),
-          BigInt(data.limit),
-          data.type
-        );
-        console.log(new_ans, i, new_val[i]);
-        resolve(new_ans);
-      }).then((new_ans) => {
-        setAns((prev) => {
-          const new_ans_arr = [...prev];
-          new_ans_arr[i] = new_ans;
-          return new_ans_arr;
-        });
-        ok++;
+    const worker = new Worker(new URL("./solve.worker.ts", import.meta.url));
+    try {
+      await new Promise<void>((resolve, reject) => {
+        let completed = 0;
+        worker.onmessage = ({ data: message }) => {
+          if (message.type === "done") {
+            toast.success("計算が全て完了しました");
+            resolve();
+            return;
+          }
 
-        if (new_ans === undefined) {
-          toast.error(
-            `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
-          );
-        } else {
-          toast.success(
-            `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
-          );
-        }
-        if (ok === new_val.length) {
-          toast.success("計算が全て完了しました");
-          setLoading(false);
-        } else {
-        }
+          setAns((prev) => {
+            const updated = [...prev];
+            updated[message.index] = message.result;
+            return updated;
+          });
+          completed++;
+
+          if (message.result === undefined) {
+            toast.error(
+              `No. ${message.index + 1}の解が見つかりませんでした (${completed}/${new_val.length})`
+            );
+          } else {
+            toast.success(
+              `No. ${message.index + 1}の計算が完了しました (${completed}/${new_val.length})`
+            );
+          }
+        };
+        worker.onerror = (event) => reject(event.error);
+        worker.postMessage({
+          values: new_val,
+          mod: BigInt(data.mod),
+          limit: BigInt(data.limit),
+          mode: data.type,
+        });
       });
+    } catch {
+      toast.error("計算中にエラーが発生しました");
+    } finally {
+      worker.terminate();
+      setLoading(false);
     }
-    console.log(ans);
   };
 
   return (
