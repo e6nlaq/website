@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   lint:
-    name: Lint & Typecheck
+    name: Lint & Check
     runs-on: ubuntu-latest
 
     steps:
