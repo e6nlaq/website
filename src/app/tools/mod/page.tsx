@@ -34,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
+import { WorkerRequest, WorkerResponse } from "./solve.worker";
 
 const schema = z
   .object({
@@ -186,7 +187,9 @@ export default function Mod() {
     try {
       await new Promise<void>((resolve, reject) => {
         let completed = 0;
-        worker.onmessage = ({ data: message }) => {
+        worker.onmessage = ({
+          data: message,
+        }: MessageEvent<WorkerResponse>) => {
           if (message.type === "done") {
             toast.success("計算が全て完了しました");
             resolve();
@@ -216,7 +219,7 @@ export default function Mod() {
           mod: BigInt(data.mod),
           limit: BigInt(data.limit),
           mode: data.type,
-        });
+        } satisfies WorkerRequest);
       });
     } catch {
       toast.error("計算中にエラーが発生しました");
@@ -233,9 +236,6 @@ export default function Mod() {
         description={
           <>
             <p>有理数modから元の有理数として考えられるものを1つ復元します。</p>
-            <p className="font-bold text-red-500 underline">
-              計算中は一切の操作を受け付けません。
-            </p>
             <p>
               計算量はO(√mod + limit <span className="italic">log</span>{" "}
               mod)です。また、解は正の非整数になると仮定して計算します。

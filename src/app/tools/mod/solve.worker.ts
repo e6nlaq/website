@@ -1,13 +1,13 @@
 import { solve, type Mode } from "./solve";
 
-type WorkerRequest = {
+export type WorkerRequest = {
   values: bigint[];
   mod: bigint;
   limit: bigint;
   mode: Mode;
 };
 
-type WorkerResponse =
+export type WorkerResponse =
   | { type: "result"; index: number; result: bigint | undefined }
   | { type: "done" };
 
