@@ -1,0 +1,22 @@
+# lefthook.yml
+
+pre-commit:
+  parallel: true
+  commands:
+    oxlint:
+      run: bun run lint
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"
+      stage_fixed: true
+
+    oxfmt:
+      run: bun run format
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts,json,jsonc}"
+      stage_fixed: true
+
+    typecheck:
+      run: bun run typecheck
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}

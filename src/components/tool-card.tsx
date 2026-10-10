@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
+import { Spinner } from "./ui/spinner";
 
 interface ToolCardProps {
   title: string;
@@ -66,6 +67,7 @@ export function ToolCard({
                   disabled={loading}
                   onClick={onAction}
                 >
+                  {loading && <Spinner data-icon="inline-start" />}
                   {loading ? loadingLabel : actionLabel}
                 </Button>
               )}

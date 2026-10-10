@@ -5,7 +5,6 @@ import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { solve } from "wasm/wasm";
 import { z } from "zod";
 import { ToolCard } from "@/components/tool-card";
 import {
@@ -35,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
+import { WorkerRequest, WorkerResponse } from "./solve.worker";
 
 const schema = z
   .object({
@@ -155,13 +155,13 @@ export default function Mod() {
   const confirm = useConfirm();
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    if (BigInt(data.limit) >= 1e8) {
+    if (BigInt(data.limit) >= 1e7) {
       if (
         !(await confirm({
           title: "警告",
           description: (
             <span>
-              limitが10<sup>8</sup>
+              limitが10<sup>7</sup>
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
@@ -179,47 +179,54 @@ export default function Mod() {
       .map((val) => BigInt(val));
     setVal(new_val);
     setMod(BigInt(data.mod));
-    setAns(new Array<bigint | undefined>(val.length).fill(undefined));
-
-    let ok = 0;
+    setAns(
+      Array.from<bigint | undefined>({ length: new_val.length }).fill(undefined)
+    );
     setLoading(true);
-    setTimeout(() => {
-      for (let i = 0; i < new_val.length; i++) {
-        new Promise<bigint | undefined>((resolve) => {
-          const new_ans = solve(
-            new_val[i],
-            BigInt(data.mod),
-            BigInt(data.limit),
-            data.type
-          );
-          console.log(new_ans, i, new_val[i]);
-          resolve(new_ans);
-        }).then((new_ans) => {
-          setAns((prev) => {
-            const new_ans_arr = [...prev];
-            new_ans_arr[i] = new_ans;
-            return new_ans_arr;
-          });
-          ok++;
+    const worker = new Worker(new URL("./solve.worker.ts", import.meta.url));
+    try {
+      await new Promise<void>((resolve, reject) => {
+        let completed = 0;
+        worker.onmessage = ({
+          data: message,
+        }: MessageEvent<WorkerResponse>) => {
+          if (message.type === "done") {
+            toast.success("計算が全て完了しました");
+            resolve();
+            return;
+          }
 
-          if (new_ans === undefined) {
+          setAns((prev) => {
+            const updated = [...prev];
+            updated[message.index] = message.result;
+            return updated;
+          });
+          completed++;
+
+          if (message.result === undefined) {
             toast.error(
-              `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
+              `No. ${message.index + 1}の解が見つかりませんでした (${completed}/${new_val.length})`
             );
           } else {
             toast.success(
-              `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
+              `No. ${message.index + 1}の計算が完了しました (${completed}/${new_val.length})`
             );
           }
-          if (ok === new_val.length) {
-            toast.success("計算が全て完了しました");
-            setLoading(false);
-          } else {
-          }
-        });
-      }
-      console.log(ans);
-    }, 10);
+        };
+        worker.onerror = (event) => reject(event.error);
+        worker.postMessage({
+          values: new_val,
+          mod: BigInt(data.mod),
+          limit: BigInt(data.limit),
+          mode: data.type,
+        } satisfies WorkerRequest);
+      });
+    } catch {
+      toast.error("計算中にエラーが発生しました");
+    } finally {
+      worker.terminate();
+      setLoading(false);
+    }
   };
 
   return (
@@ -229,9 +236,6 @@ export default function Mod() {
         description={
           <>
             <p>有理数modから元の有理数として考えられるものを1つ復元します。</p>
-            <p className="font-bold text-red-500 underline">
-              計算中は一切の操作を受け付けません。
-            </p>
             <p>
               計算量はO(√mod + limit <span className="italic">log</span>{" "}
               mod)です。また、解は正の非整数になると仮定して計算します。

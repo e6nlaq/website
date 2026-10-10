@@ -1,17 +1,17 @@
 {
-    "cSpell.words": [
-        "Abend",
-        "bunsi",
-        "Días",
-        "Guten",
-        "milmil",
-        "Noches",
-        "sakamotor",
-        "Здравствуйте",
-        "สวัสดี",
-        "สวัสดีตอนเช้า",
-        "สวัสดีตอนเย็น",
-        "สวัสดีปีใหม่"
-    ],
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+  "cSpell.words": [
+    "Abend",
+    "bunsi",
+    "Días",
+    "Guten",
+    "milmil",
+    "Noches",
+    "sakamotor",
+    "Здравствуйте",
+    "สวัสดี",
+    "สวัสดีตอนเช้า",
+    "สวัสดีตอนเย็น",
+    "สวัสดีปีใหม่"
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

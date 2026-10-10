@@ -1,3 +1,0 @@
-{
-    "./src/**/*.{js,jsx,ts,tsx}": ["bunx biome check --fix --unsafe --no-errors-on-unmatched"]
-}
