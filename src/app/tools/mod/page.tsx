@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
 import { WorkerRequest, WorkerResponse } from "./solve.worker";
+import { Progress } from "@/components/ui/progress";
 
 const schema = z
   .object({
@@ -261,6 +262,18 @@ export default function Mod() {
           setMod(BigInt(defaultValues.mod));
           toast.success("リセットしました");
         }}
+        footer={
+          <>
+            {loading && (
+              <Progress
+                value={
+                  (100 * ans.filter((val) => val !== undefined).length) /
+                  ans.length
+                }
+              ></Progress>
+            )}
+          </>
+        }
       >
         <form
           onSubmit={form.handleSubmit(onSubmit)}
