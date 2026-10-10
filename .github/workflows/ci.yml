@@ -39,6 +39,9 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
+      - name: Test
+        run: bun test
+
   commitlint:
     name: Commitlint
     runs-on: ubuntu-latest
