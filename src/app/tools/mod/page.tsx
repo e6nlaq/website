@@ -5,7 +5,7 @@ import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { solve } from "wasm/wasm";
+import { solve } from "./solve";
 import { z } from "zod";
 import { ToolCard } from "@/components/tool-card";
 import {
