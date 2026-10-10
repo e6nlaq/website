@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "lint": "oxlint",
     "wasm": "cd packages && wasm-pack build wasm && rm wasm/pkg/.gitignore && rm wasm/pkg/README.md",
     "knip": "knip",
