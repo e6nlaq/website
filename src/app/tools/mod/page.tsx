@@ -155,13 +155,13 @@ export default function Mod() {
   const confirm = useConfirm();
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    if (BigInt(data.limit) >= 1e8) {
+    if (BigInt(data.limit) >= 1e7) {
       if (
         !(await confirm({
           title: "警告",
           description: (
             <span>
-              limitが10<sup>8</sup>
+              limitが10<sup>7</sup>
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
@@ -184,43 +184,41 @@ export default function Mod() {
     );
     let ok = 0;
     setLoading(true);
-    setTimeout(() => {
-      for (let i = 0; i < new_val.length; i++) {
-        new Promise<bigint | undefined>((resolve) => {
-          const new_ans = solve(
-            new_val[i],
-            BigInt(data.mod),
-            BigInt(data.limit),
-            data.type
-          );
-          console.log(new_ans, i, new_val[i]);
-          resolve(new_ans);
-        }).then((new_ans) => {
-          setAns((prev) => {
-            const new_ans_arr = [...prev];
-            new_ans_arr[i] = new_ans;
-            return new_ans_arr;
-          });
-          ok++;
-
-          if (new_ans === undefined) {
-            toast.error(
-              `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
-            );
-          } else {
-            toast.success(
-              `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
-            );
-          }
-          if (ok === new_val.length) {
-            toast.success("計算が全て完了しました");
-            setLoading(false);
-          } else {
-          }
+    for (let i = 0; i < new_val.length; i++) {
+      new Promise<bigint | undefined>((resolve) => {
+        const new_ans = solve(
+          new_val[i],
+          BigInt(data.mod),
+          BigInt(data.limit),
+          data.type
+        );
+        console.log(new_ans, i, new_val[i]);
+        resolve(new_ans);
+      }).then((new_ans) => {
+        setAns((prev) => {
+          const new_ans_arr = [...prev];
+          new_ans_arr[i] = new_ans;
+          return new_ans_arr;
         });
-      }
-      console.log(ans);
-    }, 10);
+        ok++;
+
+        if (new_ans === undefined) {
+          toast.error(
+            `No. ${i + 1}の解が見つかりませんでした (${ok}/${new_val.length})`
+          );
+        } else {
+          toast.success(
+            `No. ${i + 1}の計算が完了しました (${ok}/${new_val.length})`
+          );
+        }
+        if (ok === new_val.length) {
+          toast.success("計算が全て完了しました");
+          setLoading(false);
+        } else {
+        }
+      });
+    }
+    console.log(ans);
   };
 
   return (
