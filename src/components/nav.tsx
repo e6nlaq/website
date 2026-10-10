@@ -30,7 +30,7 @@ export function Nav({ fontClass }: { fontClass: string }) {
 
       <div className="flex items-center gap-x-3 ml-auto">
         <NavigationMenu className="hidden sm:flex">
-          <NavigationMenuList>
+          <NavigationMenuList className="flex gap-x-1">
             <NavigationMenuItem>
               <NavigationMenuLink
                 asChild
