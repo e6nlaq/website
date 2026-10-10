@@ -27,6 +27,7 @@ interface ToolCardProps {
   loading?: boolean;
   onAction?: () => void;
   formId?: string;
+  moreActions?: ReactNode;
 
   // Reset
   resetLabel?: string;
@@ -46,6 +47,7 @@ export function ToolCard({
   formId,
   resetLabel = "リセット",
   onReset,
+  moreActions,
 }: ToolCardProps) {
   const hasActions = !!(onAction || formId || onReset);
 
@@ -81,6 +83,7 @@ export function ToolCard({
                   {resetLabel}
                 </Button>
               )}
+              {moreActions}
             </Field>
           )}
           {footer}

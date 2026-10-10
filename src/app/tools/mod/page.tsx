@@ -6,7 +6,7 @@ import {
   ClipboardPlusIcon,
   TriangleAlertIcon,
 } from "lucide-react";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -44,6 +44,7 @@ import {
   ProgressLabel,
   ProgressValue,
 } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 
 const schema = z
   .object({
@@ -151,6 +152,7 @@ export default function Mod() {
   const [mod, setMod] = useState<bigint>(998244353n);
   const [ans, setAns] = useState<(bigint | undefined)[]>([]);
   const [loading, setLoading] = useState(false);
+  const workerRef = useRef<{ worker: Worker; cancel: () => void } | null>(null);
   const defaultValues: z.infer<typeof schema> = {
     val: "",
     mod: "998244353",
@@ -164,6 +166,15 @@ export default function Mod() {
   });
   const modListId = useId();
   const confirm = useConfirm();
+
+  useEffect(
+    () => () => {
+      const activeWorker = workerRef.current;
+      workerRef.current = null;
+      activeWorker?.cancel();
+    },
+    []
+  );
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     if (BigInt(data.limit) >= 1e7) {
@@ -196,8 +207,18 @@ export default function Mod() {
     );
     setLoading(true);
     const worker = new Worker(new URL("./solve.worker.ts", import.meta.url));
+    let cancelled = false;
+    let rejectWorker: (reason?: unknown) => void = () => {};
+    const cancel = () => {
+      if (cancelled) return;
+      cancelled = true;
+      worker.terminate();
+      rejectWorker(new Error("Calculation cancelled"));
+    };
+    workerRef.current = { worker, cancel };
     try {
       await new Promise<void>((resolve, reject) => {
+        rejectWorker = reject;
         let completed = 0;
         worker.onmessage = ({
           data: message,
@@ -234,10 +255,17 @@ export default function Mod() {
         } satisfies WorkerRequest);
       });
     } catch {
-      toast.error("計算中にエラーが発生しました");
+      if (!cancelled) {
+        toast.error("計算中にエラーが発生しました");
+      }
     } finally {
       worker.terminate();
-      setLoading(false);
+      if (workerRef.current?.worker === worker) {
+        workerRef.current = null;
+      }
+      if (!cancelled) {
+        setLoading(false);
+      }
     }
   };
 
@@ -283,6 +311,24 @@ export default function Mod() {
               </Progress>
             )}
           </>
+        }
+        moreActions={
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              if (workerRef.current) {
+                workerRef.current.cancel();
+                workerRef.current.worker.terminate();
+                workerRef.current = null;
+                toast.info("キャンセルしました。");
+              }
+              setLoading(false);
+            }}
+            disabled={!loading}
+          >
+            キャンセル
+          </Button>
         }
       >
         <form
