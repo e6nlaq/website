@@ -10,12 +10,13 @@ import {
   SiZenn,
 } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "cn";
 
 interface AccountsProps {
   node: React.ReactNode;
@@ -102,20 +103,19 @@ export default function Accounts() {
         <Tooltip key={account.key}>
           <TooltipTrigger
             render={
-              <Button
-                size="icon-lg"
-                variant="outline"
-                nativeButton={false}
-                render={
-                  <a
-                    href={account.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {account.node}
-                  </a>
-                }
-              />
+              <a
+                href={account.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  buttonVariants({
+                    size: "icon-lg",
+                    variant: "outline",
+                  })
+                )}
+              >
+                {account.node}
+              </a>
             }
           />
           <TooltipContent side="bottom">{account.id}</TooltipContent>

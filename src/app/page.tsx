@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { SpinningText } from "@/components/ui/spinning-text";
 import Accounts from "./_index/accounts";
+import { cn } from "cn";
 
 const Greet = dynamic(() => import("./_index/greet"));
 
@@ -30,10 +31,9 @@ export default function Page() {
       <Accounts />
 
       <div className="flex gap-4 mt-4">
-        <Button
-          nativeButton={false}
-          render={<Link href="/tools">Tools</Link>}
-        />
+        <Link href="/tools" className={cn(buttonVariants())}>
+          Tools
+        </Link>
       </div>
     </div>
   );
