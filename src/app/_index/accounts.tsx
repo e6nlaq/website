@@ -7,6 +7,7 @@ import {
   SiQiita,
   SiScratch,
   SiX,
+  SiYoutube,
   SiZenn,
 } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
@@ -71,6 +72,12 @@ export default function Accounts() {
       key: "github",
       id: "e6nlaq",
       href: "https://github.com/e6nlaq",
+    },
+    {
+      node: <SiYoutube />,
+      key: "youtube",
+      id: "e6nlaq",
+      href: "https://www.youtube.com/@e6nlaq",
     },
     {
       node: <SiDiscord />,
