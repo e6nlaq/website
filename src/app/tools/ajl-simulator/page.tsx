@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeftToLine } from "lucide-react";
+import { RefreshCwIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -283,22 +283,24 @@ export default function AjlSimulator() {
                       />
                       <InputGroupAddon align="inline-end">
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <InputGroupButton
-                              onClick={() => {
-                                const val = form.getValues("lowestPerf");
-                                if (val) {
-                                  form.setValue("minPerf", val, {
-                                    shouldValidate: true,
-                                  });
-                                }
-                              }}
-                              disabled={!form.getValues("lowestPerf")}
-                              size="icon-xs"
-                            >
-                              <ArrowLeftToLine />
-                            </InputGroupButton>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <InputGroupButton
+                                onClick={() => {
+                                  const val = form.getValues("lowestPerf");
+                                  if (val) {
+                                    form.setValue("minPerf", val, {
+                                      shouldValidate: true,
+                                    });
+                                  }
+                                }}
+                                disabled={!form.getValues("lowestPerf")}
+                                size="icon-xs"
+                              >
+                                <RefreshCwIcon />
+                              </InputGroupButton>
+                            }
+                          />
                           <TooltipContent>
                             対象内の最低パフォーマンスにセット
                           </TooltipContent>

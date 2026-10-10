@@ -9,14 +9,19 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { CircleQuestionMarkIcon, LucideIcon } from "lucide-react";
+import { cn } from "cn";
 
 type ConfirmOptions = {
   title?: string | ReactNode;
   description?: string | ReactNode;
   ok?: string | ReactNode;
   cancel?: string | ReactNode;
+  icon?: LucideIcon;
+  variant?: "default" | "destructive";
 };
 
 type ConfirmContextType = {
@@ -31,6 +36,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   const [resolver, setResolver] = useState<((value: boolean) => void) | null>(
     null
   );
+  const isDestructive = options.variant === "destructive";
 
   const confirm = (options: ConfirmOptions) => {
     setOptions(options);
@@ -58,6 +64,14 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
       <AlertDialog open={open}>
         <AlertDialogContent>
           <AlertDialogHeader>
+            <AlertDialogMedia
+              className={cn(
+                isDestructive &&
+                  "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive"
+              )}
+            >
+              {options.icon ? <options.icon /> : <CircleQuestionMarkIcon />}
+            </AlertDialogMedia>
             <AlertDialogTitle>{options.title ?? "確認"}</AlertDialogTitle>
             <AlertDialogDescription>
               {options.description}
@@ -67,7 +81,10 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
             <AlertDialogCancel onClick={handleCancel}>
               {options.cancel ?? "キャンセル"}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirm}>
+            <AlertDialogAction
+              onClick={handleConfirm}
+              variant={options.variant}
+            >
               {options.ok ?? "OK"}
             </AlertDialogAction>
           </AlertDialogFooter>

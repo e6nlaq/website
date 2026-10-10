@@ -100,13 +100,24 @@ export default function Accounts() {
     <div className="flex flex-row gap-2 flex-wrap justify-center">
       {accounts.map((account) => (
         <Tooltip key={account.key}>
-          <TooltipTrigger asChild>
-            <Button asChild size="icon-lg" variant="outline">
-              <a href={account.href} target="_blank" rel="noopener noreferrer">
-                {account.node}
-              </a>
-            </Button>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <Button
+                size="icon-lg"
+                variant="outline"
+                nativeButton={false}
+                render={
+                  <a
+                    href={account.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {account.node}
+                  </a>
+                }
+              />
+            }
+          />
           <TooltipContent side="bottom">{account.id}</TooltipContent>
         </Tooltip>
       ))}

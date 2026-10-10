@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       new URL("https://study-typing.vercel.app/**"),
     ],
   },
+  allowedDevOrigins: ["192.168.0.8"],
 };
 
 export default nextConfig;

@@ -1,8 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
-import { useId, useState } from "react";
+import {
+  ClipboardIcon,
+  ClipboardPlusIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -35,6 +39,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/useConfirm";
 import { WorkerRequest, WorkerResponse } from "./solve.worker";
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 
 const schema = z
   .object({
@@ -117,11 +127,13 @@ function Result({
               No.{i + 1} {val[i]}
             </p>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="text-2xl md:text-5xl font-bold font-code">
-                  {ret}
-                </p>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <p className="text-2xl md:text-5xl font-bold font-code">
+                    {ret}
+                  </p>
+                }
+              />
               {dat !== undefined && (
                 <TooltipContent>
                   ≈ {(Number(bunsi) / Number(dat)).toFixed(10)}
@@ -140,12 +152,14 @@ export default function Mod() {
   const [mod, setMod] = useState<bigint>(998244353n);
   const [ans, setAns] = useState<(bigint | undefined)[]>([]);
   const [loading, setLoading] = useState(false);
+  const workerRef = useRef<{ worker: Worker; cancel: () => void } | null>(null);
   const defaultValues: z.infer<typeof schema> = {
     val: "",
     mod: "998244353",
     limit: "10000",
     type: "bunshi",
   };
+  const exampleValues = "831870305\n332748121";
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
@@ -153,6 +167,15 @@ export default function Mod() {
   });
   const modListId = useId();
   const confirm = useConfirm();
+
+  useEffect(
+    () => () => {
+      const activeWorker = workerRef.current;
+      workerRef.current = null;
+      activeWorker?.cancel();
+    },
+    []
+  );
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     if (BigInt(data.limit) >= 1e7) {
@@ -165,7 +188,8 @@ export default function Mod() {
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
-          ok: "続行",
+          ok: "続ける",
+          icon: TriangleAlertIcon,
         }))
       ) {
         toast.info("計算を中止しました");
@@ -184,8 +208,18 @@ export default function Mod() {
     );
     setLoading(true);
     const worker = new Worker(new URL("./solve.worker.ts", import.meta.url));
+    let cancelled = false;
+    let rejectWorker: (reason?: unknown) => void = () => {};
+    const cancel = () => {
+      if (cancelled) return;
+      cancelled = true;
+      worker.terminate();
+      rejectWorker(new Error("Calculation cancelled"));
+    };
+    workerRef.current = { worker, cancel };
     try {
       await new Promise<void>((resolve, reject) => {
+        rejectWorker = reject;
         let completed = 0;
         worker.onmessage = ({
           data: message,
@@ -222,10 +256,17 @@ export default function Mod() {
         } satisfies WorkerRequest);
       });
     } catch {
-      toast.error("計算中にエラーが発生しました");
+      if (!cancelled) {
+        toast.error("計算中にエラーが発生しました");
+      }
     } finally {
       worker.terminate();
-      setLoading(false);
+      if (workerRef.current?.worker === worker) {
+        workerRef.current = null;
+      }
+      if (!cancelled) {
+        setLoading(false);
+      }
     }
   };
 
@@ -256,6 +297,40 @@ export default function Mod() {
           setMod(BigInt(defaultValues.mod));
           toast.success("リセットしました");
         }}
+        footer={
+          <>
+            {loading && (
+              <Progress
+                value={
+                  (100 * ans.filter((val) => val !== undefined).length) /
+                  ans.length
+                }
+                className="w-full"
+              >
+                <ProgressLabel>計算進捗</ProgressLabel>
+                <ProgressValue />
+              </Progress>
+            )}
+          </>
+        }
+        moreActions={
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              if (workerRef.current) {
+                workerRef.current.cancel();
+                workerRef.current.worker.terminate();
+                workerRef.current = null;
+                toast.info("キャンセルしました。");
+              }
+              setLoading(false);
+            }}
+            disabled={!loading}
+          >
+            キャンセル
+          </Button>
+        }
       >
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -273,7 +348,7 @@ export default function Mod() {
                     <InputGroupTextarea
                       {...field}
                       id={field.name}
-                      placeholder={"831870305\n332748121"}
+                      placeholder={exampleValues}
                       aria-invalid={fieldState.invalid}
                     />
                     <InputGroupAddon
@@ -281,66 +356,70 @@ export default function Mod() {
                       className="pl-2 inline space-y-1"
                     >
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InputGroupButton
-                            variant="outline"
-                            onClick={() => {
-                              navigator.clipboard
-                                .readText()
-                                .then((text) => {
-                                  field.onChange(text);
-                                  toast.success(
-                                    "クリップボードを貼り付けました"
-                                  );
-                                })
-                                .catch(() => {
-                                  toast.error(
-                                    "クリップボードの内容を取得できませんでした",
-                                    {
-                                      description:
-                                        "ブラウザの権限を確認してください",
-                                    }
-                                  );
-                                });
-                            }}
-                          >
-                            <ClipboardIcon />
-                          </InputGroupButton>
-                        </TooltipTrigger>
+                        <TooltipTrigger
+                          render={
+                            <InputGroupButton
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard
+                                  .readText()
+                                  .then((text) => {
+                                    field.onChange(text);
+                                    toast.success(
+                                      "クリップボードを貼り付けました"
+                                    );
+                                  })
+                                  .catch(() => {
+                                    toast.error(
+                                      "クリップボードの内容を取得できませんでした",
+                                      {
+                                        description:
+                                          "ブラウザの権限を確認してください",
+                                      }
+                                    );
+                                  });
+                              }}
+                            >
+                              <ClipboardIcon />
+                            </InputGroupButton>
+                          }
+                        />
                         <TooltipContent>貼り付け</TooltipContent>
                       </Tooltip>
 
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <InputGroupButton
-                            variant="outline"
-                            onClick={() => {
-                              navigator.clipboard
-                                .readText()
-                                .then((text) => {
-                                  const val = field.value;
-                                  if (val !== "")
-                                    field.onChange(`${val}\n${text}`);
-                                  else field.onChange(text);
+                        <TooltipTrigger
+                          render={
+                            <InputGroupButton
+                              variant="outline"
+                              onClick={() => {
+                                navigator.clipboard
+                                  .readText()
+                                  .then((text) => {
+                                    const val = field.value;
+                                    if (val !== "")
+                                      field.onChange(`${val}\n${text}`);
+                                    else field.onChange(text);
 
-                                  toast.success(
-                                    "クリップボードを貼り付けました"
-                                  );
-                                })
-                                .catch(() => {
-                                  toast.error(
-                                    "クリップボードの内容を取得できませんでした",
-                                    {
-                                      description:
-                                        "ブラウザの権限を確認してください",
-                                    }
-                                  );
-                                });
-                            }}
-                          >
-                            <ClipboardPlusIcon />
-                          </InputGroupButton>
-                        </TooltipTrigger>
+                                    toast.success(
+                                      "クリップボードを貼り付けました"
+                                    );
+                                  })
+                                  .catch(() => {
+                                    toast.error(
+                                      "クリップボードの内容を取得できませんでした",
+                                      {
+                                        description:
+                                          "ブラウザの権限を確認してください",
+                                      }
+                                    );
+                                  });
+                              }}
+                            >
+                              <ClipboardPlusIcon />
+                            </InputGroupButton>
+                          }
+                        />
                         <TooltipContent side="bottom">
                           貼り付けして追加
                         </TooltipContent>
@@ -349,7 +428,15 @@ export default function Mod() {
                   </InputGroup>
 
                   <FieldDescription>
-                    有理数mod後の値、改行区切りで複数入力できます
+                    <span>
+                      有理数mod後の値、改行区切りで複数入力できます{" "}
+                      <Button
+                        variant="link"
+                        onClick={() => field.onChange(exampleValues)}
+                      >
+                        例を入力
+                      </Button>
+                    </span>
                   </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -404,7 +491,11 @@ export default function Mod() {
                   <FieldLabel htmlFor={field.name}>計算方法</FieldLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="計算方法を選択してください" />
+                      <SelectValue placeholder="計算方法を選択してください">
+                        {field.value === "bunshi"
+                          ? "分子が最小となるもの"
+                          : "分子と分母の和が最小となるもの"}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="bunshi">

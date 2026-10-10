@@ -30,9 +30,10 @@ export default function Page() {
       <Accounts />
 
       <div className="flex gap-4 mt-4">
-        <Button asChild>
-          <Link href="/tools">Tools</Link>
-        </Button>
+        <Button
+          nativeButton={false}
+          render={<Link href="/tools">Tools</Link>}
+        />
       </div>
     </div>
   );
