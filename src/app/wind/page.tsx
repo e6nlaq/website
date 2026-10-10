@@ -14,8 +14,15 @@ import { useConfirm } from "@/hooks/useConfirm";
 
 export default function Wind() {
   const confirm = useConfirm();
+
+  const a = [
+    { label: "a", value: "a" },
+    { label: "BIE", value: "b" },
+    { label: "WIN", value: "win" },
+  ] satisfies { label: string; value: string }[];
+
   return (
-    <div className="flex flex-col items-center justify-center *:py-4">
+    <div className="flex flex-col items-center justify-center gap-5">
       <p className="text-7xl ">Welcome, wind!!</p>
       <p>隠し部屋だよ</p>
 
@@ -33,15 +40,17 @@ export default function Wind() {
         aaaa
       </Button>
       {/* <SpinningText>Wnidddd, wwindiwjeifwjjk</SpinningText> */}
-      <Select>
-        <SelectTrigger>
+      <Select items={a}>
+        <SelectTrigger className="items-center justify-center">
           <SelectValue placeholder="Select"></SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="a">A</SelectItem>
-            <SelectItem value="b">bb</SelectItem>
-            <SelectItem value="c">wind</SelectItem>
+            {a.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
