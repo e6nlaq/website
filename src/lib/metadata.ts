@@ -5,8 +5,10 @@ import type { ToolMeta } from "@/types/meta";
 export function convertMetadata(meta: ToolMeta): Metadata {
   const icon = meta.logo ?? "/favicon.svg";
   const twitterIcon = icon === "/favicon.svg" ? "/favicon.png" : icon;
+  const title =
+    meta.title + (meta.title !== "e6nlaq's Lab" ? " - e6nlaq's Lab" : "");
   return {
-    title: meta.title,
+    title,
     description: meta.description,
     icons: icon,
     keywords: meta.keywords,
