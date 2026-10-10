@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "cn";
 
 export default function NotFound() {
   return (
@@ -7,11 +8,9 @@ export default function NotFound() {
       <h1 className="text-9xl font-bold">404</h1>
 
       <div className="flex gap-4">
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={<Link href="/">Home</Link>}
-        />
+        <Link href="/" className={cn(buttonVariants())}>
+          Home
+        </Link>
       </div>
     </div>
   );
