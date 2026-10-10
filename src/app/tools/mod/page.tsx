@@ -90,6 +90,7 @@ const schema = z
       path: ["val"],
     }
   );
+type SchemaType = z.infer<typeof schema>;
 
 function Result({
   ans,
@@ -167,6 +168,10 @@ export default function Mod() {
   });
   const modListId = useId();
   const confirm = useConfirm();
+  const styleItems = [
+    { label: "分子が最小のもの", value: "bunshi" },
+    { label: "分子と分母の和が最小なもの", value: "sum" },
+  ] satisfies { label: string; value: SchemaType["type"] }[];
 
   useEffect(
     () => () => {
@@ -489,21 +494,20 @@ export default function Mod() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>計算方法</FieldLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    items={styleItems}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="計算方法を選択してください">
-                        {field.value === "bunshi"
-                          ? "分子が最小となるもの"
-                          : "分子と分母の和が最小となるもの"}
-                      </SelectValue>
+                      <SelectValue placeholder="計算方法を選択してください"></SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="bunshi">
-                        分子が最小となるもの
-                      </SelectItem>
-                      <SelectItem value="sum">
-                        分子と分母の和が最小となるもの
-                      </SelectItem>
+                      {styleItems.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   {fieldState.invalid && (

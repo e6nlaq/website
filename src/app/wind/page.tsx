@@ -1,7 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SpinningText } from "@/components/ui/spinning-text";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// import { SpinningText } from "@/components/ui/spinning-text";
 import { useConfirm } from "@/hooks/useConfirm";
 
 export default function Wind() {
@@ -24,7 +32,19 @@ export default function Wind() {
       >
         aaaa
       </Button>
-      <SpinningText>Wnidddd, wwindiwjeifwjjk</SpinningText>
+      {/* <SpinningText>Wnidddd, wwindiwjeifwjjk</SpinningText> */}
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select"></SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="a">A</SelectItem>
+            <SelectItem value="b">bb</SelectItem>
+            <SelectItem value="c">wind</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   );
 }
