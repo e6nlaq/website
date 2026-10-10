@@ -344,7 +344,7 @@ export default function Mod() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>val</FieldLabel>
-                  <InputGroup>
+                  <InputGroup className="items-start">
                     <InputGroupTextarea
                       {...field}
                       id={field.name}
