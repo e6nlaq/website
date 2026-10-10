@@ -159,6 +159,7 @@ export default function Mod() {
     limit: "10000",
     type: "bunshi",
   };
+  const exampleValues = "831870305\n332748121";
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
@@ -347,7 +348,7 @@ export default function Mod() {
                     <InputGroupTextarea
                       {...field}
                       id={field.name}
-                      placeholder={"831870305\n332748121"}
+                      placeholder={exampleValues}
                       aria-invalid={fieldState.invalid}
                     />
                     <InputGroupAddon
@@ -427,7 +428,15 @@ export default function Mod() {
                   </InputGroup>
 
                   <FieldDescription>
-                    有理数mod後の値、改行区切りで複数入力できます
+                    <span>
+                      有理数mod後の値、改行区切りで複数入力できます{" "}
+                      <Button
+                        variant="link"
+                        onClick={() => field.onChange(exampleValues)}
+                      >
+                        例を入力
+                      </Button>
+                    </span>
                   </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
