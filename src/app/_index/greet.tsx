@@ -43,7 +43,7 @@ export default function Greet() {
       ];
     } else if (hour >= 12 && hour < 18) {
       // Afternoon / Day
-      timeSpecificWords = ["Hello", "こんにちは", "你好", "안녕하세요", "สวัสดี"];
+      timeSpecificWords = ["Hello", "こんにちは", "你好", "안녕하세요"];
     } else if (hour >= 5 && hour < 10) {
       // Morning
       timeSpecificWords = [

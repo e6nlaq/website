@@ -15,6 +15,7 @@ import {
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
+import { cn } from "@/lib/utils";
 
 const lineSeed = localFont({
   src: [
@@ -61,7 +62,11 @@ export default function RootLayout({
     .substring(0, 4);
 
   return (
-    <html lang="ja" suppressHydrationWarning className="hidden-scrollbar">
+    <html
+      lang="ja"
+      suppressHydrationWarning
+      className={cn("hidden-scrollbar", "font-sans")}
+    >
       <body
         className={`${lineSeed.className} ${sourceCodePro.variable} antialiased `}
       >
@@ -76,7 +81,7 @@ export default function RootLayout({
         >
           <TooltipProvider delayDuration={100}>
             <ConfirmDialogProvider>
-              <div className="min-h-screen flex flex-col">
+              <div className="min-h-svh flex flex-col">
                 <Nav fontClass={sourceCodePro.className} />
 
                 <main className="flex justify-center items-center w-screen py-16 px-4 grow">

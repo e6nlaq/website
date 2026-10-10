@@ -1,7 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ClipboardIcon, ClipboardPlusIcon } from "lucide-react";
+import {
+  ClipboardIcon,
+  ClipboardPlusIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
 import { useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -165,7 +169,8 @@ export default function Mod() {
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
-          ok: "続行",
+          ok: "続ける",
+          icon: TriangleAlertIcon,
         }))
       ) {
         toast.info("計算を中止しました");

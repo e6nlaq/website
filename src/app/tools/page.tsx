@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ImageOffIcon,
-  SquareArrowOutUpRightIcon as PopupIcon,
-} from "lucide-react";
+import { SquareArrowOutUpRightIcon as PopupIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -69,7 +66,7 @@ function ToolItem({
         target={outerLink ? "_blank" : undefined}
         rel={outerLink ? "noopener noreferrer" : undefined}
       >
-        {icon !== undefined ? (
+        {icon !== undefined && (
           <ItemMedia variant="image">
             <Image
               src={icon}
@@ -78,10 +75,6 @@ function ToolItem({
               height={128}
               className="object-cover"
             />
-          </ItemMedia>
-        ) : (
-          <ItemMedia variant="icon">
-            <ImageOffIcon className="w-12 h-12" />
           </ItemMedia>
         )}
         <ItemContent>
