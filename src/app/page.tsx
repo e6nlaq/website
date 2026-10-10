@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <div className="flex flex-col justify-center items-center gap-8">
       <div className="relative flex items-center justify-center w-48 h-48">
-        <SpinningText duration={10} reverse={false} radius={5}>
+        <SpinningText duration={10} reverse={false} radius={5.5}>
           e6nlaq • e6nlaq • e6nlaq •
         </SpinningText>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
