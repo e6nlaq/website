@@ -184,13 +184,13 @@ export default function Mod() {
   );
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    if (BigInt(data.limit) >= 1e7) {
+    if (BigInt(data.limit) >= 1e8 && data.type == "bunshi") {
       if (
         !(await confirm({
           title: "警告",
           description: (
             <span>
-              limitが10<sup>7</sup>
+              limitが10<sup>8</sup>
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
