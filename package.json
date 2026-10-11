@@ -8,8 +8,7 @@
     "start": "next start",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "lint": "oxlint",
-    "typecheck": "tsc --noEmit"
+    "lint": "oxlint"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

@@ -14,7 +14,7 @@ pre-commit:
       stage_fixed: true
 
     typecheck:
-      run: bun run typecheck
+      run: bun check
 
 commit-msg:
   commands:
