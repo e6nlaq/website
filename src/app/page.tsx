@@ -31,6 +31,9 @@ export default function Page() {
       <Accounts />
 
       <div className="flex gap-4 mt-4">
+        <Link href="/about" className={cn(buttonVariants())}>
+          About
+        </Link>
         <Link href="/tools" className={cn(buttonVariants())}>
           Tools
         </Link>

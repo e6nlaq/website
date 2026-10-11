@@ -38,6 +38,10 @@ export const toolMeta = {
     description: "いろんなツールを公開するよ",
     keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
   },
+  about: {
+    title: "About",
+    description: "e6nlaqについて",
+  },
 } satisfies Record<string, ToolMeta>;
 
 export const siteUrl = "https://e6nlaq.vercel.app";
