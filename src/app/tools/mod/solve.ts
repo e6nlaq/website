@@ -1,3 +1,5 @@
+import { isPrime } from "@/lib/millerRabin";
+
 export type Mode = "bunshi" | "sum";
 
 /**
@@ -8,33 +10,6 @@ export function gcd(a: bigint, b: bigint): bigint {
     return a;
   }
   return gcd(b, a % b);
-}
-
-/**
- * Rust版 is_prime の移植
- * 元コードと同じく、最大100000までの奇数で試し割りする。
- */
-export function isPrime(n: bigint): boolean {
-  if (n < 2n) {
-    return false;
-  } else if (n === 2n) {
-    return true;
-  } else if (n % 2n === 0n) {
-    return false;
-  } else if (n === 998244353n || n === 1000000007n) {
-    return true;
-  } else {
-    let i = 3n;
-
-    while (i * i <= n && i <= 100000n) {
-      if (n % i === 0n) {
-        return false;
-      }
-      i += 2n;
-    }
-
-    return true;
-  }
 }
 
 /**
