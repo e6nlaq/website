@@ -184,13 +184,13 @@ export default function Mod() {
   );
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    if (BigInt(data.limit) >= 1e7) {
+    if (BigInt(data.limit) >= 1e8 && data.type == "bunshi") {
       if (
         !(await confirm({
           title: "警告",
           description: (
             <span>
-              limitが10<sup>7</sup>
+              limitが10<sup>8</sup>
               を超えると計算時間が長くなる可能性があります。本当に続けますか?
             </span>
           ),
@@ -284,7 +284,7 @@ export default function Mod() {
           <>
             <p>有理数modから元の有理数として考えられるものを1つ復元します。</p>
             <p>
-              計算量はO(√mod + limit <span className="italic">log</span>{" "}
+              計算量はO((log mod)<sup>3</sup> + limit log
               mod)です。また、解は正の非整数になると仮定して計算します。
             </p>
           </>
