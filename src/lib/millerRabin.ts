@@ -104,14 +104,3 @@ export function isPrime(n: bigint, rounds = 20): boolean {
   }
   return true;
 }
-
-// ---------------- 使用例 ----------------
-if (typeof require !== "undefined" && require.main === module) {
-  console.log(isPrime(2n)); // true
-  console.log(isPrime(1n)); // false
-  console.log(isPrime(561n)); // false (カーマイケル数)
-  console.log(isPrime(1_000_000_007n)); // true
-  console.log(isPrime(2n ** 61n - 1n)); // true (メルセンヌ素数)
-  console.log(isPrime(2n ** 127n - 1n)); // true (メルセンヌ素数・確率的判定)
-  console.log(isPrime(2n ** 127n + 1n)); // false
-}
