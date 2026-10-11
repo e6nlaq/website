@@ -284,7 +284,7 @@ export default function Mod() {
           <>
             <p>有理数modから元の有理数として考えられるものを1つ復元します。</p>
             <p>
-              計算量はO(√mod + limit <span className="italic">log</span>{" "}
+              計算量はO((log mod)<sup>3</sup> + limit log
               mod)です。また、解は正の非整数になると仮定して計算します。
             </p>
           </>
