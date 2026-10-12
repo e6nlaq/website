@@ -4,6 +4,7 @@ import {
   SiCodeforces,
   SiDiscord,
   SiGithub,
+  SiGreasyfork,
   SiQiita,
   SiScratch,
   SiX,
@@ -72,6 +73,12 @@ export default function Accounts() {
       key: "github",
       id: "e6nlaq",
       href: "https://github.com/e6nlaq",
+    },
+    {
+      node: <SiGreasyfork />,
+      key: "greasyfork",
+      id: "1572416-e6nlaq",
+      href: "https://greasyfork.org/ja/users/1572416-e6nlaq",
     },
     {
       node: <SiYoutube />,
