@@ -134,6 +134,11 @@ export default function Tools() {
           description="AtCoderの問題文中の .zip リンクの横にコピーボタンを追加するUserScript"
           href="https://greasyfork.org/ja/scripts/575504-atcoder-zip-copy"
         />
+        <ToolItem
+          name="AtCoder Nickname"
+          description="AtCoderにニックネーム機能を追加するUserScript"
+          href="https://greasyfork.org/ja/scripts/599815-atcoder-nickname"
+        />
       </Store>
       <Store title="Maker" description="作成系">
         <ToolItem
