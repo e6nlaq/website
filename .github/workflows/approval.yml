@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   approval-policy:
-    name: approval-policy
+    name: Check approval policy
     runs-on: ubuntu-latest
 
     steps:
