@@ -10,6 +10,7 @@ on:
 
 permissions:
   pull-requests: read
+  statuses: write
 
 jobs:
   approval-policy:
@@ -27,15 +28,29 @@ jobs:
         run: |
           set -euo pipefail
 
-          # PRの最新情報を取得
+          # PR情報を取得
           pr=$(gh api "repos/$REPO/pulls/$PR_NUMBER")
           author=$(jq -r '.user.login' <<< "$pr")
           head_sha=$(jq -r '.head.sha' <<< "$pr")
+
+          # 共通のコミットステータスを更新する関数
+          set_status() {
+            local state="$1"
+            local description="$2"
+
+            gh api \
+              --method POST \
+              "repos/$REPO/statuses/$head_sha" \
+              -f state="$state" \
+              -f context="PR Approval Policy" \
+              -f description="$description"
+          }
 
           echo "PR author: $author"
 
           # 自分のPRはApprove不要
           if [[ "$author" == "$ADMIN_USERNAME" ]]; then
+            set_status "success" "Admin PR: approval not required"
             echo "Admin PR: approval not required."
             exit 0
           fi
@@ -45,8 +60,7 @@ jobs:
             "repos/$REPO/pulls/$PR_NUMBER/reviews" \
             --jq '.[]' | jq -s '.')
 
-          # 各レビュアーの最新レビューが
-          # 現在のHEADコミットに対するAPPROVEDか確認
+          # 各レビュアーの最新レビューを確認
           approved=$(jq \
             --arg author "$author" \
             --arg head "$head_sha" '
@@ -62,8 +76,9 @@ jobs:
             ' <<< "$reviews")
 
           if (( approved >= 1 )); then
+            set_status "success" "Approval found on latest commit"
             echo "Approval found."
           else
-            echo "::error::At least one approval on the latest commit is required."
-            exit 1
+            set_status "failure" "At least one approval on latest commit is required"
+            echo "Approval is required."
           fi
