@@ -1,0 +1,69 @@
+name: PR Approval Policy
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - master
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  approval-policy:
+    name: approval-policy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check approval requirement
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          ADMIN_USERNAME: e6nlaq
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # PRの最新情報を取得
+          pr=$(gh api "repos/$REPO/pulls/$PR_NUMBER")
+          author=$(jq -r '.user.login' <<< "$pr")
+          head_sha=$(jq -r '.head.sha' <<< "$pr")
+
+          echo "PR author: $author"
+
+          # 自分のPRはApprove不要
+          if [[ "$author" == "$ADMIN_USERNAME" ]]; then
+            echo "Admin PR: approval not required."
+            exit 0
+          fi
+
+          # レビュー履歴を取得
+          reviews=$(gh api --paginate \
+            "repos/$REPO/pulls/$PR_NUMBER/reviews" \
+            --jq '.[]' | jq -s '.')
+
+          # 各レビュアーの最新レビューが
+          # 現在のHEADコミットに対するAPPROVEDか確認
+          approved=$(jq \
+            --arg author "$author" \
+            --arg head "$head_sha" '
+              sort_by(.submitted_at)
+              | group_by(.user.login)
+              | map(.[-1])
+              | map(select(
+                  .user.login != $author
+                  and .state == "APPROVED"
+                  and .commit_id == $head
+                ))
+              | length
+            ' <<< "$reviews")
+
+          if (( approved >= 1 )); then
+            echo "Approval found."
+          else
+            echo "::error::At least one approval on the latest commit is required."
+            exit 1
+          fi
