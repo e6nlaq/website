@@ -3,6 +3,8 @@ import { isOgImageTarget, renderOgImage } from "@/lib/og";
 import { toolMeta } from "@/text/meta";
 
 export const dynamic = "force-static";
+// generateStaticParams に無い slug(/og/wind など)は 404
+export const dynamicParams = false;
 
 export function generateStaticParams(): { slug: string[] }[] {
   return (Object.keys(toolMeta) as ToolKeys[])

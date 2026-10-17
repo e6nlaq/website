@@ -6,7 +6,7 @@ import type { ToolMeta } from "@/types/meta";
 
 const ogImageKeys = new Set([""]);
 
-/** OG画像を生成する対象かどうか(Home "/" と wind は対象外) */
+/** OG画像を生成する対象かどうか(Home "/" は対象外) */
 export function isOgImageTarget(key: string): boolean {
   return !ogImageKeys.has(key);
 }

@@ -6,9 +6,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { convertMetadata } from "@/lib/metadata";
-import { toolMeta } from "@/text/meta";
 
-export const metadata = convertMetadata(toolMeta.about, "about");
+export const metadata = convertMetadata("about");
 
 export default function About() {
   return (

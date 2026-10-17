@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { isOgImageTarget, ogImageUrl } from "@/lib/og";
-import { siteUrl } from "@/text/meta";
+import { siteUrl, toolMeta, type ToolKeys } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
 
-export function convertMetadata(meta: ToolMeta, key?: string): Metadata {
+export function convertMetadata(
+  key: ToolKeys,
+  overrides?: Partial<ToolMeta>
+): Metadata {
+  const meta: ToolMeta = Object.assign({}, toolMeta[key], overrides);
   const icon = meta.logo ?? "/favicon.svg";
   const twitterIcon = icon === "/favicon.svg" ? "/favicon.png" : icon;
   const title =
