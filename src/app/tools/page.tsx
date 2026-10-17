@@ -96,6 +96,7 @@ function ToolItem({
 export default function Tools() {
   const math: ToolKeys[] = ["tools/mod"];
   const cp: ToolKeys[] = ["tools/ajl-simulator"];
+  const utility: ToolKeys[] = ["tools/qr-reader"];
   return (
     <div className="flex flex-col items-start w-full gap-y-8">
       <Store title="Math" description="数学系">
@@ -139,6 +140,17 @@ export default function Tools() {
           description="AtCoderにニックネーム機能を追加するUserScript"
           href="https://greasyfork.org/ja/scripts/599815-atcoder-nickname"
         />
+      </Store>
+      <Store title="Utility" description="便利系">
+        {utility.map((k) => (
+          <ToolItem
+            name={toolMeta[k].title}
+            description={toolMeta[k].description}
+            icon={(toolMeta[k] as ToolMeta).logo}
+            href={`/${k}`}
+            key={k}
+          />
+        ))}
       </Store>
       <Store title="Maker" description="作成系">
         <ToolItem
