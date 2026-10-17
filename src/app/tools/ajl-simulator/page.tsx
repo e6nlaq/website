@@ -357,7 +357,7 @@ export default function AjlSimulator() {
         <ToolCard title="スコア推移グラフ" className="w-full">
           <ChartContainer
             config={chartConfig}
-            className="min-h-[400px] w-full font-code"
+            className="min-h-100 w-full font-code"
           >
             <LineChart
               accessibilityLayer
