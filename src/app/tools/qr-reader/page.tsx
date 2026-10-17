@@ -241,7 +241,11 @@ export default function QrReader() {
       {result && (
         <ToolCard
           title="読み取り結果"
-          description={`QRコード バージョン ${result.version}`}
+          description={
+            result.version > 0
+              ? `QRコード バージョン ${result.version}`
+              : undefined
+          }
           footer={
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" onClick={copyResult}>
