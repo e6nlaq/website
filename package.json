@@ -16,6 +16,7 @@
     "@icons-pack/react-simple-icons": "^13.15.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "budoux": "^0.9.3",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "jsqr": "^1.4.0",

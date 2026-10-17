@@ -48,7 +48,7 @@ export const toolMeta = {
   },
   tools: {
     title: "Tools",
-    description: "いろんなツールを公開するよ",
+    description: "e6nlaq's Labで公開しているツール一覧",
     keywords: ["e6nlaq", "e6nlaq's Lab", "ツール"],
   },
   about: {

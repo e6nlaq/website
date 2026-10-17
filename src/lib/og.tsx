@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
+import { loadDefaultJapaneseParser, type Parser } from "budoux";
 import { siteUrl } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
 
@@ -33,6 +34,35 @@ async function loadFonts() {
     ),
   };
   return fontsCache;
+}
+
+let parserCache: Parser | undefined;
+const getParser = () => (parserCache ??= loadDefaultJapaneseParser());
+
+/** 文字列の推定描画幅(全角を 1、半角を 0.6 とする) */
+export function textWidth(text: string): number {
+  let width = 0;
+  for (const char of text) {
+    width += char.charCodeAt(0) < 0x2e80 ? 0.6 : 1;
+  }
+  return width;
+}
+
+/** BudouX で文節区切りし、1 行あたり maxUnits 以内になるよう改行を挿入する */
+export function wrapDescription(text: string, maxUnits: number): string {
+  const chunks = getParser().parse(text);
+  const lines: string[] = [];
+  let line = "";
+  for (let chunk of chunks) {
+    if (line && textWidth(line + chunk) > maxUnits) {
+      lines.push(line);
+      line = chunk;
+    } else {
+      line += chunk;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.join("\n");
 }
 
 /** toolMeta の内容から OGP 画像(1200×630)をレンダリングする */
@@ -110,11 +140,12 @@ export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
               lineHeight: 1.6,
               color: "#a1a1aa",
               fontFamily: "LINESeedJP-Bd",
+              whiteSpace: "pre",
               overflow: "hidden",
               wordBreak: "auto-phrase",
             }}
           >
-            {meta.description}
+            {wrapDescription(meta.description, 20)}
           </div>
         </div>
       </div>
