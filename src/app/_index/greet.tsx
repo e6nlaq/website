@@ -49,7 +49,9 @@ function getTimeSpecificWords(): string[] {
 let cached: { key: number; words: string[] } | null = null;
 
 function getSnapshot(): string[] {
-  const key = new Date().getTime() / 60000;
+  // 経過「分」を整数で取る。getTime() / 60000 は float のため毎ミリ秒値が変わり、
+  // getSnapshot が毎回新しい配列を返して "Maximum update depth exceeded" が発生する
+  const key = Math.floor(new Date().getTime() / 60000);
   if (!cached || cached.key !== key) {
     cached = {
       key,
