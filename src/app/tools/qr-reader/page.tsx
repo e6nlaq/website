@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
@@ -33,6 +33,25 @@ import { readQrFromBlob } from "./decode";
 import { Input } from "@/components/ui/input";
 
 const imageInputId = "qr-reader-image-input";
+const resultInputId = "qr-reader-result-input";
+const URL_PATTERN = /^https?:\/\//i;
+
+// 静的なコンテンツはレンダーの外へ(rendering-hoist-jsx)
+const EMPTY_STATE = (
+  <>
+    <ScanLineIcon className="size-10 text-muted-foreground" />
+    <span className="text-sm">クリックして画像を選択</span>
+    <span className="text-center text-xs text-muted-foreground">
+      コピーした画像を「Ctrl+V」で直接貼り付けることもできます
+    </span>
+  </>
+);
+
+const TRADEMARK_NOTICE = (
+  <p className="text-center text-xs text-muted-foreground">
+    「QRコード」は株式会社デンソーウェーブの登録商標です。
+  </p>
+);
 
 export default function QrReader() {
   const [preview, setPreview] = useState<{
@@ -85,6 +104,10 @@ export default function QrReader() {
   );
 
   // ペースト(Ctrl+V)でクリップボードの画像を直接読み取る
+  const handleBlobRef = useRef(handleBlob);
+  useEffect(() => {
+    handleBlobRef.current = handleBlob;
+  }, [handleBlob]);
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
       const item = Array.from(event.clipboardData?.items ?? []).find(
@@ -92,14 +115,11 @@ export default function QrReader() {
       );
       if (!item) return;
       const file = item.getAsFile();
-      if (file) {
-        event.preventDefault();
-        void handleBlob(file);
-      }
+      if (file) void handleBlobRef.current(file);
     };
     window.addEventListener("paste", onPaste);
     return () => window.removeEventListener("paste", onPaste);
-  }, [handleBlob]);
+  }, []);
 
   const readFromClipboard = useCallback(() => {
     navigator.clipboard
@@ -139,7 +159,7 @@ export default function QrReader() {
       });
   }, [result]);
 
-  const isUrl = result ? /^https?:\/\//i.test(result.data) : false;
+  const isUrl = result ? URL_PATTERN.test(result.data) : false;
   const notFound = preview !== null && result === null && !loading;
 
   return (
@@ -173,7 +193,7 @@ export default function QrReader() {
             {loading && (
               <span className="flex items-center gap-x-2 text-sm text-muted-foreground">
                 <Spinner />
-                読み取り中...
+                読み取り中…
               </span>
             )}
           </div>
@@ -201,7 +221,7 @@ export default function QrReader() {
                 if (file) void handleBlob(file);
               }}
               className={cn(
-                "flex w-full flex-col items-center justify-center gap-y-4 rounded-4xl border-2 border-dashed p-8 transition-colors",
+                "flex w-full flex-col items-center justify-center gap-y-4 rounded-4xl border-2 border-dashed outline-none p-8 transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
                 dragging ? "border-ring bg-muted" : "hover:bg-muted"
               )}
             >
@@ -215,13 +235,7 @@ export default function QrReader() {
                   className="max-h-48 w-auto rounded-2xl"
                 />
               ) : (
-                <>
-                  <ScanLineIcon className="size-10 text-muted-foreground" />
-                  <span className="text-sm">クリックして画像を選択</span>
-                  <span className="text-center text-xs text-muted-foreground">
-                    コピーした画像を「Ctrl+V」で直接貼り付けることもできます
-                  </span>
-                </>
+                EMPTY_STATE
               )}
             </button>
             <input
@@ -258,8 +272,10 @@ export default function QrReader() {
           <CardContent>
             <FieldGroup>
               <Field>
-                <FieldLabel>読み取ったデータ</FieldLabel>
-                <Input value={result.data} readOnly />
+                <FieldLabel htmlFor={resultInputId}>
+                  読み取ったデータ
+                </FieldLabel>
+                <Input id={resultInputId} value={result.data} readOnly />
               </Field>
             </FieldGroup>
           </CardContent>
@@ -270,29 +286,22 @@ export default function QrReader() {
                 コピー
               </Button>
               {isUrl && (
-                <Button
-                  variant="outline"
-                  nativeButton={false}
-                  render={
-                    <a
-                      href={result.data}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  }
+                <a
+                  className={cn(buttonVariants({ variant: "outline" }))}
+                  href={result.data}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <SquareArrowOutUpRightIcon data-icon="inline-start" />
                   リンクを開く
-                </Button>
+                </a>
               )}
             </Field>
           </CardFooter>
         </Card>
       )}
 
-      <p className="text-center text-xs text-muted-foreground">
-        「QRコード」は株式会社デンソーウェーブの登録商標です。
-      </p>
+      {TRADEMARK_NOTICE}
     </div>
   );
 }
