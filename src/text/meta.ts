@@ -33,6 +33,19 @@ export const toolMeta = {
       "競技プログラミング",
     ],
   },
+  "tools/qr-reader": {
+    title: "QR Reader",
+    description: "完全ローカルQRコード読み取りツール",
+    logo: "/icon/qr-reader.png",
+    keywords: [
+      "QRコード",
+      "QR",
+      "二次元コード",
+      "読み取り",
+      "スキャナー",
+      "画像",
+    ],
+  },
   tools: {
     title: "Tools",
     description: "いろんなツールを公開するよ",

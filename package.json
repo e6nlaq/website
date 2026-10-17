@@ -19,6 +19,7 @@
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "elysia": "^1.4.30",
+    "jsqr": "^1.4.0",
     "lucide-react": "^1.55.0",
     "motion": "^14.1.0",
     "next": "16.4.0",
@@ -47,7 +48,8 @@
     "postcss": "^8.5.29",
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "zxing-wasm": "^3.1.5"
   },
   "overrides": {
     "@types/react": "19.3.0",
