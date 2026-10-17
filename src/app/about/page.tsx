@@ -8,7 +8,7 @@ import {
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
 
-export const metadata = convertMetadata(toolMeta.about);
+export const metadata = convertMetadata(toolMeta.about, "about");
 
 export default function About() {
   return (

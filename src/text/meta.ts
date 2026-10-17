@@ -55,7 +55,7 @@ export const toolMeta = {
     title: "About",
     description: "e6nlaqについて",
   },
-} satisfies Record<string, ToolMeta>;
+} as const satisfies Record<string, ToolMeta>;
 
 export const siteUrl = "https://e6nlaq.vercel.app";
 export type ToolKeys = keyof typeof toolMeta;
