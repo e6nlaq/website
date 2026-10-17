@@ -22,17 +22,17 @@ import { cn } from "cn";
 
 interface AccountsProps {
   node: React.ReactNode;
-  key: string;
   id: string;
   href: string;
+  label: string;
 }
 
-function AtCoder() {
+function AtCoderIcon() {
   return (
     <div className="relative h-5 w-5">
       <Image
         src="/atcoder/logo_white.png"
-        alt="AtCoder"
+        alt=""
         fill
         className="hidden object-contain dark:block"
         sizes="20px"
@@ -48,79 +48,81 @@ function AtCoder() {
   );
 }
 
+const accounts: AccountsProps[] = [
+  {
+    node: <SiX />,
+    id: "ru_milmil",
+    href: "https://x.com/ru_milmil",
+    label: "X (@ru_milmil)",
+  },
+  {
+    node: <AtCoderIcon />,
+    id: "x__0",
+    href: "https://atcoder.jp/users/x__0",
+    label: "AtCoder (x__0)",
+  },
+  {
+    node: <SiCodeforces />,
+    id: "e6nlaq",
+    href: "https://codeforces.com/profile/e6nlaq",
+    label: "Codeforces (e6nlaq)",
+  },
+  {
+    node: <SiGithub />,
+    id: "e6nlaq",
+    href: "https://github.com/e6nlaq",
+    label: "GitHub (e6nlaq)",
+  },
+  {
+    node: <SiGreasyfork />,
+    id: "1572416-e6nlaq",
+    href: "https://greasyfork.org/ja/users/1572416-e6nlaq",
+    label: "Greasy Fork (e6nlaq)",
+  },
+  {
+    node: <SiYoutube />,
+    id: "e6nlaq",
+    href: "https://www.youtube.com/@e6nlaq",
+    label: "YouTube (@e6nlaq)",
+  },
+  {
+    node: <SiDiscord />,
+    id: "e6nlaq",
+    href: "https://discord.com/users/1171719078352785452",
+    label: "Discord (e6nlaq)",
+  },
+  {
+    node: <SiQiita />,
+    id: "e6nlaq",
+    href: "https://qiita.com/e6nlaq",
+    label: "Qiita (e6nlaq)",
+  },
+  {
+    node: <SiZenn />,
+    id: "e6nlaq",
+    href: "https://zenn.dev/e6nlaq",
+    label: "Zenn (e6nlaq)",
+  },
+  {
+    node: <SiScratch />,
+    id: "sakamotor",
+    href: "https://scratch.mit.edu/users/sakamotor",
+    label: "Scratch (sakamotor)",
+  },
+];
+
 export default function Accounts() {
-  const accounts: AccountsProps[] = [
-    {
-      node: <SiX />,
-      key: "x",
-      id: "ru_milmil",
-      href: "https://x.com/ru_milmil",
-    },
-    {
-      node: <AtCoder />,
-      key: "atcoder",
-      id: "x__0",
-      href: "https://atcoder.jp/users/x__0",
-    },
-    {
-      node: <SiCodeforces />,
-      key: "codeforces",
-      id: "e6nlaq",
-      href: "https://codeforces.com/profile/e6nlaq",
-    },
-    {
-      node: <SiGithub />,
-      key: "github",
-      id: "e6nlaq",
-      href: "https://github.com/e6nlaq",
-    },
-    {
-      node: <SiGreasyfork />,
-      key: "greasyfork",
-      id: "1572416-e6nlaq",
-      href: "https://greasyfork.org/ja/users/1572416-e6nlaq",
-    },
-    {
-      node: <SiYoutube />,
-      key: "youtube",
-      id: "e6nlaq",
-      href: "https://www.youtube.com/@e6nlaq",
-    },
-    {
-      node: <SiDiscord />,
-      key: "discord",
-      id: "e6nlaq",
-      href: "https://discord.com/users/1171719078352785452",
-    },
-    {
-      node: <SiQiita />,
-      key: "qiita",
-      id: "e6nlaq",
-      href: "https://qiita.com/e6nlaq",
-    },
-    {
-      node: <SiZenn />,
-      key: "zenn",
-      id: "e6nlaq",
-      href: "https://zenn.dev/e6nlaq",
-    },
-    {
-      node: <SiScratch />,
-      key: "scratch",
-      id: "sakamotor",
-      href: "https://scratch.mit.edu/users/sakamotor",
-    },
-  ];
   return (
     <div className="flex flex-row gap-2 flex-wrap justify-center">
       {accounts.map((account) => (
-        <Tooltip key={account.key}>
+        <Tooltip key={account.label}>
           <TooltipTrigger
             render={
               <a
                 href={account.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={account.label}
                 className={cn(
                   buttonVariants({
                     size: "icon-lg",

@@ -203,7 +203,10 @@ export default function QrReader() {
               クリップボードから読み取り
             </Button>
             {loading && (
-              <span className="flex items-center gap-x-2 text-sm text-muted-foreground">
+              <span
+                className="flex items-center gap-x-2 text-sm text-muted-foreground"
+                aria-live="polite"
+              >
                 <Spinner />
                 読み取り中…
               </span>
@@ -265,7 +268,7 @@ export default function QrReader() {
               ドラッグ&ドロップにも対応しています
             </FieldDescription>
             {notFound && (
-              <p className="text-sm text-destructive">
+              <p className="text-sm text-destructive" aria-live="polite">
                 この画像からQRコードを読み取れませんでした。鮮明な画像でお試しください。
               </p>
             )}

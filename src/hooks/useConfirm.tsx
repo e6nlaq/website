@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  use,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +21,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { CircleQuestionMarkIcon, LucideIcon } from "lucide-react";
-import { cn } from "cn";
+import { cn } from "@/lib/utils";
 
 type ConfirmOptions = {
   title?: string | ReactNode;
@@ -33,41 +41,47 @@ const ConfirmContext = createContext<ConfirmContextType | null>(null);
 export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<ConfirmOptions>({});
-  const [resolver, setResolver] = useState<((value: boolean) => void) | null>(
-    null
-  );
+  const resolverRef = useRef<((value: boolean) => void) | null>(null);
   const isDestructive = options.variant === "destructive";
 
-  const confirm = (options: ConfirmOptions) => {
-    setOptions(options);
+  const confirm = useCallback((opts: ConfirmOptions) => {
+    setOptions(opts);
     setOpen(true);
 
     return new Promise<boolean>((resolve) => {
-      setResolver(() => resolve);
+      // 未解決の Promise が残っていれば先に解決してリークを防ぐ
+      resolverRef.current?.(false);
+      resolverRef.current = resolve;
     });
-  };
+  }, []);
 
-  const handleCancel = () => {
+  const closeModal = useCallback((value: boolean) => {
     setOpen(false);
-    resolver?.(false);
-  };
+    resolverRef.current?.(value);
+    resolverRef.current = null;
+  }, []);
 
-  const handleConfirm = () => {
-    setOpen(false);
-    resolver?.(true);
-  };
+  const handleCancel = useCallback(() => closeModal(false), [closeModal]);
+  const handleConfirm = useCallback(() => closeModal(true), [closeModal]);
+
+  const contextValue = useMemo(() => ({ confirm }), [confirm]);
 
   return (
-    <ConfirmContext.Provider value={{ confirm }}>
+    <ConfirmContext.Provider value={contextValue}>
       {children}
 
-      <AlertDialog open={open}>
+      <AlertDialog
+        open={open}
+        onOpenChange={(nextOpen) => {
+          // ESC・背景クリックなどの自身の外部から閉じられた場合も解決する
+          if (!nextOpen) closeModal(false);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogMedia
               className={cn(
-                isDestructive &&
-                  "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive"
+                isDestructive && "bg-destructive/10 text-destructive"
               )}
             >
               {options.icon ? <options.icon /> : <CircleQuestionMarkIcon />}
@@ -95,7 +109,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
 }
 
 export function useConfirm() {
-  const ctx = useContext(ConfirmContext);
+  const ctx = use(ConfirmContext);
   if (!ctx)
     throw new Error("useConfirm must be used inside ConfirmDialogProvider");
   return ctx.confirm;

@@ -93,6 +93,15 @@ const schema = z
   );
 type SchemaType = z.infer<typeof schema>;
 
+const defaultValues: SchemaType = {
+  val: "",
+  mod: "998244353",
+  limit: "10000",
+  type: "bunshi",
+};
+
+const exampleValues = "831870305\n332748121";
+
 function Result({
   ans,
   val,
@@ -103,7 +112,10 @@ function Result({
   mod: bigint;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-y-16">
+    <div
+      className="flex flex-col items-center justify-center gap-y-16"
+      aria-live="polite"
+    >
       {ans.length > 0 && <p>計算結果</p>}
 
       {ans.map((dat, i) => {
@@ -119,12 +131,7 @@ function Result({
           ret = `${bunsi} / ${dat}`;
         }
         return (
-          <div
-            key={`no-${
-              // biome-ignore lint/suspicious/noArrayIndexKey: off
-              i
-            }-${val[i]}`}
-          >
+          <div key={`no-${i}-${val[i]}`}>
             <p className="md:text-sm text-xs font-code">
               No.{i + 1} {val[i]}
             </p>
@@ -149,19 +156,17 @@ function Result({
   );
 }
 
+const styleItems = [
+  { label: "分子が最小のもの", value: "bunshi" },
+  { label: "分子と分母の和が最小なもの", value: "sum" },
+] satisfies { label: string; value: SchemaType["type"] }[];
+
 export default function Mod() {
   const [val, setVal] = useState<bigint[]>([]);
   const [mod, setMod] = useState<bigint>(998244353n);
   const [ans, setAns] = useState<(bigint | undefined)[]>([]);
   const [loading, setLoading] = useState(false);
   const workerRef = useRef<{ worker: Worker; cancel: () => void } | null>(null);
-  const defaultValues: z.infer<typeof schema> = {
-    val: "",
-    mod: "998244353",
-    limit: "10000",
-    type: "bunshi",
-  };
-  const exampleValues = "831870305\n332748121";
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
@@ -169,10 +174,6 @@ export default function Mod() {
   });
   const modListId = useId();
   const confirm = useConfirm();
-  const styleItems = [
-    { label: "分子が最小のもの", value: "bunshi" },
-    { label: "分子と分母の和が最小なもの", value: "sum" },
-  ] satisfies { label: string; value: SchemaType["type"] }[];
 
   useEffect(
     () => () => {
@@ -324,12 +325,9 @@ export default function Mod() {
             type="button"
             variant="destructive"
             onClick={() => {
-              if (workerRef.current) {
-                workerRef.current.cancel();
-                workerRef.current.worker.terminate();
-                workerRef.current = null;
-                toast.info("キャンセルしました。");
-              }
+              workerRef.current?.cancel();
+              workerRef.current = null;
+              toast.info("キャンセルしました。");
               setLoading(false);
             }}
             disabled={!loading}
@@ -342,7 +340,7 @@ export default function Mod() {
           onSubmit={(e) => {
             form.handleSubmit(onSubmit)(e);
           }}
-          className="space-y-8 md:min-w-96"
+          className="md:min-w-96"
           id="mod-form"
         >
           <FieldGroup>
@@ -460,10 +458,14 @@ export default function Mod() {
                   <FieldLabel htmlFor={field.name}>mod</FieldLabel>
                   <div>
                     <Input
+                      id={field.name}
                       placeholder="998244353"
-                      type="number"
-                      min={1}
+                      type="text"
+                      inputMode="numeric"
+                      spellCheck={false}
+                      autoComplete="off"
                       list={modListId}
+                      aria-invalid={fieldState.invalid || undefined}
                       {...field}
                     />
                     <datalist id={modListId}>
@@ -483,7 +485,16 @@ export default function Mod() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>limit</FieldLabel>
-                  <Input placeholder="1000" type="number" min={1} {...field} />
+                  <Input
+                    id={field.name}
+                    placeholder="1000"
+                    type="text"
+                    inputMode="numeric"
+                    spellCheck={false}
+                    autoComplete="off"
+                    aria-invalid={fieldState.invalid || undefined}
+                    {...field}
+                  />
                   <FieldDescription>分母の探索範囲</FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -502,7 +513,10 @@ export default function Mod() {
                     value={field.value}
                     items={styleItems}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      id={field.name}
+                      aria-invalid={fieldState.invalid || undefined}
+                    >
                       <SelectValue placeholder="計算方法を選択してください"></SelectValue>
                     </SelectTrigger>
                     <SelectContent>

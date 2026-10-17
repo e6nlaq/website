@@ -32,7 +32,7 @@ export default function About() {
         <CardContent>
           <p>私のポートフォリオ兼ツール置き場(実験場)です。</p>
           <p>ツールはご自由に使ってください。もちろん無料。</p>
-          <p>ただあんまメンテナンスしないかも...</p>
+          <p>ただあんまメンテナンスしないかも…</p>
           <p>バグ報告はIssueまでお願いします。</p>
         </CardContent>
       </Card>
@@ -44,7 +44,7 @@ export default function About() {
         <CardContent>
           <p>XかDiscordのDMまでお願いします。</p>
           <p>Discordは基本48時間以内に応答できるはずです。</p>
-          <p>Xはスパムに入ってたら見逃しちゃうかも...</p>
+          <p>Xはスパムに入ってたら見逃しちゃうかも…</p>
         </CardContent>
       </Card>
     </div>

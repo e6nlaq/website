@@ -25,38 +25,17 @@ export function ModeToggle() {
     getServerSnapshot
   );
 
-  if (!mounted || theme === undefined) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={<Button variant="outline" size="icon" />}
-        />
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setTheme("light")}>
-            Light
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")}>
-            Dark
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
-            System
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="outline" size="icon">
-            {theme === "light" ? (
-              <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
+          <Button variant="outline" size="icon" aria-label="テーマの切り替え">
+            {!mounted ? null : theme === "light" ? (
+              <Sun className="h-[1.2rem] w-[1.2rem]" />
             ) : theme === "dark" ? (
-              <Moon className=" h-[1.2rem] w-[1.2rem] transition-all" />
+              <Moon className="h-[1.2rem] w-[1.2rem]" />
             ) : (
-              <Monitor className="h-[1.2rem] w-[1.2rem] transition-all" />
+              <Monitor className="h-[1.2rem] w-[1.2rem]" />
             )}
           </Button>
         }
