@@ -17,9 +17,9 @@ export function Nav() {
   const path = pathname.split("/").slice(1).join("/") as keyof typeof toolMeta;
   return (
     <div className="flex items-center justify-center w-screen pt-4 px-4">
-      <p className="text-lg">
+      <p className="font-code text-lg">
         <Link href="/">
-          <span className="font-semibold">e6nlaq's Lab</span>
+          <span className="font-bold">e6nlaq's Lab</span>
         </Link>
         <span>{" - "}</span>
         <wbr />
