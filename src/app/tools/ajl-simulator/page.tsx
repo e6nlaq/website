@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RefreshCwIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   CartesianGrid,
   Line,
@@ -128,31 +128,27 @@ export default function AjlSimulator() {
     mode: "all",
   });
 
-  const watchAll = form.watch();
+  const watchAll = useWatch({ control: form.control });
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Load saved data from localStorage
+  // localStorage から保存データを読み込み、以降の変更を保存する
+  const loaded = useRef(false);
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        form.reset(parsed);
-        form.trigger();
-      } catch (e) {
-        console.error("Failed to parse saved form state", e);
+    if (!loaded.current) {
+      loaded.current = true;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          form.reset(parsed);
+          form.trigger();
+        } catch (e) {
+          console.error("Failed to parse saved form state", e);
+        }
       }
+      return;
     }
-    setIsLoaded(true);
-  }, [form]);
-
-  // Save data to localStorage on changes
-  useEffect(() => {
-    if (!isLoaded) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(watchAll));
-  }, [watchAll, isLoaded]);
-
+  }, [watchAll, form]);
   const chartData = useMemo(() => {
     const min = Number.parseInt(watchAll.minPerf ?? "0", 10) || 0;
     const max = Number.parseInt(watchAll.maxPerf ?? "4000", 10) || 4000;

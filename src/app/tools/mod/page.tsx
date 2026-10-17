@@ -339,7 +339,9 @@ export default function Mod() {
         }
       >
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={(e) => {
+            form.handleSubmit(onSubmit)(e);
+          }}
           className="space-y-8 md:min-w-96"
           id="mod-form"
         >

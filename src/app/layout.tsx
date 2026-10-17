@@ -49,18 +49,18 @@ export const metadata = convertMetadata(
   })
 );
 
+const buildTime = new Date();
+const buildYear = buildTime
+  .toLocaleDateString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+  })
+  .substring(0, 4);
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const buildTime = new Date();
-  const buildYear = buildTime
-    .toLocaleDateString("ja-JP", {
-      timeZone: "Asia/Tokyo",
-    })
-    .substring(0, 4);
-
   return (
     <html
       lang="ja"
