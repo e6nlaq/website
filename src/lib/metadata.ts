@@ -21,9 +21,9 @@ export function convertMetadata(
     twitter: {
       title: meta.title,
       description: meta.description,
-      card: ogImage ? ("summary_large_image" as const) : ("summary" as const),
+      card: "summary_large_image",
       site: "ru_milmil",
-      images: ogImage ?? `${siteUrl}${twitterIcon}`,
+      images: ogImage ?? `${siteUrl}/ogp_default.png`,
     },
     openGraph: {
       type: "website",
