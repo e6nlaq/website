@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/tooltip";
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
-import { toolMeta } from "@/text/meta";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import type { Viewport } from "next";
@@ -44,11 +43,9 @@ const sourceCodePro = Source_Code_Pro({
   variable: "--font-code",
 });
 
-export const metadata = convertMetadata(
-  Object.assign({}, toolMeta[""], {
-    title: "e6nlaq's Lab",
-  })
-);
+export const metadata = convertMetadata("", {
+  title: "e6nlaq's Lab",
+});
 
 export const viewport: Viewport = {
   themeColor: [
@@ -90,7 +87,7 @@ export default function RootLayout({
           <TooltipProvider delay={100}>
             <ConfirmDialogProvider>
               <div className="min-h-svh flex flex-col">
-                <Nav fontClass={sourceCodePro.className} />
+                <Nav />
 
                 <main className="flex justify-center items-center w-screen py-16 px-4 grow">
                   {children}
