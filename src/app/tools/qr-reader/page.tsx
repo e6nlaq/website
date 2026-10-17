@@ -110,8 +110,19 @@ export default function QrReader() {
   }, [handleBlob]);
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
-      const item = Array.from(event.clipboardData?.items ?? []).find(
-        (candidate) => candidate.type.startsWith("image/")
+      const data = event.clipboardData;
+      if (!data) return;
+      // ファイルとしてコピーされた画像(エクスプローラ等)はclipboardData.filesで受け取る
+      const imageFile = Array.from(data.files).find((candidate) =>
+        candidate.type.startsWith("image/")
+      );
+      if (imageFile) {
+        void handleBlobRef.current(imageFile);
+        return;
+      }
+      // 画像データの直接ペースト(スクリーンショット等)はitemsで受け取る
+      const item = Array.from(data.items).find((candidate) =>
+        candidate.type.startsWith("image/")
       );
       if (!item) return;
       const file = item.getAsFile();
@@ -130,7 +141,8 @@ export default function QrReader() {
         );
         if (!item) {
           toast.error("クリップボードに画像がありません", {
-            description: "画像をコピーしてからお試しください",
+            description:
+              "画像ファイルをコピーした場合は「Ctrl+V」、ドラッグ&ドロップ、ファイル選択を利用してください",
           });
           return undefined;
         }
