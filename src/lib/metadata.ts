@@ -9,10 +9,10 @@ export function convertMetadata(
 ): Metadata {
   const meta: ToolMeta = Object.assign({}, toolMeta[key], overrides);
   const icon = meta.logo ?? "/favicon.svg";
-  const twitterIcon = icon === "/favicon.svg" ? "/favicon.png" : icon;
   const title =
     meta.title + (meta.title !== "e6nlaq's Lab" ? " - e6nlaq's Lab" : "");
   const ogImage = key && isOgImageTarget(key) ? ogImageUrl(key) : null;
+  const defaultImage = `${siteUrl}/ogp_default.png`;
   return {
     title,
     description: meta.description,
@@ -23,13 +23,13 @@ export function convertMetadata(
       description: meta.description,
       card: "summary_large_image",
       site: "ru_milmil",
-      images: ogImage ?? `${siteUrl}/ogp_default.png`,
+      images: ogImage ?? defaultImage,
     },
     openGraph: {
       type: "website",
       title: meta.title,
       description: meta.description,
-      images: ogImage ?? `${siteUrl}${twitterIcon}`,
+      images: ogImage ?? defaultImage,
     },
     robots: {
       index: meta.index ?? true,
