@@ -166,13 +166,13 @@ export default function Tools() {
       <Store title="Classic" description="旧作たち">
         <ToolItem
           name="rinu.jp Checker"
-          description="rinu.jpに特定ツールが仕込まれているかチェックする"
+          description="rinu.jpに特定ツールが仕込まれているかチェックするサイト"
           icon="https://e6nlaq.github.io/rinucf-checker/img/favicon.png"
           href="https://e6nlaq.github.io/rinucf-checker"
         />
         <ToolItem
           name="School Hit"
-          description="学校で日にちから指名される確率を計算する"
+          description="学校で日にちから指名される確率を計算するサイト"
           href="https://e6nlaq.github.io/school-hits"
           icon="https://e6nlaq.github.io/school-hits/favicon.png"
         />

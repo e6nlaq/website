@@ -9,7 +9,7 @@ export const toolMeta = {
   "tools/ajl-simulator": {
     title: "AJL Simulator",
     description:
-      "次回のパフォーマンスからAJLスコアの推移をシミュレーションする",
+      "次回のパフォーマンスからAJLスコアの推移をシミュレーションするツール",
     logo: "/icon/ajl.png",
     keywords: ["AJL", "AtCoder", "シミュレーター", "スコア", "推移"],
   },
@@ -20,7 +20,7 @@ export const toolMeta = {
   },
   "tools/mod": {
     title: "Reverse Mod",
-    description: "有理数modをいい感じに元に戻す",
+    description: "有理数modをいい感じに元に戻すツール",
     logo: "/icon/mod.png",
     keywords: [
       "e6nlaq",
