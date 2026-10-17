@@ -12,14 +12,14 @@ import {
 import { toolMeta } from "@/text/meta";
 import { ModeToggle } from "./mode-toggle";
 
-export function Nav({ fontClass }: { fontClass: string }) {
+export function Nav() {
   const pathname = usePathname();
   const path = pathname.split("/").slice(1).join("/") as keyof typeof toolMeta;
   return (
     <div className="flex items-center justify-center w-screen pt-4 px-4">
-      <p className={`${fontClass} text-lg`}>
+      <p className="text-lg">
         <Link href="/">
-          <span className="font-bold">e6nlaq's Lab</span>
+          <span className="font-semibold">e6nlaq's Lab</span>
         </Link>
         <span>{" - "}</span>
         <wbr />
