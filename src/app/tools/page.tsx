@@ -1,5 +1,3 @@
-"use client";
-
 import { SquareArrowOutUpRightIcon as PopupIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +12,10 @@ import {
 } from "@/components/ui/item";
 import { type ToolKeys, toolMeta } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
+
+const MATH_TOOLS: ToolKeys[] = ["tools/mod"];
+const CP_TOOLS: ToolKeys[] = ["tools/ajl-simulator"];
+const UTILITY_TOOLS: ToolKeys[] = ["tools/qr-reader"];
 
 function Store({
   title,
@@ -81,7 +83,10 @@ function ToolItem({
           )}
           <ItemContent>
             <ItemTitle>
-              {name} {outerLink && <PopupIcon className="inline w-3 h-3" />}
+              {name}{" "}
+              {outerLink && (
+                <PopupIcon className="inline size-3" aria-hidden="true" />
+              )}
             </ItemTitle>
             <ItemDescription className="text-pretty">
               {description}
@@ -94,13 +99,11 @@ function ToolItem({
 }
 
 export default function Tools() {
-  const math: ToolKeys[] = ["tools/mod"];
-  const cp: ToolKeys[] = ["tools/ajl-simulator"];
-  const utility: ToolKeys[] = ["tools/qr-reader"];
   return (
     <div className="flex flex-col items-start w-full gap-y-8">
+      <h1 className="sr-only">ツール一覧</h1>
       <Store title="Math" description="数学系">
-        {math.map((k) => (
+        {MATH_TOOLS.map((k) => (
           <ToolItem
             name={toolMeta[k].title}
             description={toolMeta[k].description}
@@ -111,7 +114,7 @@ export default function Tools() {
         ))}
       </Store>
       <Store title="Competitive Programming" description="競プロ系">
-        {cp.map((k) => (
+        {CP_TOOLS.map((k) => (
           <ToolItem
             name={toolMeta[k].title}
             description={toolMeta[k].description}
@@ -142,7 +145,7 @@ export default function Tools() {
         />
       </Store>
       <Store title="Utility" description="便利系">
-        {utility.map((k) => (
+        {UTILITY_TOOLS.map((k) => (
           <ToolItem
             name={toolMeta[k].title}
             description={toolMeta[k].description}
@@ -163,21 +166,15 @@ export default function Tools() {
       <Store title="Classic" description="旧作たち">
         <ToolItem
           name="rinu.jp Checker"
-          description="rinu.jpに特定ツールが仕込まれているかチェックする"
+          description="rinu.jpに特定ツールが仕込まれているかチェックするサイト"
           icon="https://e6nlaq.github.io/rinucf-checker/img/favicon.png"
           href="https://e6nlaq.github.io/rinucf-checker"
         />
         <ToolItem
           name="School Hit"
-          description="学校で日にちから指名される確率を計算する"
+          description="学校で日にちから指名される確率を計算するサイト"
           href="https://e6nlaq.github.io/school-hits"
           icon="https://e6nlaq.github.io/school-hits/favicon.png"
-        />
-        <ToolItem
-          name="Study Typing"
-          description="学習向け単語タイピングサイト"
-          href="https://study-typing.vercel.app"
-          icon="https://study-typing.vercel.app/icon.svg"
         />
         <ToolItem
           name="Aqua"

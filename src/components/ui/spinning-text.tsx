@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, type Transition, type Variants } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  type Transition,
+  type Variants,
+} from "motion/react";
 import type React from "react";
 import type { ComponentPropsWithoutRef } from "react";
 
@@ -42,6 +47,8 @@ export function SpinningText({
   className,
   style,
 }: SpinningTextProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   if (typeof children !== "string" && !Array.isArray(children)) {
     throw new Error("children must be a string or an array of strings");
   }
@@ -64,7 +71,8 @@ export function SpinningText({
   };
 
   const containerVariants: Variants = {
-    visible: { rotate: reverse ? -360 : 360 },
+    // prefers-reduced-motion では回転を止めて静止表示する
+    visible: shouldReduceMotion ? {} : { rotate: reverse ? -360 : 360 },
     ...variants?.container,
   };
 

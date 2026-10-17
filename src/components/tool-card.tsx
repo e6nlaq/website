@@ -41,7 +41,7 @@ export function ToolCard({
   footer,
   className,
   actionLabel = "計算",
-  loadingLabel = "計算中...",
+  loadingLabel = "計算中…",
   loading = false,
   onAction,
   formId,

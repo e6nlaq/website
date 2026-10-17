@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RefreshCwIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   CartesianGrid,
   Line,
@@ -112,55 +112,60 @@ function calculateScore(
   return currentScore + Math.max(0, perfScore - lowestPerfScore);
 }
 
-const STORAGE_KEY = "ajl-simulator-form";
+const STORAGE_KEY = "ajl-simulator-form:v1";
+
+const defaultValues: FormValues = {
+  currentScore: "0",
+  lowestPerf: "",
+  minPerf: "0",
+  maxPerf: "4000",
+};
 
 export default function AjlSimulator() {
-  const defaultValues: FormValues = {
-    currentScore: "0",
-    lowestPerf: "",
-    minPerf: "0",
-    maxPerf: "4000",
-  };
-
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
     mode: "all",
   });
 
-  const watchAll = form.watch();
+  const watchAll = useWatch({ control: form.control });
+  const { currentScore, lowestPerf, minPerf, maxPerf } = watchAll;
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Load saved data from localStorage
+  // localStorage から保存データを読み込み、以降の変更を保存する
+  const loaded = useRef(false);
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        form.reset(parsed);
-        form.trigger();
-      } catch (e) {
-        console.error("Failed to parse saved form state", e);
+    if (!loaded.current) {
+      loaded.current = true;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          form.reset(parsed);
+          form.trigger();
+        } catch (e) {
+          console.error("Failed to parse saved form state", e);
+        }
       }
+      return;
     }
-    setIsLoaded(true);
-  }, [form]);
-
-  // Save data to localStorage on changes
-  useEffect(() => {
-    if (!isLoaded) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(watchAll));
-  }, [watchAll, isLoaded]);
-
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ currentScore, lowestPerf, minPerf, maxPerf })
+      );
+    } catch (e) {
+      // プライベートブラウジング等で書き込めない場合は無視
+      console.error("Failed to save form state", e);
+    }
+  }, [currentScore, lowestPerf, minPerf, maxPerf, form]);
   const chartData = useMemo(() => {
-    const min = Number.parseInt(watchAll.minPerf ?? "0", 10) || 0;
-    const max = Number.parseInt(watchAll.maxPerf ?? "4000", 10) || 4000;
-    const currentScore = Number.parseFloat(watchAll.currentScore ?? "0") || 0;
-    const lowestPerf =
-      watchAll.lowestPerf === "" || watchAll.lowestPerf === undefined
+    const min = Number.parseInt(minPerf ?? "0", 10) || 0;
+    const max = Number.parseInt(maxPerf ?? "4000", 10) || 4000;
+    const current = Number.parseFloat(currentScore ?? "0") || 0;
+    const lowest =
+      lowestPerf === "" || lowestPerf === undefined
         ? null
-        : Number.parseInt(watchAll.lowestPerf, 10);
+        : Number.parseInt(lowestPerf, 10);
 
     if (min >= max) return [];
 
@@ -169,23 +174,23 @@ export default function AjlSimulator() {
     for (let x = min; x <= max; x += step) {
       data.push({
         perf: x,
-        score: Math.floor(calculateScore(x, currentScore, lowestPerf)),
+        score: Math.floor(calculateScore(x, current, lowest)),
       });
     }
     // Ensure max is included
     if (data[data.length - 1].perf !== max) {
       data.push({
         perf: max,
-        score: Math.floor(calculateScore(max, currentScore, lowestPerf)),
+        score: Math.floor(calculateScore(max, current, lowest)),
       });
     }
     return data;
-  }, [watchAll]);
+  }, [currentScore, lowestPerf, minPerf, maxPerf]);
 
   const lowestPerfNum =
-    watchAll.lowestPerf === "" || watchAll.lowestPerf === undefined
+    lowestPerf === "" || lowestPerf === undefined
       ? null
-      : Number.parseInt(watchAll.lowestPerf, 10);
+      : Number.parseInt(lowestPerf, 10);
 
   const confirm = useConfirm();
 
@@ -237,7 +242,13 @@ export default function AjlSimulator() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>現在の合計スコア</FieldLabel>
-                  <Input {...field} id={field.name} type="number" step="any" />
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="number"
+                    step="any"
+                    aria-invalid={fieldState.invalid || undefined}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -257,6 +268,7 @@ export default function AjlSimulator() {
                     id={field.name}
                     type="number"
                     placeholder="参加回数がD回未満なら空欄にしてください"
+                    aria-invalid={fieldState.invalid || undefined}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -280,6 +292,7 @@ export default function AjlSimulator() {
                         }}
                         id={field.name}
                         type="number"
+                        aria-invalid={fieldState.invalid || undefined}
                       />
                       <InputGroupAddon align="inline-end">
                         <Tooltip>
@@ -327,6 +340,7 @@ export default function AjlSimulator() {
                       }}
                       id={field.name}
                       type="number"
+                      aria-invalid={fieldState.invalid || undefined}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -343,7 +357,7 @@ export default function AjlSimulator() {
         <ToolCard title="スコア推移グラフ" className="w-full">
           <ChartContainer
             config={chartConfig}
-            className="min-h-[400px] w-full font-code"
+            className="min-h-100 w-full font-code"
           >
             <LineChart
               accessibilityLayer

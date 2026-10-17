@@ -1,8 +1,7 @@
 import { Source_Code_Pro } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics, SpeedInsights } from "@/components/analytics";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import localFont from "next/font/local";
 import { Nav } from "@/components/nav";
 import { Toaster } from "@/components/ui/sonner";
@@ -16,6 +15,8 @@ import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { toolMeta } from "@/text/meta";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import type { Viewport } from "next";
 
 const lineSeed = localFont({
   src: [
@@ -49,18 +50,25 @@ export const metadata = convertMetadata(
   })
 );
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
+};
+
+const buildTime = new Date();
+const buildYear = buildTime
+  .toLocaleDateString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+  })
+  .substring(0, 4);
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const buildTime = new Date();
-  const buildYear = buildTime
-    .toLocaleDateString("ja-JP", {
-      timeZone: "Asia/Tokyo",
-    })
-    .substring(0, 4);
-
   return (
     <html
       lang="ja"
@@ -102,10 +110,9 @@ export default function RootLayout({
                         </TooltipContent>
                       </Tooltip>{" "}
                       e6nlaq
-                      <span>{" - "}</span>
                       <a
                         href="https://github.com/e6nlaq/website"
-                        className="text-sky-500 font-semibold"
+                        className={cn(buttonVariants({ variant: "link" }))}
                         target="_blank"
                         rel="noreferrer"
                       >

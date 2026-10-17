@@ -20,9 +20,9 @@ export default function Page() {
             src="/icon.svg"
             width={48}
             height={48}
-            className="w-18 h-18"
-            alt="icon"
-            loading="eager"
+            className="size-18"
+            alt=""
+            priority
           />
         </div>
       </div>

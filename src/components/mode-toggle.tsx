@@ -2,7 +2,7 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import * as React from "react";
+import { useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,24 +12,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
-  const [show_theme, setShow] = React.useState("");
-  React.useEffect(() => {
-    if (theme !== undefined) setShow(theme);
-  }, [theme]);
+  // テーマ依存の表示はハイドレーション後の再レンダーまで確定させない
+  const mounted = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="outline" size="icon">
-            {show_theme === "" ? null : show_theme === "light" ? (
-              <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
-            ) : show_theme === "dark" ? (
-              <Moon className=" h-[1.2rem] w-[1.2rem] transition-all" />
+          <Button variant="outline" size="icon" aria-label="テーマの切り替え">
+            {!mounted ? null : theme === "light" ? (
+              <Sun className="h-[1.2rem] w-[1.2rem]" />
+            ) : theme === "dark" ? (
+              <Moon className="h-[1.2rem] w-[1.2rem]" />
             ) : (
-              <Monitor className="h-[1.2rem] w-[1.2rem] transition-all" />
+              <Monitor className="h-[1.2rem] w-[1.2rem]" />
             )}
           </Button>
         }
