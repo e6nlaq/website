@@ -177,12 +177,6 @@ export default function Tools() {
           icon="https://e6nlaq.github.io/school-hits/favicon.png"
         />
         <ToolItem
-          name="Study Typing"
-          description="学習向け単語タイピングサイト"
-          href="https://study-typing.vercel.app"
-          icon="https://study-typing.vercel.app/icon.svg"
-        />
-        <ToolItem
           name="Aqua"
           description={"Fast, short, and easy. を謳うクセ強自作言語"}
           href="https://e6nlaq.github.io/aqua"
