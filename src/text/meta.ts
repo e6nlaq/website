@@ -35,8 +35,7 @@ export const toolMeta = {
   },
   "tools/qr-reader": {
     title: "QR Reader",
-    description:
-      "画像のQRコードを読み取る。コピーした画像をそのまま貼り付け可能",
+    description: "完全ローカルQRコード読み取りツール",
     logo: "/icon/qr-reader.png",
     keywords: [
       "QRコード",
