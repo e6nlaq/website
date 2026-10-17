@@ -11,6 +11,14 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ToolCard } from "@/components/tool-card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -22,6 +30,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import type { QrReadResult } from "./decode";
 import { readQrFromBlob } from "./decode";
+import { Input } from "@/components/ui/input";
 
 const imageInputId = "qr-reader-image-input";
 
@@ -239,15 +248,23 @@ export default function QrReader() {
       </ToolCard>
 
       {result && (
-        <ToolCard
-          title="読み取り結果"
-          description={
-            result.version > 0
-              ? `QRコード バージョン ${result.version}`
-              : undefined
-          }
-          footer={
-            <div className="flex flex-wrap gap-2">
+        <Card className="w-2xl max-w-full">
+          <CardHeader>
+            <CardTitle>読み取り結果</CardTitle>
+            {result.version > 0 && (
+              <CardDescription>{`QRコード バージョン ${result.version}`}</CardDescription>
+            )}
+          </CardHeader>
+          <CardContent>
+            <FieldGroup>
+              <Field>
+                <FieldLabel>読み取ったデータ</FieldLabel>
+                <Input value={result.data} readOnly />
+              </Field>
+            </FieldGroup>
+          </CardContent>
+          <CardFooter className="flex-col items-start gap-y-4">
+            <Field orientation="horizontal">
               <Button variant="outline" onClick={copyResult}>
                 <CopyIcon data-icon="inline-start" />
                 コピー
@@ -268,18 +285,9 @@ export default function QrReader() {
                   リンクを開く
                 </Button>
               )}
-            </div>
-          }
-        >
-          <FieldGroup>
-            <Field>
-              <FieldLabel>読み取ったデータ</FieldLabel>
-              <p className="min-w-0 rounded-2xl bg-muted/50 px-4 py-2 font-code text-sm break-all whitespace-pre-wrap">
-                {result.data}
-              </p>
             </Field>
-          </FieldGroup>
-        </ToolCard>
+          </CardFooter>
+        </Card>
       )}
 
       <p className="text-center text-xs text-muted-foreground">
