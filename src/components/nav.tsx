@@ -39,6 +39,12 @@ export function Nav({ fontClass }: { fontClass: string }) {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink
+                render={<Link href="/about">About</Link>}
+                className={navigationMenuTriggerStyle()}
+              />
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
                 render={<Link href="/tools">Tools</Link>}
                 className={navigationMenuTriggerStyle()}
               />
