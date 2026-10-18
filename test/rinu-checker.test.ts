@@ -9,6 +9,8 @@ import {
   ipInfoUrl,
   isTokuteiUrl,
   parseUrlminResponse,
+  safeHttpHref,
+  type RinuCheckResult,
   type UrlminResponse,
 } from "@/app/tools/rinu-checker/logic";
 
@@ -150,6 +152,21 @@ describe("parseUrlminResponse", () => {
   });
 });
 
+describe("safeHttpHref", () => {
+  test("http(s)のみリンク化する", () => {
+    expect(safeHttpHref("https://example.com")).toBe("https://example.com");
+    expect(safeHttpHref("http://example.com/x")).toBe("http://example.com/x");
+  });
+
+  test("javascript: や data: などはリンクにしない", () => {
+    expect(safeHttpHref("javascript:alert(1)")).toBeUndefined();
+    expect(
+      safeHttpHref("data:text/html,<script>alert(1)</script>")
+    ).toBeUndefined();
+    expect(safeHttpHref("")).toBeUndefined();
+  });
+});
+
 describe("buildResultRows", () => {
   test("ipinfoの追加照会が無くても全行が埋まる", () => {
     const outcome = parseUrlminResponse({
@@ -186,6 +203,27 @@ describe("buildResultRows", () => {
         ?.href
     ).toBe("https://ipinfo.io/192.0.2.1");
   });
+
+  test("API由来の遷移先が危険なスキームでもhrefを出さない", () => {
+    const result: RinuCheckResult = {
+      tokutei: false,
+      targetUrl: "javascript:alert(1)",
+      createdAt: "2024-01-01T00:00:00",
+      usedCount: 1,
+      lastUsedIp: "192.0.2.1",
+      creator: {
+        IPAddress: "192.0.2.10",
+        MoreInformation: "javascript:alert(1)",
+        TimeZone: "Asia/Tokyo",
+        Location: "Tokyo, Japan",
+      },
+    };
+    const rows = buildResultRows(result, null);
+    expect(rows.find((row) => row.label === "遷移先URL")?.href).toBeUndefined();
+    expect(
+      rows.find((row) => row.label === "作成者IPアドレス")?.href
+    ).toBeUndefined();
+  });
 });
 
 describe("buildResultText", () => {
@@ -199,9 +237,12 @@ describe("buildResultText", () => {
 });
 
 describe("API URL", () => {
-  test("旧版と同じエンドポイントになる", () => {
+  test("旧版と同じエンドポイントになり、コードはエンコードされる", () => {
     expect(buildUrlminApi("abc123")).toBe(
       "https://api.activetk.jp/urlmin/get&code=abc123"
+    );
+    expect(buildUrlminApi("a&b?c=1")).toBe(
+      "https://api.activetk.jp/urlmin/get&code=a%26b%3Fc%3D1"
     );
     expect(ipInfoUrl("192.0.2.1")).toBe("https://www.ipinfo.io/192.0.2.1/json");
   });

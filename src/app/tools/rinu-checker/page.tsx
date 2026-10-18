@@ -65,8 +65,6 @@ const URL_PLACEHOLDER = "https://rinu.jp/xxxxxx";
 const INVALID_URL_MESSAGE = "rinu.cf または rinu.jp のURLを入力してください";
 const FETCH_TIMEOUT_MS = 15_000;
 
-type Schema = z.infer<typeof schema>;
-
 const schema = z.object({
   url: z
     .string()
@@ -74,6 +72,8 @@ const schema = z.object({
     .min(1, "URLを入力してください")
     .refine((url) => extractRinuCode(url) !== null, INVALID_URL_MESSAGE),
 });
+
+type Schema = z.infer<typeof schema>;
 
 type CheckState =
   | { phase: "idle" }
@@ -123,7 +123,7 @@ function DetailTable({
       <CardContent className="flex flex-col gap-4">
         <Alert variant={result.tokutei ? "destructive" : "default"}>
           {result.tokutei ? <TriangleAlertIcon /> : <CircleCheckIcon />}
-          <AlertTitle data-testid="verdict">
+          <AlertTitle>
             {result.tokutei ? "特定ツールあり" : "特定ツールなし"}
           </AlertTitle>
           <AlertDescription>
@@ -259,6 +259,7 @@ export default function RinuChecker() {
       >
         <form
           id="rinu-checker-form"
+          noValidate
           onSubmit={(e) => {
             form.handleSubmit(check)(e);
           }}
@@ -275,6 +276,7 @@ export default function RinuChecker() {
                     <InputGroupInput
                       {...field}
                       id={field.name}
+                      type="url"
                       placeholder={URL_PLACEHOLDER}
                       spellCheck={false}
                       autoComplete="off"
@@ -286,6 +288,7 @@ export default function RinuChecker() {
                           render={
                             <InputGroupButton
                               variant="outline"
+                              aria-label="貼り付けてチェック"
                               onClick={pasteAndCheck}
                               disabled={state.phase === "loading"}
                             >
@@ -299,12 +302,12 @@ export default function RinuChecker() {
                       </Tooltip>
                     </InputGroupAddon>
                   </InputGroup>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
                   <FieldDescription>
                     https:// は省略できます(rinu.jp/xxxxxx の形式も入力可能)。
                   </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -314,15 +317,11 @@ export default function RinuChecker() {
 
       <div className="flex flex-col items-center gap-y-8" aria-live="polite">
         {state.phase === "error" && (
-          <Card className="w-2xl max-w-full">
-            <CardContent>
-              <Alert variant="destructive">
-                <TriangleAlertIcon />
-                <AlertTitle>エラー</AlertTitle>
-                <AlertDescription>{state.message}</AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
+          <Alert variant="destructive" className="w-2xl max-w-full">
+            <TriangleAlertIcon />
+            <AlertTitle>エラー</AlertTitle>
+            <AlertDescription>{state.message}</AlertDescription>
+          </Alert>
         )}
         {state.phase === "done" && (
           <DetailTable result={state.result} ipInfo={state.ipInfo} />

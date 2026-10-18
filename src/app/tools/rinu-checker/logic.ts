@@ -96,8 +96,13 @@ export function decodeDisplayUrl(url: string): string {
   }
 }
 
+/** API由来のURLをリンク化してよいか判定する。http(s)以外のスキーム(javascript: 等)はリンクにしない */
+export function safeHttpHref(url: string): string | undefined {
+  return /^https?:\/\//i.test(url) ? url : undefined;
+}
+
 export function buildUrlminApi(code: string): string {
-  return `https://api.activetk.jp/urlmin/get&code=${code}`;
+  return `https://api.activetk.jp/urlmin/get&code=${encodeURIComponent(code)}`;
 }
 
 export function ipInfoUrl(ip: string): string {
@@ -119,8 +124,10 @@ export function parseUrlminResponse(dat: UrlminResponse): CheckOutcome {
 
   const link = dat.LinkURL ?? "";
   const tokutei = isTokuteiUrl(link);
-  // LastUsed は「作成日 + 空白 + IP」形式で、旧版同様の切り出しを行う
+  // LastUsed 内の空白区切りの最後のトークンがIP(旧版は substring(11) で決め打ちしていたが、
+  // 曜日や時刻など部分フォーマットの差異に壊れにくい形で同等に取得する)
   const lastUsed = dat.LastUsed ?? "";
+  const lastUsedIp = lastUsed.trim().split(/\s+/).pop() ?? "";
 
   return {
     kind: "ok",
@@ -129,7 +136,7 @@ export function parseUrlminResponse(dat: UrlminResponse): CheckOutcome {
       targetUrl: tokutei ? extractTokuteiTarget(link) : link,
       createdAt: dat.CreatedDateTime ?? "",
       usedCount: dat.UsedCount ?? 0,
-      lastUsedIp: lastUsed.length > 11 ? lastUsed.slice(11) : "",
+      lastUsedIp,
       creator: {
         IPAddress: dat.CreatorInfo?.IPAddress ?? "",
         MoreInformation: dat.CreatorInfo?.MoreInformation ?? "",
@@ -153,7 +160,7 @@ export function buildResultRows(
     {
       label: "作成者IPアドレス",
       value: result.creator.IPAddress || unavailable,
-      href: result.creator.MoreInformation || undefined,
+      href: safeHttpHref(result.creator.MoreInformation),
     },
     {
       label: "作成者タイムゾーン",
@@ -168,7 +175,7 @@ export function buildResultRows(
     {
       label: "遷移先URL",
       value: decodeDisplayUrl(result.targetUrl) || unavailable,
-      href: result.targetUrl || undefined,
+      href: safeHttpHref(result.targetUrl),
     },
     { label: "作成日", value: result.createdAt || unavailable },
     { label: "使用回数", value: String(result.usedCount) },
