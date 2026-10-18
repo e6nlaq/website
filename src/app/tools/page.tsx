@@ -84,7 +84,7 @@ const STORES: {
     items: [
       {
         name: "rinu.jp Checker",
-        description: "rinu.jpに特定ツールが仕込まれているかチェックするサイト",
+        description: "rinu.jp Checker 2の旧バージョン",
         icon: "https://e6nlaq.github.io/rinucf-checker/img/favicon.png",
         href: "https://e6nlaq.github.io/rinucf-checker",
       },
