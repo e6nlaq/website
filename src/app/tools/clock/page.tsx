@@ -2,13 +2,6 @@
 
 import { useSyncExternalStore } from "react";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -58,35 +51,29 @@ export default function Clock() {
   const now = seconds === 0 ? null : new Date(seconds * 1000);
 
   return (
-    <Card className="w-2xl max-w-full">
-      <CardHeader>
-        <CardTitle>Clock</CardTitle>
-        <CardDescription>シンプルなデジタル時計です。</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center gap-y-3 py-10">
-        <p className="text-sm font-medium font-code text-muted-foreground tabular-nums">
-          {now === null ? PLACEHOLDER_DATE : formatClockDate(now)}
-        </p>
-        <p
-          className="text-6xl font-bold font-code tabular-nums tracking-widest"
-          role="timer"
-        >
-          {now === null ? PLACEHOLDER_TIME : formatClockTime(now)}
-        </p>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <p
-                className="text-sm font-medium font-code text-muted-foreground tabular-nums"
-                data-testid="unix-time"
-              >
-                {now === null ? PLACEHOLDER_UNIX : formatUnixTime(now)}
-              </p>
-            }
-          />
-          <TooltipContent side="bottom">UNIX秒</TooltipContent>
-        </Tooltip>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col items-center gap-y-3 py-10">
+      <p className="text-sm font-medium font-code text-muted-foreground tabular-nums">
+        {now === null ? PLACEHOLDER_DATE : formatClockDate(now)}
+      </p>
+      <p
+        className="text-6xl font-bold font-code tabular-nums tracking-widest"
+        role="timer"
+      >
+        {now === null ? PLACEHOLDER_TIME : formatClockTime(now)}
+      </p>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <p
+              className="text-sm font-medium font-code text-muted-foreground tabular-nums"
+              data-testid="unix-time"
+            >
+              {now === null ? PLACEHOLDER_UNIX : formatUnixTime(now)}
+            </p>
+          }
+        />
+        <TooltipContent side="bottom">UNIX秒</TooltipContent>
+      </Tooltip>
+    </div>
   );
 }
