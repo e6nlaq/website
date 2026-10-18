@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  fitTitleStyle,
   isOgImageTarget,
   ogImageUrl,
   textWidth,
@@ -24,6 +25,44 @@ describe("ogImageUrl", () => {
   test("meta キーをそのままパスにする", () => {
     expect(ogImageUrl("tools/qr-reader")).toBe(`${siteUrl}/og/tools/qr-reader`);
     expect(ogImageUrl("about")).toBe(`${siteUrl}/og/about`);
+  });
+});
+
+describe("fitTitleStyle", () => {
+  const maxWidth = 680;
+
+  test("十分短いタイトルは最大サイズで1行", () => {
+    expect(fitTitleStyle("Reverse Mod", maxWidth)).toEqual({
+      fontSize: 76,
+      whiteSpace: "nowrap",
+    });
+  });
+
+  test("長いタイトルは1行に収まるサイズまで縮小する", () => {
+    const { fontSize, whiteSpace } = fitTitleStyle(
+      "rinu.jp Checker 2",
+      maxWidth
+    );
+    expect(whiteSpace).toBe("nowrap");
+    // 縮小されたフォントサイズでの推定幅は描画領域内に収まる
+    expect(fontSize).toBeLessThan(76);
+    expect(fontSize * textWidth("rinu.jp Checker 2")).toBeLessThanOrEqual(
+      maxWidth * 0.95
+    );
+  });
+
+  test("縮小しても下限に届かないほど長い場合は折り返しにフォールバック", () => {
+    const longTitle = "かなしい程長いタイトルがここに入れられているとしますね";
+    const { fontSize, whiteSpace } = fitTitleStyle(longTitle, maxWidth);
+    expect(whiteSpace).toBe("normal");
+    expect(fontSize).toBe(40);
+  });
+
+  test("空文字は最大サイズの1行", () => {
+    expect(fitTitleStyle("", maxWidth)).toEqual({
+      fontSize: 76,
+      whiteSpace: "nowrap",
+    });
   });
 });
 
