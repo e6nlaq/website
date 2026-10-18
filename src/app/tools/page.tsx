@@ -15,7 +15,7 @@ import type { ToolMeta } from "@/types/meta";
 
 const MATH_TOOLS: ToolKeys[] = ["tools/mod"];
 const CP_TOOLS: ToolKeys[] = ["tools/ajl-simulator"];
-const UTILITY_TOOLS: ToolKeys[] = ["tools/qr-reader"];
+const UTILITY_TOOLS: ToolKeys[] = ["tools/qr-reader", "tools/clock"];
 
 function Store({
   title,
