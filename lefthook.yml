@@ -15,8 +15,6 @@ pre-commit:
 
     typecheck:
       run: bun check
-      glob: "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"
-      stage_fixed: true
 
 commit-msg:
   commands:
