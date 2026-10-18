@@ -50,7 +50,7 @@
 - `src/types/meta.ts` — `ToolMeta` 型(`title/description/logo?/index?/keywords?`)
 - `public/` — `icon/<tool>.png`(一覧アイコン)、`zxing_reader.wasm`(自己ホストする wasm)
 - `test/` — **ユニットテストは純粋なロジックのみ**(bun:test + `@/` エイリアス可)。ページコンポーネントはテストしない
-- `e2e/` + `playwright.config.ts` — **e2e テスト**(Playwright)。サーバ起動は設定の `webServer`(`bun run dev --port 3000`)に任せる。失敗時のレポートは `test-results/`・`playwright-report/`(gitignore 済み)
+- `e2e/` + `playwright.config.ts` — **e2e テスト**(Playwright)。サーバ起動は設定の `webServer`(`bun run dev --port 3000`)に任せる。画像フィクスチャは `e2e/fixtures/` に置く(QR 画像は `bunx qrcode`、単色 PNG は zlib+CRC で生成)。失敗時のレポートは `test-results/`・`playwright-report/`(gitignore 済み)
 
 ## 新しいツールを追加する手順
 
@@ -83,6 +83,12 @@
 - 大きな計算は Web Worker(`tools/mod` の `solve.worker.ts` が例)
 - 結果やデータのコピーは `navigator.clipboard` + sonner トーストで成功/失敗を必ず通知。エラーには次の手順を示す文言を添える
 - 画像は `next/image` を使い、`width` / `height` を必ず渡す。CSS で片方だけリサイズするとアスペクト比が壊れるので、もう片方に `auto`(`w-auto` 等)を付ける
+
+### e2e テストの知見
+
+- **ハイドレーション前の操作は React に届かない。** hydration 完了前に `fill()` や `click()` を発火させると `onChange` が呼ばれず、hydration 後に controlled な値で上書きされて入力が消える(WebKit で顕著。Chromium は hydration が速くてレースが発生しない)。可視チェック(SSR)で待ってはいけない。**入力・操作は `e2e/utils.ts` の `fillStable` / `retryUntil` で「状態が確定するまでリトライ」する**
+- 「リセット成功」等のトースト文言の要素は消える(sonner は既定 4 秒で消える)ので、アサートは操作直後に行う
+- 表示テキストの assert に使う文言は、ページ内で一意になるものを選ぶ(同一文言は他フィールドのエラーと衝突し得る)
 
 <!-- BEGIN:nextjs-agent-rules -->
 
