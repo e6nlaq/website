@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { fillStable } from "./utils";
 
 // 例値(有理数 mod)に対する再構成結果は solve() の動作から不変に定まる。
 // `bun run` で solve() を実行して算出した期待値をハードコードしている。
@@ -14,8 +15,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("例の値から元の有理数を復元できる", async ({ page }) => {
-  await page.getByRole("button", { name: "例を入力" }).click();
-  await expect(page.getByLabel("val")).toHaveValue("831870305\n332748121");
+  const valbox = page.getByLabel("val");
+  await expect
+    .poll(async () => {
+      await page.getByRole("button", { name: "例を入力" }).click();
+      return valbox.inputValue();
+    })
+    .toBe("831870305\n332748121");
 
   await page.getByRole("button", { name: "計算", exact: true }).click();
 
@@ -39,7 +45,7 @@ test("未入力のままで計算しようとするとエラーが表示され�
 });
 
 test("数値以外の入力はエラーになる", async ({ page }) => {
-  await page.getByLabel("val").fill("3.14");
+  await fillStable(page.getByLabel("val"), "3.14");
   await page.getByRole("button", { name: "計算", exact: true }).click();
 
   await expect(
@@ -49,7 +55,7 @@ test("数値以外の入力はエラーになる", async ({ page }) => {
 });
 
 test("mod 以上の val はエラーになる", async ({ page }) => {
-  await page.getByLabel("val").fill("998244354");
+  await fillStable(page.getByLabel("val"), "998244354");
   await page.getByRole("button", { name: "計算", exact: true }).click();
 
   await expect(page.getByText("val < modである必要があります")).toBeVisible();
@@ -57,8 +63,8 @@ test("mod 以上の val はエラーになる", async ({ page }) => {
 });
 
 test("31 桁以上の limit はエラーになる", async ({ page }) => {
-  await page.getByLabel("val").fill("1");
-  await page.getByLabel("limit").fill("1234567890123456789012345678901");
+  await fillStable(page.getByLabel("val"), "1");
+  await fillStable(page.getByLabel("limit"), "1234567890123456789012345678901");
   await page.getByRole("button", { name: "計算", exact: true }).click();
 
   await expect(
