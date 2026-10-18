@@ -48,6 +48,24 @@ export function textWidth(text: string): number {
   return width;
 }
 
+/** タイトルを1行に収めるスタイル(fontSize と whiteSpace)を返す。
+ * 最大 maxPx で、推定幅が maxWidth を超える場合は縮小する。
+ * 文字幅は近似値のため、余裕を見て 95% 相当までしか使わない。
+ * 縮小しても minPx 未満にしかならない場合は折り返しでフォールバックする。
+ */
+export function fitTitleStyle(
+  title: string,
+  maxWidth: number,
+  maxPx = 76,
+  minPx = 40
+): { fontSize: number; whiteSpace: "nowrap" | "normal" } {
+  const units = textWidth(title);
+  if (units === 0) return { fontSize: maxPx, whiteSpace: "nowrap" };
+  const fitted = Math.floor((maxWidth * 0.95) / units);
+  if (fitted < minPx) return { fontSize: minPx, whiteSpace: "normal" };
+  return { fontSize: Math.min(maxPx, fitted), whiteSpace: "nowrap" };
+}
+
 /** BudouX で文節区切りし、1 行あたり maxUnits 以内になるよう改行を挿入する */
 export function wrapDescription(text: string, maxUnits: number): string {
   const chunks = getParser().parse(text);
@@ -122,7 +140,7 @@ export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
           <div
             style={{
               display: "flex",
-              fontSize: "76px",
+              ...fitTitleStyle(meta.title, 680),
               fontWeight: 800,
               lineHeight: 1.2,
               color: "#fafafa",

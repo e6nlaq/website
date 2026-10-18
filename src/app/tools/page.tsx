@@ -60,7 +60,11 @@ const STORES: {
   {
     title: "Utility",
     description: "便利系",
-    items: [{ key: "tools/qr-reader" }, { key: "tools/clock" }],
+    items: [
+      { key: "tools/qr-reader" },
+      { key: "tools/clock" },
+      { key: "tools/rinu-checker" },
+    ],
   },
   {
     title: "Maker",
