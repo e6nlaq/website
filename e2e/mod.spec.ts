@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { fillStable } from "./utils";
+import { fillStable, retryUntil } from "./utils";
 
 // 例値(有理数 mod)に対する再構成結果は solve() の動作から不変に定まる。
 // `bun run` で solve() を実行して算出した期待値をハードコードしている。
@@ -15,13 +15,11 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("例の値から元の有理数を復元できる", async ({ page }) => {
-  const valbox = page.getByLabel("val");
-  await expect
-    .poll(async () => {
-      await page.getByRole("button", { name: "例を入力" }).click();
-      return valbox.inputValue();
-    })
-    .toBe("831870305\n332748121");
+  await retryUntil(
+    () => page.getByRole("button", { name: "例を入力" }).click(),
+    async () =>
+      (await page.getByLabel("val").inputValue()) === "831870305\n332748121"
+  );
 
   await page.getByRole("button", { name: "計算", exact: true }).click();
 
