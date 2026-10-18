@@ -46,6 +46,19 @@ export const toolMeta = {
       "画像",
     ],
   },
+  "tools/clock": {
+    title: "Clock",
+    description: "シンプルなデジタル時計",
+    logo: "/icon/clock.png",
+    keywords: [
+      "時計",
+      "デジタル時計",
+      "時刻",
+      "日付",
+      "UNIX時間",
+      "エポック秒",
+    ],
+  },
   tools: {
     title: "Tools",
     description: "e6nlaq's Labで公開しているツール一覧",

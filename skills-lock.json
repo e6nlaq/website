@@ -30,6 +30,12 @@
       "sourceType": "github",
       "skillPath": "skills/web-design-guidelines/SKILL.md",
       "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "yomiyasu": {
+      "source": "nanaism/yomiyasu",
+      "sourceType": "github",
+      "skillPath": "skills/yomiyasu/SKILL.md",
+      "computedHash": "6a9c757bf1b6a7a33a7a4a5fa5dba58570f85a42d59f24f646693e032ef25a38"
     }
   }
 }
