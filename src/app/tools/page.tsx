@@ -13,9 +13,124 @@ import {
 import { type ToolKeys, toolMeta } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
 
-const MATH_TOOLS: ToolKeys[] = ["tools/mod"];
-const CP_TOOLS: ToolKeys[] = ["tools/ajl-simulator"];
-const UTILITY_TOOLS: ToolKeys[] = ["tools/qr-reader", "tools/clock"];
+// toolMeta に登録済みのツールはキーだけ渡し、そうでないものはオブジェクトで渡す
+type ToolEntry =
+  | { key: ToolKeys }
+  | { name: string; description: string; href: string; icon?: string };
+
+const STORES: {
+  title: string;
+  description: string;
+  items: ToolEntry[];
+}[] = [
+  {
+    title: "Math",
+    description: "数学系",
+    items: [{ key: "tools/mod" }],
+  },
+  {
+    title: "Competitive Programming",
+    description: "競プロ系",
+    items: [
+      { key: "tools/ajl-simulator" },
+      {
+        name: "AtCoder AWC Tab",
+        description:
+          "AtCoderのナビゲーションバーに、今日のAWCへのリンクを追加するUserScript",
+        href: "https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab",
+      },
+      {
+        name: "AtCoder Shorter Affiliation",
+        description: "AtCoderの順位表の「所属」列をスリムにするUserScript",
+        href: "https://greasyfork.org/ja/scripts/575455-atcoder-shorter-affiliation",
+      },
+      {
+        name: "AtCoder Zip Copy",
+        description:
+          "AtCoderの問題文中の .zip リンクの横にコピーボタンを追加するUserScript",
+        href: "https://greasyfork.org/ja/scripts/575504-atcoder-zip-copy",
+      },
+      {
+        name: "AtCoder Nickname",
+        description: "AtCoderにニックネーム機能を追加するUserScript",
+        href: "https://greasyfork.org/ja/scripts/599815-atcoder-nickname",
+      },
+    ],
+  },
+  {
+    title: "Utility",
+    description: "便利系",
+    items: [{ key: "tools/qr-reader" }, { key: "tools/clock" }],
+  },
+  {
+    title: "Maker",
+    description: "作成系",
+    items: [
+      {
+        name: "e6nlaq式路線図メーカー",
+        description: "きれいな路線図を簡単に作成できるツール",
+        href: "https://e6nlaq.github.io/trainmap-maker",
+        icon: "https://e6nlaq.github.io/trainmap-maker/favicon.png",
+      },
+    ],
+  },
+  {
+    title: "Classic",
+    description: "旧作たち",
+    items: [
+      {
+        name: "rinu.jp Checker",
+        description: "rinu.jpに特定ツールが仕込まれているかチェックするサイト",
+        icon: "https://e6nlaq.github.io/rinucf-checker/img/favicon.png",
+        href: "https://e6nlaq.github.io/rinucf-checker",
+      },
+      {
+        name: "School Hit",
+        description: "学校で日にちから指名される確率を計算するサイト",
+        href: "https://e6nlaq.github.io/school-hits",
+        icon: "https://e6nlaq.github.io/school-hits/favicon.png",
+      },
+      {
+        name: "Aqua",
+        description: "Fast, short, and easy. を謳うクセ強自作言語",
+        href: "https://e6nlaq.github.io/aqua",
+        icon: "https://e6nlaq.github.io/aqua/image/aqua.svg",
+      },
+      {
+        name: "Maji Alarm",
+        description: "ガチのマジで絶対起こすアラーム",
+        href: "https://maji-alarm.vercel.app/",
+        icon: "https://maji-alarm.vercel.app/favicon.svg",
+      },
+      {
+        name: "e6nlaq.github.io",
+        description: "旧サイト on GitHub Pages",
+        href: "https://e6nlaq.github.io",
+        icon: "https://e6nlaq.github.io/image/icon.png",
+      },
+    ],
+  },
+];
+
+function toToolItemProps(entry: ToolEntry): {
+  id: string;
+  name: string;
+  description: string;
+  icon?: string;
+  href: string;
+} {
+  if ("key" in entry) {
+    const meta = toolMeta[entry.key] as ToolMeta;
+    return {
+      id: entry.key,
+      name: meta.title,
+      description: meta.description,
+      icon: meta.logo,
+      href: `/${entry.key}`,
+    };
+  }
+  return { id: entry.href, ...entry };
+}
 
 function Store({
   title,
@@ -102,99 +217,18 @@ export default function Tools() {
   return (
     <div className="flex flex-col items-start w-full gap-y-8">
       <h1 className="sr-only">ツール一覧</h1>
-      <Store title="Math" description="数学系">
-        {MATH_TOOLS.map((k) => (
-          <ToolItem
-            name={toolMeta[k].title}
-            description={toolMeta[k].description}
-            icon={(toolMeta[k] as ToolMeta).logo}
-            href={`/${k}`}
-            key={k}
-          />
-        ))}
-      </Store>
-      <Store title="Competitive Programming" description="競プロ系">
-        {CP_TOOLS.map((k) => (
-          <ToolItem
-            name={toolMeta[k].title}
-            description={toolMeta[k].description}
-            icon={(toolMeta[k] as ToolMeta).logo}
-            href={`/${k}`}
-            key={k}
-          />
-        ))}
-        <ToolItem
-          name="AtCoder AWC Tab"
-          description="AtCoderのナビゲーションバーに、今日のAWCへのリンクを追加するUserScript"
-          href="https://greasyfork.org/ja/scripts/566748-atcoder-awc-tab"
-        />
-        <ToolItem
-          name="AtCoder Shorter Affiliation"
-          description="AtCoderの順位表の「所属」列をスリムにするUserScript"
-          href="https://greasyfork.org/ja/scripts/575455-atcoder-shorter-affiliation"
-        />
-        <ToolItem
-          name="AtCoder Zip Copy"
-          description="AtCoderの問題文中の .zip リンクの横にコピーボタンを追加するUserScript"
-          href="https://greasyfork.org/ja/scripts/575504-atcoder-zip-copy"
-        />
-        <ToolItem
-          name="AtCoder Nickname"
-          description="AtCoderにニックネーム機能を追加するUserScript"
-          href="https://greasyfork.org/ja/scripts/599815-atcoder-nickname"
-        />
-      </Store>
-      <Store title="Utility" description="便利系">
-        {UTILITY_TOOLS.map((k) => (
-          <ToolItem
-            name={toolMeta[k].title}
-            description={toolMeta[k].description}
-            icon={(toolMeta[k] as ToolMeta).logo}
-            href={`/${k}`}
-            key={k}
-          />
-        ))}
-      </Store>
-      <Store title="Maker" description="作成系">
-        <ToolItem
-          name="e6nlaq式路線図メーカー"
-          description="きれいな路線図を簡単に作成できるツール"
-          href="https://e6nlaq.github.io/trainmap-maker"
-          icon="https://e6nlaq.github.io/trainmap-maker/favicon.png"
-        />
-      </Store>
-      <Store title="Classic" description="旧作たち">
-        <ToolItem
-          name="rinu.jp Checker"
-          description="rinu.jpに特定ツールが仕込まれているかチェックするサイト"
-          icon="https://e6nlaq.github.io/rinucf-checker/img/favicon.png"
-          href="https://e6nlaq.github.io/rinucf-checker"
-        />
-        <ToolItem
-          name="School Hit"
-          description="学校で日にちから指名される確率を計算するサイト"
-          href="https://e6nlaq.github.io/school-hits"
-          icon="https://e6nlaq.github.io/school-hits/favicon.png"
-        />
-        <ToolItem
-          name="Aqua"
-          description={"Fast, short, and easy. を謳うクセ強自作言語"}
-          href="https://e6nlaq.github.io/aqua"
-          icon="https://e6nlaq.github.io/aqua/image/aqua.svg"
-        />
-        <ToolItem
-          name="Maji Alarm"
-          description="ガチのマジで絶対起こすアラーム"
-          href="https://maji-alarm.vercel.app/"
-          icon="https://maji-alarm.vercel.app/favicon.svg"
-        />
-        <ToolItem
-          name="e6nlaq.github.io"
-          description="旧サイト on GitHub Pages"
-          href="https://e6nlaq.github.io"
-          icon="https://e6nlaq.github.io/image/icon.png"
-        />
-      </Store>
+      {STORES.map((store) => (
+        <Store
+          key={store.title}
+          title={store.title}
+          description={store.description}
+        >
+          {store.items.map((entry) => {
+            const props = toToolItemProps(entry);
+            return <ToolItem key={props.id} {...props} />;
+          })}
+        </Store>
+      ))}
     </div>
   );
 }
