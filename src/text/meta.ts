@@ -46,6 +46,21 @@ export const toolMeta = {
       "画像",
     ],
   },
+  "tools/rinu-checker": {
+    title: "rinu.jp Checker 2",
+    description: "rinu.jpに特定ツールが仕込まれているかチェックするツール",
+    logo: "/icon/rinu.png",
+    keywords: [
+      "rinu.cf",
+      "rinu.jp",
+      "特定",
+      "特定ツール",
+      "判定",
+      "チェッカー",
+      "チェック",
+      "位置情報",
+    ],
+  },
   "tools/clock": {
     title: "Clock",
     description: "シンプルなデジタル時計",
