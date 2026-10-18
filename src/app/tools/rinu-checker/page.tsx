@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ClipboardCopyIcon,
   ClipboardIcon,
   CircleCheckIcon,
   TriangleAlertIcon,
@@ -115,13 +116,20 @@ function DetailTable({
             size="sm"
             onClick={copyResult}
           >
-            <ClipboardIcon data-icon="inline-start" />
+            <ClipboardCopyIcon data-icon="inline-start" />
             結果をコピー
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <Alert variant={result.tokutei ? "destructive" : "default"}>
+        <Alert
+          variant={result.tokutei ? undefined : "default"}
+          className={
+            result.tokutei
+              ? "border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-50"
+              : undefined
+          }
+        >
           {result.tokutei ? <TriangleAlertIcon /> : <CircleCheckIcon />}
           <AlertTitle>
             {result.tokutei ? "特定ツールあり" : "特定ツールなし"}
