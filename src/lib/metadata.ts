@@ -19,7 +19,7 @@ export function convertMetadata(
     icons: icon,
     keywords: meta.keywords,
     twitter: {
-      title: meta.title,
+      title,
       description: meta.description,
       card: "summary_large_image",
       site: "ru_milmil",
@@ -27,7 +27,7 @@ export function convertMetadata(
     },
     openGraph: {
       type: "website",
-      title: meta.title,
+      title,
       description: meta.description,
       images: ogImage ?? defaultImage,
     },
