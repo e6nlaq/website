@@ -1,5 +1,6 @@
 "use client";
 
+import { Inter } from "next/font/google";
 import { SettingsIcon } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
@@ -53,10 +54,18 @@ const WAKELOCK_SWITCH_ID = "clock-wakelock-switch";
 const FONT_SELECT_ID = "clock-font-select";
 const TIME_FORMAT_SELECT_ID = "clock-time-format-select";
 
+// このページでだけ読み込むWebフォント(他ルートにはpreloadされない)。
+// CSS変数は時計のコンテナにだけ付与する
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
 /** 選べるフォント。保存値・グループ分けともにこの値を使う */
 type ClockFont =
   | "line-seed"
   | "source-code-pro"
+  | "inter"
   | "system-ui"
   | "monospace"
   | "serif"
@@ -65,6 +74,7 @@ type ClockFont =
 const CLOCK_FONT_VALUES: readonly ClockFont[] = [
   "line-seed",
   "source-code-pro",
+  "inter",
   "system-ui",
   "monospace",
   "serif",
@@ -74,6 +84,7 @@ const CLOCK_FONT_VALUES: readonly ClockFont[] = [
 const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
   { value: "line-seed", label: "LINE Seed" },
   { value: "source-code-pro", label: "Source Code Pro" },
+  { value: "inter", label: "Inter" },
   { value: "system-ui", label: "system-ui" },
   { value: "monospace", label: "monospace" },
   { value: "serif", label: "serif" },
@@ -81,8 +92,8 @@ const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
 ];
 
 // ラベルはグループごとに分けて表示する(コンテンツ側だけを使う)
-const WEB_FONT_ITEMS = FONT_ITEMS.slice(0, 2);
-const SYSTEM_FONT_ITEMS = FONT_ITEMS.slice(2);
+const WEB_FONT_ITEMS = FONT_ITEMS.slice(0, 3);
+const SYSTEM_FONT_ITEMS = FONT_ITEMS.slice(3);
 
 const TIME_FORMAT_ITEMS: readonly { value: ClockTimeFormat; label: string }[] =
   [
@@ -94,6 +105,7 @@ const TIME_FORMAT_ITEMS: readonly { value: ClockTimeFormat; label: string }[] =
 const FONT_FAMILIES: Record<ClockFont, string> = {
   "line-seed": "var(--font-line-seed, sans-serif)",
   "source-code-pro": "var(--font-code)",
+  inter: "var(--font-inter)",
   "system-ui": "system-ui",
   monospace: "monospace",
   serif: "serif",
@@ -307,7 +319,9 @@ export default function Clock() {
       swipeDirection={isDesktop ? "right" : "down"}
       showSwipeHandle={!isDesktop}
     >
-      <div className="flex flex-col items-center gap-y-3 py-10">
+      <div
+        className={`${inter.variable} flex flex-col items-center gap-y-3 py-10`}
+      >
         <p
           className="text-sm font-medium text-muted-foreground tabular-nums"
           style={{ fontFamily }}
