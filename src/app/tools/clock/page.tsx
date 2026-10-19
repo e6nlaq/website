@@ -13,9 +13,13 @@ import {
 } from "@/components/ui/drawer";
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldTitle,
 } from "@/components/ui/field";
 import {
   Tooltip,
@@ -197,6 +201,7 @@ export default function Clock() {
       onOpenChange={setSettingsOpen}
       // モバイルは下から、それ以外は右から(swipeDirectionが配置も決める)
       swipeDirection={isDesktop ? "right" : "down"}
+      showSwipeHandle={!isDesktop}
     >
       <div className="flex flex-col items-center gap-y-3 py-10">
         <p className="text-sm font-medium font-code text-muted-foreground tabular-nums">
@@ -247,24 +252,33 @@ export default function Clock() {
             時計の動作に関する設定です。
           </DrawerPanelDescription>
         </DrawerHeader>
-        <div className="flex flex-col gap-y-4 p-4">
+        <div className="flex-1 overflow-y-auto p-4">
           <FieldGroup>
-            <Field orientation="horizontal">
+            <FieldSet>
+              <FieldLegend>画面</FieldLegend>
+
               <FieldLabel htmlFor={WAKELOCK_SWITCH_ID}>
-                スリープを防止する
+                <Field
+                  orientation="horizontal"
+                  data-disabled={!WAKE_LOCK_SUPPORTED}
+                >
+                  <FieldContent>
+                    <FieldTitle>スリープを防止する</FieldTitle>
+                    <FieldDescription>
+                      {WAKE_LOCK_SUPPORTED
+                        ? "このタブを開いている間、画面が自動でスリープしなくなります。バッテリーを多く消費します。"
+                        : "お使いのブラウザはスリープ防止に対応していません"}
+                    </FieldDescription>
+                  </FieldContent>
+                  <Switch
+                    id={WAKELOCK_SWITCH_ID}
+                    checked={wakelockOn}
+                    onCheckedChange={handleWakelockChange}
+                    disabled={!WAKE_LOCK_SUPPORTED}
+                  />
+                </Field>
               </FieldLabel>
-              <Switch
-                id={WAKELOCK_SWITCH_ID}
-                checked={wakelockOn}
-                onCheckedChange={handleWakelockChange}
-                disabled={!WAKE_LOCK_SUPPORTED}
-              />
-            </Field>
-            <FieldDescription>
-              {WAKE_LOCK_SUPPORTED
-                ? "このタブを開いている間、画面が自動でスリープしなくなります。電池を多く消費します。"
-                : "お使いのブラウザはスリープ防止に対応していません"}
-            </FieldDescription>
+            </FieldSet>
           </FieldGroup>
         </div>
       </DrawerContent>
