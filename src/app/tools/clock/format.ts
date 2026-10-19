@@ -4,9 +4,17 @@ function pad2(value: number): string {
   return String(value).padStart(2, "0");
 }
 
-/** 現在時刻を HH:MM:SS 形式(ローカル時刻)で返す */
-export function formatClockTime(date: Date): string {
-  return `${pad2(date.getHours())}:${pad2(date.getMinutes())}:${pad2(date.getSeconds())}`;
+/** 時刻の形式。"hh" は時間を0詰め(HH:MM:SS)、"h" は0詰めなし(H:MM:SS) */
+export type ClockTimeFormat = "hh" | "h";
+
+/** 現在時刻を指定した形式(ローカル時刻)で返す */
+export function formatClockTime(
+  date: Date,
+  timeFormat: ClockTimeFormat = "hh"
+): string {
+  const hour =
+    timeFormat === "h" ? String(date.getHours()) : pad2(date.getHours());
+  return `${hour}:${pad2(date.getMinutes())}:${pad2(date.getSeconds())}`;
 }
 
 /** 現在日付を YYYY-MM-DD (曜日) 形式(ローカル時刻)で返す */
