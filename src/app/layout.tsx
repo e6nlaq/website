@@ -36,6 +36,7 @@ const lineSeed = localFont({
       weight: "100",
     },
   ],
+  variable: "--font-line-seed",
 });
 
 const sourceCodePro = Source_Code_Pro({
@@ -73,7 +74,7 @@ export default function RootLayout({
       className={cn("hidden-scrollbar", "font-sans")}
     >
       <body
-        className={`${lineSeed.className} ${sourceCodePro.variable} antialiased `}
+        className={`${lineSeed.className} ${lineSeed.variable} ${sourceCodePro.variable} antialiased `}
       >
         <Analytics />
         <SpeedInsights />

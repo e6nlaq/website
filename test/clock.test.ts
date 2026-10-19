@@ -12,6 +12,16 @@ describe("formatClockTime", () => {
   test("2桁の値はそのまま", () => {
     expect(formatClockTime(new Date(2026, 9, 18, 23, 59, 59))).toBe("23:59:59");
   });
+  test("H:MM:SS形式では時だけ0詰めしない", () => {
+    expect(formatClockTime(new Date(2026, 9, 18, 7, 5, 3), "h")).toBe(
+      "7:05:03"
+    );
+  });
+  test("H:MM:SS形式でも分と秒は0詰めする", () => {
+    expect(formatClockTime(new Date(2026, 9, 18, 15, 0, 0), "h")).toBe(
+      "15:00:00"
+    );
+  });
 });
 
 describe("formatClockDate", () => {
