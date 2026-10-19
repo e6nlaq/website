@@ -17,7 +17,7 @@
       "source": "shadcn/ui",
       "sourceType": "github",
       "skillPath": "skills/shadcn/SKILL.md",
-      "computedHash": "2d7bf36e581289fdcc3ffc592c1ec1d7457572baa72ba0d440229ef34bd7f6dd"
+      "computedHash": "b864a958765563321f485a96f4d59c0bb6539f4286ab6d8b8b66895b7ebd302d"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
@@ -35,7 +35,7 @@
       "source": "nanaism/yomiyasu",
       "sourceType": "github",
       "skillPath": "skills/yomiyasu/SKILL.md",
-      "computedHash": "6a9c757bf1b6a7a33a7a4a5fa5dba58570f85a42d59f24f646693e032ef25a38"
+      "computedHash": "d2a234784bbedda3d7e8878f7425a6f2a3c1434d38b3290604b99cc1ec9f7976"
     }
   }
 }
