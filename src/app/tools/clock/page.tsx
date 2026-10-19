@@ -54,13 +54,21 @@ const FONT_SELECT_ID = "clock-font-select";
 const TIME_FORMAT_SELECT_ID = "clock-time-format-select";
 
 /** 選べるフォント。保存値・グループ分けともにこの値を使う */
-type ClockFont = "line-seed" | "source-code-pro" | "system-ui" | "monospace";
+type ClockFont =
+  | "line-seed"
+  | "source-code-pro"
+  | "system-ui"
+  | "monospace"
+  | "serif"
+  | "sans-serif";
 
 const CLOCK_FONT_VALUES: readonly ClockFont[] = [
   "line-seed",
   "source-code-pro",
   "system-ui",
   "monospace",
+  "serif",
+  "sans-serif",
 ];
 
 const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
@@ -68,6 +76,8 @@ const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
   { value: "source-code-pro", label: "Source Code Pro" },
   { value: "system-ui", label: "system-ui" },
   { value: "monospace", label: "monospace" },
+  { value: "serif", label: "serif" },
+  { value: "sans-serif", label: "sans-serif" },
 ];
 
 // ラベルはグループごとに分けて表示する(コンテンツ側だけを使う)
@@ -86,6 +96,8 @@ const FONT_FAMILIES: Record<ClockFont, string> = {
   "source-code-pro": "var(--font-code)",
   "system-ui": "system-ui",
   monospace: "monospace",
+  serif: "serif",
+  "sans-serif": "sans-serif",
 };
 
 type ClockSettings = {
