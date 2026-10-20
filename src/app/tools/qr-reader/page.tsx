@@ -397,7 +397,7 @@ export default function QrReader() {
       : "再試行";
   const cameraStatusText =
     cameraStatus === "running"
-      ? "QRコードをカメラに向けてください"
+      ? "QRコードを画面いっぱいに映してください"
       : cameraStatus === "starting"
         ? "カメラを起動中…"
         : (cameraMessage ?? "");

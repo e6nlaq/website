@@ -1,8 +1,11 @@
 import jsQR from "jsqr";
 import { getScaledSize } from "./decode";
 
-/** 連続スキャンに使うフレームの最大辺(px) */
-const SCAN_MAX_DIM = 640;
+/**
+ * 連続スキャンに使うフレームの最大辺(px)。
+ * 画面内で小さいQRコードでもモジュールが潰れないよう、映像の解像度に近い値で走査する
+ */
+const SCAN_MAX_DIM = 1280;
 /** 読み取り用に切り出すフレームの最大辺(px) */
 const CAPTURE_MAX_DIM = 1600;
 /** 連続スキャンの間隔(ms) */
