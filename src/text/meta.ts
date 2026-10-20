@@ -35,7 +35,7 @@ export const toolMeta = {
   },
   "tools/qr-reader": {
     title: "QR Reader",
-    description: "完全ローカルQRコード読み取りツール",
+    description: "画像とカメラからQRコードを読み取るツール",
     logo: "/icon/qr-reader.png",
     keywords: [
       "QRコード",
@@ -44,6 +44,7 @@ export const toolMeta = {
       "読み取り",
       "スキャナー",
       "画像",
+      "カメラ",
     ],
   },
   "tools/rinu-checker": {

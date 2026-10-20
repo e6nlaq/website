@@ -83,6 +83,7 @@
 - 大きな計算は Web Worker(`tools/mod` の `solve.worker.ts` が例)
 - 結果やデータのコピーは `navigator.clipboard` + sonner トーストで成功/失敗を必ず通知。エラーには次の手順を示す文言を添える
 - 画像は `next/image` を使い、`width` / `height` を必ず渡す。CSS で片方だけリサイズするとアスペクト比が壊れるので、もう片方に `auto`(`w-auto` 等)を付ける
+- ユーザーからの明示的な指示がない限り、gitの操作は読み取りだけとし、commitなどはしない。
 
 ### e2e テストの知見
 
