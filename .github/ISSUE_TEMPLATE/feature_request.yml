@@ -1,0 +1,41 @@
+name: 機能の要望
+description: 新しいツールや機能を提案する
+title: "[要望] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        要望ありがとうございます。欲しい機能と使う場面を書いてください。
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 欲しい機能
+      description: どんなツールや機能があるとよいかを書いてください。
+      placeholder: "例: 文字列を base64 に変換するツール"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 使う場面
+      description: なぜ欲しいか、どんなときに使うかを書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代わりの方法
+      description: 今はどうやって用を足しているか、ほかの案があれば書いてください。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 確認
+      options:
+        - label: 同じ内容の issue がないか検索した
+          required: true

@@ -1,0 +1,63 @@
+name: 不具合の報告
+description: サイトやツールの不具合を報告する
+title: "[不具合] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        不具合の報告ありがとうございます。同じ内容の報告がないか、先に issue を検索してください。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 何が起きたか
+      description: どのページやツールで、何が起きたかを書いてください。
+      placeholder: "例: QR Reader で画像を読み取ると、結果が表示されずに止まる"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: 同じ不具合を再現する手順を書いてください。
+      placeholder: |
+        1. QR Reader を開く
+        2. QR コードの画像を選ぶ
+        3. 結果を確認する
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+      description: 本来どう動くと思ったかを書いてください。
+      placeholder: "例: 読み取った文字列が結果欄に表示される"
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: 環境
+      description: 使ったブラウザと OS を書いてください。
+      placeholder: "例: Chrome 141 / Windows 11"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: スクリーンショットと補足
+      description: 画面の画像や、ほかに伝えておきたいことがあれば書いてください。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 確認
+      options:
+        - label: 同じ内容の issue がないか検索した
+          required: true
