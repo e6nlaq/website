@@ -6,6 +6,7 @@ import {
   ClipboardIcon,
   CopyIcon,
   FileImageIcon,
+  FlipHorizontalIcon,
   ScanLineIcon,
   SquareArrowOutUpRightIcon,
   SwitchCameraIcon,
@@ -62,7 +63,7 @@ const subscribeCameraSupport = () => () => {};
 const getCameraSupport = () => isCameraSupported();
 const getCameraSupportOnServer = () => true;
 
-type CameraStatus = "starting" | "running" | "stopped" | "error";
+type CameraStatus = "starting" | "running" | "error";
 
 interface Preview {
   src: string;
@@ -161,17 +162,19 @@ export default function QrReader() {
     [stopStream]
   );
 
-  const pauseCamera = useCallback(() => {
-    if (!cameraOpen) return;
-    requestIdRef.current += 1;
-    stopStream();
-    setCameraStatus("stopped");
-    setCameraMessage("カメラを停止しました");
-  }, [cameraOpen, stopStream]);
+  // 停止したらパネルを閉じ、最初のドラッグ&ドロップ画面へ戻す
+  const stopCamera = useCallback(() => {
+    closeCamera();
+    toast.info("カメラを停止しました");
+  }, [closeCamera]);
 
-  const resumeCamera = useCallback(() => {
+  const startCamera = useCallback(() => {
     void openCamera(activeDeviceIdRef.current ?? undefined);
   }, [openCamera]);
+
+  const toggleMirror = useCallback(() => {
+    setMirror((current) => !current);
+  }, []);
 
   const switchCamera = useCallback(() => {
     const devices = devicesRef.current;
@@ -289,24 +292,24 @@ export default function QrReader() {
     };
   }, [cameraOpen, cameraStatus, handleCameraHit]);
 
-  // タブが隠れたらカメラを止め、戻ったときは利用者の操作で再開してもらう
+  // タブが隠れたらカメラを止め、最初の画面に戻す
   useEffect(() => {
     const onVisibilityChange = () => {
-      if (document.visibilityState === "hidden") pauseCamera();
+      if (document.visibilityState === "hidden") closeCamera();
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, [pauseCamera]);
+  }, [closeCamera]);
 
   useEffect(() => {
     if (!cameraOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") pauseCamera();
+      if (event.key === "Escape") stopCamera();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [cameraOpen, pauseCamera]);
+  }, [cameraOpen, stopCamera]);
 
   const reset = useCallback(() => {
     closeCamera();
@@ -391,9 +394,7 @@ export default function QrReader() {
     ? "カメラで読み取る"
     : cameraActive
       ? "カメラを停止"
-      : cameraStatus === "error"
-        ? "再試行"
-        : "カメラを再開";
+      : "再試行";
   const cameraStatusText =
     cameraStatus === "running"
       ? "QRコードをカメラに向けてください"
@@ -432,9 +433,7 @@ export default function QrReader() {
               </Button>
               <Button
                 variant="outline"
-                onClick={
-                  cameraOpen && cameraActive ? pauseCamera : resumeCamera
-                }
+                onClick={cameraOpen && cameraActive ? stopCamera : startCamera}
                 disabled={loading || !cameraSupported}
                 aria-describedby={
                   cameraSupported ? undefined : "qr-reader-camera-unsupported"
@@ -495,7 +494,7 @@ export default function QrReader() {
                       <Spinner className="size-6 text-white" />
                     </div>
                   ) : null}
-                  {cameraStatus === "stopped" || cameraStatus === "error" ? (
+                  {cameraStatus === "error" ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/70">
                       <CameraOffIcon
                         className="size-8 text-white"
@@ -504,12 +503,22 @@ export default function QrReader() {
                     </div>
                   ) : null}
                 </div>
-                {cameraCount > 1 && cameraStatus === "running" ? (
-                  <div>
-                    <Button variant="outline" onClick={switchCamera}>
-                      <SwitchCameraIcon data-icon="inline-start" />
-                      カメラを切り替え
+                {cameraStatus === "running" ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant={mirror ? "secondary" : "outline"}
+                      onClick={toggleMirror}
+                      aria-pressed={mirror}
+                    >
+                      <FlipHorizontalIcon data-icon="inline-start" />
+                      左右反転
                     </Button>
+                    {cameraCount > 1 ? (
+                      <Button variant="outline" onClick={switchCamera}>
+                        <SwitchCameraIcon data-icon="inline-start" />
+                        カメラを切り替え
+                      </Button>
+                    ) : null}
                   </div>
                 ) : null}
                 <FieldDescription
