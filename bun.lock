@@ -10,7 +10,7 @@
         "@icons-pack/react-simple-icons": "^13.15.1",
         "@vercel/analytics": "^2.0.1",
         "@vercel/speed-insights": "^2.0.0",
-        "budoux": "^0.9.3",
+        "budoux": "^0.10.0",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.5.0",
         "jsqr": "^1.4.0",
@@ -558,7 +558,7 @@
 
     "browserslist": ["browserslist@4.29.3", "", { "dependencies": { "baseline-browser-mapping": "^2.11.26", "caniuse-lite": "^1.0.30001813", "electron-to-chromium": "^1.5.439", "node-releases": "^2.0.57", "update-browserslist-db": "^1.3.3" }, "bin": { "browserslist": "cli.js" } }, "sha512-1R4kiYKXGViqEN0CnoDrXc1StD9niAwu+j2dukWzrD4bJgsD4lDmEp0CRbc6E/vYJIfTHwPmwyaKtVSudICdPA=="],
 
-    "budoux": ["budoux@0.9.3", "", { "dependencies": { "commander": "^15.0.0", "linkedom": "^0.18.7" }, "bin": { "budoux": "bin/budoux.js" } }, "sha512-Kj3eztSzqVzkmh51Hf8Z+vFw5lkEjGJlxtv7J6nMCjVHbInTom2t8XhYNcz479753NR94Ibv3t81roKgkyfTcA=="],
+    "budoux": ["budoux@0.10.0", "", { "dependencies": { "commander": "^15.0.0", "linkedom": "^0.18.7" }, "bin": { "budoux": "bin/budoux.js" } }, "sha512-jh9qIGuVLdeuc7z0jRyeSe7zEa7XthNu3QPTnzLpeMXbz4v7Lwx0j0rMK90jHSM/a8kVrTjXoLRHBhyVTfxk6w=="],
 
     "bun-types": ["bun-types@1.4.3", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-tinRJNGOmUN+tEAsn2y2e942n9JHRHR42iUYzDH75NmhJqVBokGSQkkfSFdNWwsANIdrK6ACH9t01M452YyTwg=="],
 
