@@ -144,7 +144,7 @@ function Result({
                 }
               />
               {dat !== undefined && (
-                <TooltipContent>
+                <TooltipContent className="font-code tabular-nums">
                   ≈ {(Number(bunsi) / Number(dat)).toFixed(10)}
                 </TooltipContent>
               )}

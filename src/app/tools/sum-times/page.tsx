@@ -202,7 +202,11 @@ export default function SumTimes() {
             </p>
             {result.kind === "ok" && (
               <p className="text-sm text-muted-foreground">
-                合計 {result.totalMinutes.toLocaleString("ja-JP")} 分
+                合計{" "}
+                <span className="tabular-nums font-code">
+                  {result.totalMinutes.toLocaleString("ja-JP")}
+                </span>{" "}
+                分
               </p>
             )}
           </div>

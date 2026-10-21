@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/chart";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -271,13 +270,11 @@ export default function AjlSimulator() {
                     type="number"
                     aria-invalid={fieldState.invalid || undefined}
                     className="font-code"
+                    placeholder="参加回数がD回未満なら空欄にしてください"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
-                  <FieldDescription>
-                    参加回数がD回未満なら空欄にしてください
-                  </FieldDescription>
                 </Field>
               )}
             />

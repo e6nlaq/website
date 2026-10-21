@@ -40,7 +40,7 @@ const lineSeed = localFont({
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-code",
+  variable: "--font-geist-mono",
 });
 
 export const metadata = convertMetadata("", {
@@ -70,11 +70,14 @@ export default function RootLayout({
     <html
       lang="ja"
       suppressHydrationWarning
-      className={cn("hidden-scrollbar", "font-sans")}
+      className={cn(
+        "hidden-scrollbar",
+        "font-sans",
+        lineSeed.variable,
+        geistMono.variable
+      )}
     >
-      <body
-        className={`${lineSeed.className} ${lineSeed.variable} ${geistMono.variable} antialiased `}
-      >
+      <body className={`${lineSeed.className} antialiased`}>
         <Analytics />
         <SpeedInsights />
 
@@ -95,11 +98,11 @@ export default function RootLayout({
                 </main>
                 <footer className="mt-auto">
                   <div className="flex flex-col justify-center items-center py-4">
-                    <p className={`${geistMono.className}  text-sm`}>
+                    <p className="font-code text-sm">
                       (C){" "}
                       <Tooltip>
                         <TooltipTrigger render={<span>{buildYear}</span>} />
-                        <TooltipContent>
+                        <TooltipContent className="font-code tabular-nums">
                           {buildTime.toLocaleString("ja-JP", {
                             timeZone: "Asia/Tokyo",
                           })}
