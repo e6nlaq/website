@@ -91,13 +91,13 @@
 - 「リセット成功」等のトースト文言の要素は消える(sonner は既定 4 秒で消える)ので、アサートは操作直後に行う
 - 表示テキストの assert に使う文言は、ページ内で一意になるものを選ぶ(同一文言は他フィールドのエラーと衝突し得る)
 
-<!-- BEGIN:nextjs-agent-rules -->
-
 ## SKILLS
 
 - grillingスキルを使用して、ユーザーと実装を綿密に計画するようにしてください。
 - 実装する際には、vercel-react-best-practicesとweb-design-guidelinesに従ってください。
 - 日本語の文章を書く際、yomiyasuを使って、正しい日本語を書くようにしてください。
+
+<!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
 
