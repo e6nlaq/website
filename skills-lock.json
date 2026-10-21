@@ -13,6 +13,12 @@
       "skillPath": "skills/migrate-radix-to-base/SKILL.md",
       "computedHash": "4fdc31bf287f674ba6bf91a648120f7b34cd7ef370f998f2cc116fed067789c5"
     },
+    "security-audit": {
+      "source": "cloudflare/security-audit-skill",
+      "sourceType": "github",
+      "skillPath": "skills/security-audit/SKILL.md",
+      "computedHash": "98b97aad2873b3b9a8e064007c25e7827b493ba27fda8bfbdb41dab586767973"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

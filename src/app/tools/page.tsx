@@ -63,6 +63,7 @@ const STORES: {
     items: [
       { key: "tools/qr-reader" },
       { key: "tools/clock" },
+      { key: "tools/sum-times" },
       { key: "tools/rinu-checker" },
     ],
   },

@@ -15,5 +15,6 @@
   "rules": {},
   "env": {
     "builtin": true
-  }
+  },
+  "ignorePatterns": [".agents/**/*"]
 }
