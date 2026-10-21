@@ -115,7 +115,7 @@ body {
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
-  --scrollbar: oklch(88.647% 0.00553 286.021);
+  --scrollbar: oklch(76.509% 0.00713 286.056);
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --brand: oklch(0.685 0.169 237.323); /* Tailwind sky-500 */
@@ -157,7 +157,7 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
-  --scrollbar: oklch(23.97% 0.00191 286.049);
+  --scrollbar: oklch(37.602% 0.00341 286.055);
   --brand: oklch(0.746 0.16 232.661); /* Tailwind sky-400 */
   color-scheme: dark;
 }
