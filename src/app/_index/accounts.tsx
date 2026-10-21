@@ -134,7 +134,7 @@ export default function Accounts() {
               </a>
             }
           />
-          <TooltipContent side="bottom" className="font-code">
+          <TooltipContent side="bottom" className="font-code font-semibold">
             {account.id}
           </TooltipContent>
         </Tooltip>
