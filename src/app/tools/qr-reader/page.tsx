@@ -605,7 +605,12 @@ export default function QrReader() {
                 <FieldLabel htmlFor={resultInputId}>
                   読み取ったデータ
                 </FieldLabel>
-                <Input id={resultInputId} value={result.data} readOnly />
+                <Input
+                  id={resultInputId}
+                  value={result.data}
+                  readOnly
+                  className="font-code"
+                />
               </Field>
             </FieldGroup>
           </CardContent>
