@@ -1,4 +1,4 @@
-import { Source_Code_Pro } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics, SpeedInsights } from "@/components/analytics";
 import "./globals.css";
@@ -14,7 +14,6 @@ import {
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 import type { Viewport } from "next";
 
 const lineSeed = localFont({
@@ -39,7 +38,7 @@ const lineSeed = localFont({
   variable: "--font-line-seed",
 });
 
-const sourceCodePro = Source_Code_Pro({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-code",
 });
@@ -74,7 +73,7 @@ export default function RootLayout({
       className={cn("hidden-scrollbar", "font-sans")}
     >
       <body
-        className={`${lineSeed.className} ${lineSeed.variable} ${sourceCodePro.variable} antialiased `}
+        className={`${lineSeed.className} ${lineSeed.variable} ${geistMono.variable} antialiased `}
       >
         <Analytics />
         <SpeedInsights />
@@ -96,7 +95,7 @@ export default function RootLayout({
                 </main>
                 <footer className="mt-auto">
                   <div className="flex flex-col justify-center items-center py-4">
-                    <p className={`${sourceCodePro.className}  text-sm`}>
+                    <p className={`${geistMono.className}  text-sm`}>
                       (C){" "}
                       <Tooltip>
                         <TooltipTrigger render={<span>{buildYear}</span>} />
@@ -108,11 +107,12 @@ export default function RootLayout({
                         </TooltipContent>
                       </Tooltip>{" "}
                       e6nlaq
+                      {" - "}
                       <a
                         href="https://github.com/e6nlaq/website"
-                        className={cn(buttonVariants({ variant: "link" }))}
                         target="_blank"
                         rel="noreferrer"
+                        className="hover:underline"
                       >
                         Source
                       </a>

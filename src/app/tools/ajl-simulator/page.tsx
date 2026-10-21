@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/chart";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -248,6 +249,7 @@ export default function AjlSimulator() {
                     type="number"
                     step="any"
                     aria-invalid={fieldState.invalid || undefined}
+                    className="font-code"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -267,12 +269,15 @@ export default function AjlSimulator() {
                     {...field}
                     id={field.name}
                     type="number"
-                    placeholder="参加回数がD回未満なら空欄にしてください"
                     aria-invalid={fieldState.invalid || undefined}
+                    className="font-code"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
+                  <FieldDescription>
+                    参加回数がD回未満なら空欄にしてください
+                  </FieldDescription>
                 </Field>
               )}
             />
@@ -293,6 +298,7 @@ export default function AjlSimulator() {
                         id={field.name}
                         type="number"
                         aria-invalid={fieldState.invalid || undefined}
+                        className="font-code"
                       />
                       <InputGroupAddon align="inline-end">
                         <Tooltip>
@@ -341,6 +347,7 @@ export default function AjlSimulator() {
                       id={field.name}
                       type="number"
                       aria-invalid={fieldState.invalid || undefined}
+                      className="font-code"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

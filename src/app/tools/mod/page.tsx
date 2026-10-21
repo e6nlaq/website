@@ -356,6 +356,7 @@ export default function Mod() {
                       id={field.name}
                       placeholder={exampleValues}
                       aria-invalid={fieldState.invalid}
+                      className="font-code"
                     />
                     <InputGroupAddon
                       align="inline-end"
@@ -466,6 +467,7 @@ export default function Mod() {
                       autoComplete="off"
                       list={modListId}
                       aria-invalid={fieldState.invalid || undefined}
+                      className="font-code"
                       {...field}
                     />
                     <datalist id={modListId}>
@@ -493,6 +495,7 @@ export default function Mod() {
                     spellCheck={false}
                     autoComplete="off"
                     aria-invalid={fieldState.invalid || undefined}
+                    className="font-code"
                     {...field}
                   />
                   <FieldDescription>分母の探索範囲</FieldDescription>

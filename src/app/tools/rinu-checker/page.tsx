@@ -289,6 +289,7 @@ export default function RinuChecker() {
                       spellCheck={false}
                       autoComplete="off"
                       aria-invalid={fieldState.invalid || undefined}
+                      className="font-code"
                     />
                     <InputGroupAddon align="inline-end">
                       <Tooltip>
