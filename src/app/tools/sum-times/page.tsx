@@ -197,7 +197,7 @@ export default function SumTimes() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-1" aria-live="polite">
-            <p className="text-5xl font-bold tabular-nums tracking-wider">
+            <p className="text-5xl font-bold tabular-nums tracking-wider font-code">
               {result.kind === "ok" ? result.formatted : PLACEHOLDER_TOTAL}
             </p>
             {result.kind === "ok" && (
