@@ -75,6 +75,12 @@ export const toolMeta = {
       "エポック秒",
     ],
   },
+  "tools/sum-times": {
+    title: "Sum Times",
+    description: "HH:MM時間合計ツール",
+    logo: "/icon/sum-times.png",
+    keywords: ["時間", "合計", "時間計算", "HH:MM", "集計", "タイムカード"],
+  },
   tools: {
     title: "Tools",
     description: "e6nlaq's Labで公開しているツール一覧",
