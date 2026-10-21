@@ -45,7 +45,7 @@
     "@types/react-dom": "19.3.0",
     "ac-library-js": "^0.1.1",
     "lefthook": "^2.2.2",
-    "oxfmt": "^0.73.0",
+    "oxfmt": "^0.74.0",
     "oxlint": "^1.88.0",
     "postcss": "^8.5.30",
     "tailwindcss": "^4.3.3",
