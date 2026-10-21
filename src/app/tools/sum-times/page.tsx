@@ -128,7 +128,7 @@ export default function SumTimes() {
               value={hydrated ? text : ""}
               onChange={(event) => setText(event.target.value)}
               placeholder={PLACEHOLDER}
-              className="min-h-40 font-code"
+              className="min-h-40 max-h-80 resize-y field-sizing-fixed font-code"
               spellCheck={false}
               autoComplete="off"
               aria-invalid={hasInvalidInput || undefined}
