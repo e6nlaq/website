@@ -153,7 +153,7 @@ function DetailTable({
                 <TableCell className="align-top font-medium">
                   {row.label}
                 </TableCell>
-                <TableCell className="whitespace-normal break-all align-top">
+                <TableCell className="whitespace-normal break-all align-top font-code">
                   {row.href !== undefined ? (
                     <a
                       href={row.href}
@@ -289,6 +289,7 @@ export default function RinuChecker() {
                       spellCheck={false}
                       autoComplete="off"
                       aria-invalid={fieldState.invalid || undefined}
+                      className="font-code"
                     />
                     <InputGroupAddon align="inline-end">
                       <Tooltip>

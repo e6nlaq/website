@@ -68,7 +68,7 @@ body {
 
   --color-brand: var(--brand);
 
-  --font-code: var(--font-code);
+  --font-code: var(--font-geist-mono), var(--font-line-seed);
 
   --font-heading: var(--font-sans);
 

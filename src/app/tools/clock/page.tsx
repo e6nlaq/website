@@ -1,6 +1,6 @@
 "use client";
 
-import { Inter } from "next/font/google";
+import { Inter, Source_Code_Pro } from "next/font/google";
 import { SettingsIcon } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
@@ -55,15 +55,22 @@ const FONT_SELECT_ID = "clock-font-select";
 const TIME_FORMAT_SELECT_ID = "clock-time-format-select";
 
 // このページでだけ読み込むWebフォント(他ルートにはpreloadされない)。
-// CSS変数は時計のコンテナにだけ付与する
+// CSS変数は時計のコンテナにだけ付与する。
+// Geist Mono(既定)はサイト共通の --font-code を使う
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
+const sourceCodePro = Source_Code_Pro({
+  subsets: ["latin"],
+  variable: "--font-source-code-pro",
+});
+
 /** 選べるフォント。保存値・グループ分けともにこの値を使う */
 type ClockFont =
   | "line-seed"
+  | "geist-mono"
   | "source-code-pro"
   | "inter"
   | "system-ui"
@@ -73,6 +80,7 @@ type ClockFont =
 
 const CLOCK_FONT_VALUES: readonly ClockFont[] = [
   "line-seed",
+  "geist-mono",
   "source-code-pro",
   "inter",
   "system-ui",
@@ -83,6 +91,7 @@ const CLOCK_FONT_VALUES: readonly ClockFont[] = [
 
 const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
   { value: "line-seed", label: "LINE Seed" },
+  { value: "geist-mono", label: "Geist Mono" },
   { value: "source-code-pro", label: "Source Code Pro" },
   { value: "inter", label: "Inter" },
   { value: "system-ui", label: "system-ui" },
@@ -92,8 +101,8 @@ const FONT_ITEMS: readonly { value: ClockFont; label: string }[] = [
 ];
 
 // ラベルはグループごとに分けて表示する(コンテンツ側だけを使う)
-const WEB_FONT_ITEMS = FONT_ITEMS.slice(0, 3);
-const SYSTEM_FONT_ITEMS = FONT_ITEMS.slice(3);
+const WEB_FONT_ITEMS = FONT_ITEMS.slice(0, 4);
+const SYSTEM_FONT_ITEMS = FONT_ITEMS.slice(4);
 
 const TIME_FORMAT_ITEMS: readonly { value: ClockTimeFormat; label: string }[] =
   [
@@ -104,7 +113,8 @@ const TIME_FORMAT_ITEMS: readonly { value: ClockTimeFormat; label: string }[] =
 /** フォントの選択値 → CSSのfont-family */
 const FONT_FAMILIES: Record<ClockFont, string> = {
   "line-seed": "var(--font-line-seed, sans-serif)",
-  "source-code-pro": "var(--font-code)",
+  "geist-mono": "var(--font-code)",
+  "source-code-pro": "var(--font-source-code-pro)",
   inter: "var(--font-inter)",
   "system-ui": "system-ui",
   monospace: "monospace",
@@ -120,7 +130,7 @@ type ClockSettings = {
 
 const DEFAULT_SETTINGS: ClockSettings = {
   wakelock: false,
-  font: "source-code-pro",
+  font: "geist-mono",
   timeFormat: "hh",
 };
 
@@ -320,7 +330,7 @@ export default function Clock() {
       showSwipeHandle={!isDesktop}
     >
       <div
-        className={`${inter.variable} flex flex-col items-center gap-y-3 py-10`}
+        className={`${inter.variable} ${sourceCodePro.variable} flex flex-col items-center gap-y-3 py-10`}
       >
         <p
           className="text-sm font-medium text-muted-foreground tabular-nums"
