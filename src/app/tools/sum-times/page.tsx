@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardCopyIcon } from "lucide-react";
+import { ClipboardCopyIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { ToolCard } from "@/components/tool-card";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useConfirm } from "@/hooks/useConfirm";
 import { evaluateSumTimes } from "./logic";
 
 const INPUT_ID = "sum-times-input";
@@ -68,6 +69,7 @@ export default function SumTimes() {
   );
   const [text, setText] = useState(readSavedText);
   const [saveEnabled, setSaveEnabled] = useState(readSaveEnabled);
+  const confirm = useConfirm();
 
   // ハイドレーション前はサーバーと同じ空入力として扱う
   const activeText = hydrated ? text : "";
@@ -91,7 +93,17 @@ export default function SumTimes() {
     }
   }, [hydrated, saveEnabled, text]);
 
-  const handleReset = () => {
+  const handleReset = async () => {
+    const confirmed = await confirm({
+      title: "リセットしますか?",
+      description:
+        "入力した時間と保存済みの入力を削除します。この操作は取り消せません。",
+      ok: "リセット",
+      variant: "destructive",
+      icon: Trash2Icon,
+    });
+    if (!confirmed) return;
+
     setText("");
     try {
       localStorage.removeItem(INPUT_STORAGE_KEY);
