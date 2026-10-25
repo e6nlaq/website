@@ -85,11 +85,28 @@
 - 画像は `next/image` を使い、`width` / `height` を必ず渡す。CSS で片方だけリサイズするとアスペクト比が壊れるので、もう片方に `auto`(`w-auto` 等)を付ける
 - ユーザーからの明示的な指示がない限り、gitの操作は読み取りだけとし、commitなどはしない。
 
+## PWA(インストール・オフライン対応)
+
+- `src/app/manifest.ts` — Web App Manifest(`/manifest.webmanifest`)。ショートカットは Tools と QR Reader
+- `src/lib/metadata.ts` — `rel="icon"` はページごとのロゴ、`apple-touch-icon` は全ページで `/favicon.png`
+- `src/lib/install-prompt.ts` — `beforeinstallprompt` を保持するストア。`useSyncExternalStore` で購読する
+- `src/components/pwa-register.tsx` — 本番ビルドのみ `/sw.js` を登録する(dev では HMR を壊さないため登録しない。既存の SW があれば `update()` して古いキャッシュを破棄する)
+- `src/app/_index/install-button.tsx` — トップページの Install ボタン。iOS では共有 → ホーム画面に追加の手順を表示する
+- `public/sw.js` — 手書きの Service Worker。Serwist は Turbopack 非対応のため使わない
+  - ページ / RSC は network-first、`/_next/static/*` は immutable なレスポンスのみ cache-first(開発サーバの no-cache チャンクはキャッシュしない)、画像・フォント・wasm は stale-while-revalidate
+  - API・OG 画像・クロスオリジン・GET 以外・`/sw.js` は横取りしない
+  - **キャッシュ戦略を変えたら `CACHE_VERSION` を上げる**
+- `public/offline.html` — オフライン時のフォールバック(インライン CSS)
+- PWA アイコンは `public/icon.svg` から `sharp` で生成する。`icon-192.png` / `icon-512.png` は背景を透明にし、アートワークをキャンバスの 88% まで拡大する。Apple 用の `favicon.png` と maskable 用の `icon-maskable-512.png` は `#f1f1f1` の背景を残す。差し替え時は再生成する
+- e2e は `e2e/pwa.spec.ts`。dev では Service Worker を自動登録しないため、オフラインのテストだけ手動で登録している。登録した SW とキャッシュはテスト後に必ず解除・削除する(残すと dev で古いチャンクが配信され、モジュール解決エラーになる)
+- localhost で `bun run start` を試すと SW が登録される。その後 `bun run dev` に切り替えると古いキャッシュが残ることがあるため、DevTools の Application → Service Workers で解除してから開発する
+
 ### e2e テストの知見
 
 - **ハイドレーション前の操作は React に届かない。** hydration 完了前に `fill()` や `click()` を発火させると `onChange` が呼ばれず、hydration 後に controlled な値で上書きされて入力が消える(WebKit で顕著。Chromium は hydration が速くてレースが発生しない)。可視チェック(SSR)で待ってはいけない。**入力・操作は `e2e/utils.ts` の `fillStable` / `retryUntil` で「状態が確定するまでリトライ」する**
 - 「リセット成功」等のトースト文言の要素は消える(sonner は既定 4 秒で消える)ので、アサートは操作直後に行う
 - 表示テキストの assert に使う文言は、ページ内で一意になるものを選ぶ(同一文言は他フィールドのエラーと衝突し得る)
+- **Firefox では `context.setOffline(true)` が Service Worker の `fetch` に効かない**(SW が通常どおりネットワークから取得してしまう)。そのためオフライン遷移のテストは Firefox のみスキップしている(`pwa.spec.ts`)
 
 ## SKILLS
 
