@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RefreshCwIcon } from "lucide-react";
+import { RefreshCwIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import {
@@ -220,9 +220,12 @@ export default function AjlSimulator() {
               onClick={async () => {
                 if (
                   await confirm({
-                    title: "確認",
+                    title: "本当にリセットしますか?",
                     description:
-                      "本当にリセットしますか? この操作は取り消しできません。",
+                      "入力した値を全てリセットします。この操作は取り消しできません。",
+                    icon: Trash2Icon,
+                    variant: "destructive",
+                    ok: "リセット",
                   })
                 ) {
                   form.reset(defaultValues);

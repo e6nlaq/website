@@ -72,11 +72,23 @@ test("合計をコピーできる", async ({ page }) => {
     .toBe("02:15");
 });
 
-test("リセットで入力と保存済みの入力が消える", async ({ page }) => {
+test("リセットは確認ダイアログを経て実行される", async ({ page }) => {
   await fillStable(input(page), "1:30");
   await expect(page.getByText("01:30", { exact: true })).toBeVisible();
 
+  const dialog = page.getByRole("alertdialog");
+
   await page.getByRole("button", { name: "リセット" }).click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("リセットしますか?")).toBeVisible();
+
+  await dialog.getByRole("button", { name: "キャンセル" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(input(page)).toHaveValue("1:30");
+
+  await page.getByRole("button", { name: "リセット" }).click();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "リセット" }).click();
 
   await expect(input(page)).toHaveValue("");
   await expect(page.getByText("--:--", { exact: true })).toBeVisible();
