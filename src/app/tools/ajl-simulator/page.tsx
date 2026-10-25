@@ -225,6 +225,7 @@ export default function AjlSimulator() {
                       "入力した値を全てリセットします。この操作は取り消しできません。",
                     icon: Trash2Icon,
                     variant: "destructive",
+                    ok: "リセット",
                   })
                 ) {
                   form.reset(defaultValues);
