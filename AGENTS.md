@@ -97,7 +97,7 @@
   - API・OG 画像・クロスオリジン・GET 以外・`/sw.js` は横取りしない
   - **キャッシュ戦略を変えたら `CACHE_VERSION` を上げる**
 - `public/offline.html` — オフライン時のフォールバック(インライン CSS)
-- PWA アイコンは `public/favicon.png`(500×500)から `sharp` で生成した `icon-192.png` / `icon-512.png` / `icon-maskable-512.png`。差し替え時は再生成する
+- PWA アイコンは `public/icon.svg` から `sharp` で生成する。`icon-192.png` / `icon-512.png` は背景を透明にし、アートワークをキャンバスの 88% まで拡大する。Apple 用の `favicon.png` と maskable 用の `icon-maskable-512.png` は `#f1f1f1` の背景を残す。差し替え時は再生成する
 - e2e は `e2e/pwa.spec.ts`。dev では Service Worker を自動登録しないため、オフラインのテストだけ手動で登録している
 
 ### e2e テストの知見

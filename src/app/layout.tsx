@@ -106,12 +106,12 @@ export default function RootLayout({
               <div className="min-h-svh flex flex-col">
                 <Nav />
 
-                <main className="flex justify-center items-center w-screen py-16 px-4 grow">
+                <main className="flex justify-center items-center w-screen py-16 px-5 grow">
                   {children}
                   <Toaster richColors />
                 </main>
                 <footer className="mt-auto">
-                  <div className="flex flex-col justify-center items-center py-4">
+                  <div className="flex flex-col justify-center items-center py-6">
                     <p className="font-code text-sm">
                       (C){" "}
                       <Tooltip>

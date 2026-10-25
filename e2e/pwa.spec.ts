@@ -76,6 +76,10 @@ test("PWA アイコンが正しいサイズで配信される", async ({ request
   const favicon = await request.get("/favicon.svg");
   expect(favicon.ok()).toBe(true);
   expect(favicon.headers()["content-type"]).toContain("image/svg+xml");
+
+  const iconSvg = await request.get("/icon.svg");
+  expect(iconSvg.ok()).toBe(true);
+  expect(iconSvg.headers()["content-type"]).toContain("image/svg+xml");
 });
 
 test("トップページが manifest とアイコンを参照する", async ({ page }) => {
@@ -121,7 +125,7 @@ test("Service Worker とオフラインページが配信される", async ({ re
   const offline = await request.get("/offline.html");
   expect(offline.ok()).toBe(true);
   expect(offline.headers()["content-type"]).toContain("text/html");
-  expect(await offline.text()).toContain("オフラインです");
+  expect(await offline.text()).toContain("インターネット接続を確認して");
 });
 
 test("オフライン時はオフラインページを表示する", async ({ page, context }) => {
@@ -136,9 +140,7 @@ test("オフライン時はオフラインページを表示する", async ({ pa
   await context.setOffline(true);
   await page.goto("/tools/sum-times");
 
-  await expect(
-    page.getByRole("heading", { name: "オフラインです" })
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Offline" })).toBeVisible();
 });
 
 test.describe("iOS", () => {
