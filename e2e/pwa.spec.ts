@@ -128,7 +128,19 @@ test("Service Worker とオフラインページが配信される", async ({ re
   expect(await offline.text()).toContain("インターネット接続を確認して");
 });
 
-test("オフライン時はオフラインページを表示する", async ({ page, context }) => {
+test("オフライン時はオフラインページを表示する", async ({
+  page,
+  context,
+  browserName,
+}) => {
+  // Firefox の context.setOffline は Service Worker の fetch に反映されず、
+  // SW が通常どおりネットワークからページを取得してしまうため検証できない。
+  // https://github.com/microsoft/playwright/issues/2311
+  test.skip(
+    browserName === "firefox",
+    "Firefox では setOffline が Service Worker の fetch に効かない"
+  );
+
   await page.goto("/");
 
   await page.evaluate(async () => {

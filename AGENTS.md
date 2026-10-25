@@ -106,6 +106,7 @@
 - **ハイドレーション前の操作は React に届かない。** hydration 完了前に `fill()` や `click()` を発火させると `onChange` が呼ばれず、hydration 後に controlled な値で上書きされて入力が消える(WebKit で顕著。Chromium は hydration が速くてレースが発生しない)。可視チェック(SSR)で待ってはいけない。**入力・操作は `e2e/utils.ts` の `fillStable` / `retryUntil` で「状態が確定するまでリトライ」する**
 - 「リセット成功」等のトースト文言の要素は消える(sonner は既定 4 秒で消える)ので、アサートは操作直後に行う
 - 表示テキストの assert に使う文言は、ページ内で一意になるものを選ぶ(同一文言は他フィールドのエラーと衝突し得る)
+- **Firefox では `context.setOffline(true)` が Service Worker の `fetch` に効かない**(SW が通常どおりネットワークから取得してしまう)。そのためオフライン遷移のテストは Firefox のみスキップしている(`pwa.spec.ts`)
 
 ## SKILLS
 
