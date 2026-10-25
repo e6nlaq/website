@@ -95,9 +95,9 @@ export default function SumTimes() {
 
   const handleReset = async () => {
     const confirmed = await confirm({
-      title: "リセットしますか?",
+      title: "本当にリセットしますか?",
       description:
-        "入力した時間と保存済みの入力を削除します。この操作は取り消せません。",
+        "入力した時間と保存済みの入力を削除します。この操作は取り消しできません。",
       ok: "リセット",
       variant: "destructive",
       icon: Trash2Icon,
