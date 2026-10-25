@@ -7,8 +7,20 @@ import "@/lib/install-prompt";
 
 export function PwaRegister() {
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") return;
     if (!("serviceWorker" in navigator)) return;
+
+    if (process.env.NODE_ENV !== "production") {
+      // 本番ビルドを localhost で動かしたときの SW が残っていると、
+      // dev のチャンクが古いキャッシュで配信されて壊れる。
+      // 登録はしないが、既存の SW は最新の sw.js に更新しておく。
+      navigator.serviceWorker
+        .getRegistration("/")
+        .then((registration) => registration?.update())
+        .catch(() => {
+          // 更新に失敗してもページの動作には影響させない
+        });
+      return;
+    }
 
     const register = () => {
       navigator.serviceWorker

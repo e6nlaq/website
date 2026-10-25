@@ -140,7 +140,21 @@ test("オフライン時はオフラインページを表示する", async ({ pa
   await context.setOffline(true);
   await page.goto("/tools/sum-times");
 
-  await expect(page.getByRole("heading", { name: "Offline" })).toBeVisible();
+  try {
+    await expect(page.getByRole("heading", { name: "Offline" })).toBeVisible();
+  } finally {
+    // dev サーバに SW を残すと、以降の開発で古いチャンクが配信されて
+    // モジュール解決エラーになるため、テスト後に必ず解除する。
+    await context.setOffline(false);
+    await page.evaluate(async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(
+        registrations.map((registration) => registration.unregister())
+      );
+      const keys = await caches.keys();
+      await Promise.all(keys.map((key) => caches.delete(key)));
+    });
+  }
 });
 
 test.describe("iOS", () => {

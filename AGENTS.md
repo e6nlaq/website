@@ -90,15 +90,16 @@
 - `src/app/manifest.ts` — Web App Manifest(`/manifest.webmanifest`)。ショートカットは Tools と QR Reader
 - `src/lib/metadata.ts` — `rel="icon"` はページごとのロゴ、`apple-touch-icon` は全ページで `/favicon.png`
 - `src/lib/install-prompt.ts` — `beforeinstallprompt` を保持するストア。`useSyncExternalStore` で購読する
-- `src/components/pwa-register.tsx` — 本番ビルドのみ `/sw.js` を登録する(dev では HMR を壊さないため登録しない)
+- `src/components/pwa-register.tsx` — 本番ビルドのみ `/sw.js` を登録する(dev では HMR を壊さないため登録しない。既存の SW があれば `update()` して古いキャッシュを破棄する)
 - `src/app/_index/install-button.tsx` — トップページの Install ボタン。iOS では共有 → ホーム画面に追加の手順を表示する
 - `public/sw.js` — 手書きの Service Worker。Serwist は Turbopack 非対応のため使わない
-  - ページ / RSC は network-first、`/_next/static/*` は cache-first、画像・フォント・wasm は stale-while-revalidate
+  - ページ / RSC は network-first、`/_next/static/*` は immutable なレスポンスのみ cache-first(開発サーバの no-cache チャンクはキャッシュしない)、画像・フォント・wasm は stale-while-revalidate
   - API・OG 画像・クロスオリジン・GET 以外・`/sw.js` は横取りしない
   - **キャッシュ戦略を変えたら `CACHE_VERSION` を上げる**
 - `public/offline.html` — オフライン時のフォールバック(インライン CSS)
 - PWA アイコンは `public/icon.svg` から `sharp` で生成する。`icon-192.png` / `icon-512.png` は背景を透明にし、アートワークをキャンバスの 88% まで拡大する。Apple 用の `favicon.png` と maskable 用の `icon-maskable-512.png` は `#f1f1f1` の背景を残す。差し替え時は再生成する
-- e2e は `e2e/pwa.spec.ts`。dev では Service Worker を自動登録しないため、オフラインのテストだけ手動で登録している
+- e2e は `e2e/pwa.spec.ts`。dev では Service Worker を自動登録しないため、オフラインのテストだけ手動で登録している。登録した SW とキャッシュはテスト後に必ず解除・削除する(残すと dev で古いチャンクが配信され、モジュール解決エラーになる)
+- localhost で `bun run start` を試すと SW が登録される。その後 `bun run dev` に切り替えると古いキャッシュが残ることがあるため、DevTools の Application → Service Workers で解除してから開発する
 
 ### e2e テストの知見
 

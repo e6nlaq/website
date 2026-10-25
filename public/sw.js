@@ -1,6 +1,6 @@
 // 手書きの Service Worker。Serwist は Turbopack に対応していないため、
 // キャッシュ戦略をここで直接実装している。挙動を変えたら CACHE_VERSION を上げる。
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 
 const STATIC_CACHE = `e6nlaq-static-${CACHE_VERSION}`;
 const PAGES_CACHE = `e6nlaq-pages-${CACHE_VERSION}`;
@@ -39,13 +39,20 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-async function cacheFirst(request, cacheName) {
+// 本番の /_next/static/* は immutable なハッシュ付きファイルなので
+// cache-first で問題ない。一方、開発サーバは no-cache で内容が変わるため、
+// キャッシュすると HMR 後に古いチャンクを返してモジュール解決が壊れる。
+function isImmutable(response) {
+  return (response.headers.get("cache-control") || "").includes("immutable");
+}
+
+async function cacheFirstImmutable(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
-  if (cached) return cached;
+  if (cached && isImmutable(cached)) return cached;
 
   const response = await fetch(request);
-  if (response.ok && response.type === "basic") {
+  if (response.ok && response.type === "basic" && isImmutable(response)) {
     await cache.put(request, response.clone()).catch(() => {});
   }
   return response;
@@ -137,7 +144,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (url.pathname.startsWith("/_next/static/")) {
-    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    event.respondWith(cacheFirstImmutable(request, STATIC_CACHE));
     return;
   }
 
