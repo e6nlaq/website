@@ -85,6 +85,21 @@
 - 画像は `next/image` を使い、`width` / `height` を必ず渡す。CSS で片方だけリサイズするとアスペクト比が壊れるので、もう片方に `auto`(`w-auto` 等)を付ける
 - ユーザーからの明示的な指示がない限り、gitの操作は読み取りだけとし、commitなどはしない。
 
+## PWA(インストール・オフライン対応)
+
+- `src/app/manifest.ts` — Web App Manifest(`/manifest.webmanifest`)。ショートカットは Tools と QR Reader
+- `src/lib/metadata.ts` — `rel="icon"` はページごとのロゴ、`apple-touch-icon` は全ページで `/favicon.png`
+- `src/lib/install-prompt.ts` — `beforeinstallprompt` を保持するストア。`useSyncExternalStore` で購読する
+- `src/components/pwa-register.tsx` — 本番ビルドのみ `/sw.js` を登録する(dev では HMR を壊さないため登録しない)
+- `src/app/_index/install-button.tsx` — トップページの Install ボタン。iOS では共有 → ホーム画面に追加の手順を表示する
+- `public/sw.js` — 手書きの Service Worker。Serwist は Turbopack 非対応のため使わない
+  - ページ / RSC は network-first、`/_next/static/*` は cache-first、画像・フォント・wasm は stale-while-revalidate
+  - API・OG 画像・クロスオリジン・GET 以外・`/sw.js` は横取りしない
+  - **キャッシュ戦略を変えたら `CACHE_VERSION` を上げる**
+- `public/offline.html` — オフライン時のフォールバック(インライン CSS)
+- PWA アイコンは `public/favicon.png`(500×500)から `sharp` で生成した `icon-192.png` / `icon-512.png` / `icon-maskable-512.png`。差し替え時は再生成する
+- e2e は `e2e/pwa.spec.ts`。dev では Service Worker を自動登録しないため、オフラインのテストだけ手動で登録している
+
 ### e2e テストの知見
 
 - **ハイドレーション前の操作は React に届かない。** hydration 完了前に `fill()` や `click()` を発火させると `onChange` が呼ばれず、hydration 後に controlled な値で上書きされて入力が消える(WebKit で顕著。Chromium は hydration が速くてレースが発生しない)。可視チェック(SSR)で待ってはいけない。**入力・操作は `e2e/utils.ts` の `fillStable` / `retryUntil` で「状態が確定するまでリトライ」する**

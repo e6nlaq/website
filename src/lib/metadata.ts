@@ -16,7 +16,10 @@ export function convertMetadata(
   return {
     title,
     description: meta.description,
-    icons: icon,
+    icons: {
+      icon,
+      apple: { url: "/favicon.png", sizes: "500x500", type: "image/png" },
+    },
     keywords: meta.keywords,
     twitter: {
       title,

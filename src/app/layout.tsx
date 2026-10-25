@@ -4,6 +4,7 @@ import { Analytics, SpeedInsights } from "@/components/analytics";
 import "./globals.css";
 import localFont from "next/font/local";
 import { Nav } from "@/components/nav";
+import { PwaRegister } from "@/components/pwa-register";
 import { Toaster } from "@/components/ui/sonner";
 import {
   Tooltip,
@@ -14,7 +15,7 @@ import {
 import { ConfirmDialogProvider } from "@/hooks/useConfirm";
 import { convertMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 
 const lineSeed = localFont({
   src: [
@@ -43,9 +44,21 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-export const metadata = convertMetadata("", {
-  title: "e6nlaq's Lab",
-});
+export const metadata: Metadata = {
+  ...convertMetadata("", {
+    title: "e6nlaq's Lab",
+  }),
+  appleWebApp: {
+    capable: true,
+    title: "e6nlaq's Lab",
+    statusBarStyle: "default",
+  },
+  // Next.js は標準名の mobile-web-app-capable しか出力しないため、
+  // 古い iOS 向けに Apple 独自のメタタグも併記する
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+  },
+};
 
 export const viewport: Viewport = {
   themeColor: [
@@ -78,6 +91,7 @@ export default function RootLayout({
       )}
     >
       <body className={`${lineSeed.className} antialiased`}>
+        <PwaRegister />
         <Analytics />
         <SpeedInsights />
 

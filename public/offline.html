@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#09090b"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Offline - e6nlaq's Lab</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --background: #f1f1f1;
+        --foreground: #18181b;
+        --muted: #52525b;
+        --card: #ffffff;
+        --border: #e4e4e7;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #09090b;
+          --foreground: #fafafa;
+          --muted: #a1a1aa;
+          --card: #18181b;
+          --border: #27272a;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+        background: var(--background);
+        color: var(--foreground);
+        font-family:
+          "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+      }
+
+      main {
+        width: min(100%, 30rem);
+        padding: 2rem;
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        background: var(--card);
+        text-align: center;
+      }
+
+      .mark {
+        width: 3rem;
+        height: 3rem;
+        margin: 0 auto 1rem;
+      }
+
+      h1 {
+        margin: 0 0 0.75rem;
+        font-size: 1.25rem;
+      }
+
+      p {
+        margin: 0 0 1.5rem;
+        color: var(--muted);
+        font-size: 0.875rem;
+        line-height: 1.7;
+      }
+
+      button {
+        padding: 0.5rem 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: 9999px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: color-mix(in srgb, var(--foreground) 6%, transparent);
+      }
+
+      button:focus-visible {
+        outline: 2px solid #ec4899;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Offline</h1>
+      <p>
+        インターネット接続を確認して、もう一度お試しください。一度開いたページはオフラインでも表示できます。
+      </p>
+      <button type="button" onclick="location.reload()">再読み込み</button>
+    </main>
+  </body>
+</html>
