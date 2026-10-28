@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { loadDefaultJapaneseParser, type Parser } from "budoux";
+import { dominantEdgeColor } from "@/lib/edge-color";
 import { siteUrl } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
 
@@ -16,24 +17,73 @@ export function ogImageUrl(key: string): string {
   return `${siteUrl}/og/${key}`;
 }
 
-async function fileDataUri(file: string): Promise<string> {
-  const buffer = await readFile(path.join(process.cwd(), "public", file));
+const fileCache = new Map<string, Promise<Buffer>>();
+
+/** public/ 配下の静的ファイルはビルド中に変わらないので、読み込みをキャッシュする */
+function readPublicFile(file: string): Promise<Buffer> {
+  const cached = fileCache.get(file);
+  if (cached) return cached;
+
+  const pending = readFile(path.join(process.cwd(), "public", file)).catch(
+    (error: unknown) => {
+      fileCache.delete(file);
+      throw error;
+    }
+  );
+  fileCache.set(file, pending);
+  return pending;
+}
+
+function toDataUri(file: string, buffer: Buffer): string {
   const mime = file.endsWith(".svg") ? "image/svg+xml" : "image/png";
   return `data:${mime};base64,${buffer.toString("base64")}`;
 }
 
-let fontsCache: { extraBold: Buffer; bold: Buffer } | undefined;
+let sharpModule: Promise<typeof import("sharp")> | undefined;
+const loadSharp = () => (sharpModule ??= import("sharp"));
 
-async function loadFonts() {
-  fontsCache ??= {
-    extraBold: await readFile(
+const edgeColorCache = new Map<string, Promise<string | null>>();
+
+async function analyzeEdgeColor(buffer: Buffer): Promise<string | null> {
+  try {
+    const { default: sharp } = await loadSharp();
+    const { data, info } = await sharp(buffer)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    return dominantEdgeColor({
+      data,
+      width: info.width,
+      height: info.height,
+      channels: info.channels,
+    });
+  } catch (error) {
+    console.warn("OG 画像用のアイコン色を解析できませんでした", error);
+    return null;
+  }
+}
+
+/** アイコンの外周色を返す(解析結果はファイルごとにキャッシュする) */
+function iconEdgeColor(file: string, buffer: Buffer): Promise<string | null> {
+  const cached = edgeColorCache.get(file);
+  if (cached) return cached;
+
+  const pending = analyzeEdgeColor(buffer);
+  edgeColorCache.set(file, pending);
+  return pending;
+}
+
+let fontsPromise: Promise<{ extraBold: Buffer; bold: Buffer }> | undefined;
+
+/** フォントはビルド中に変わらないので、読み込みを 1 度だけにする */
+function loadFonts() {
+  fontsPromise ??= Promise.all([
+    readFile(
       path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_ExtraBold.ttf")
     ),
-    bold: await readFile(
-      path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_Bold.ttf")
-    ),
-  };
-  return fontsCache;
+    readFile(path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_Bold.ttf")),
+  ]).then(([extraBold, bold]) => ({ extraBold, bold }));
+  return fontsPromise;
 }
 
 let parserCache: Parser | undefined;
@@ -85,11 +135,20 @@ export function wrapDescription(text: string, maxUnits: number): string {
 
 /** toolMeta の内容から OGP 画像(1200×630)をレンダリングする */
 export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
-  const fonts = await loadFonts();
   const iconFile = meta.logo ?? "/favicon.png";
   const isDefaultIcon = iconFile === "/favicon.png";
-  const iconDataUri = await fileDataUri(iconFile);
-  const logoDataUri = await fileDataUri("/favicon.svg");
+  const iconBufferPromise = readPublicFile(iconFile);
+
+  const [fonts, iconBuffer, logoBuffer, edgeColor] = await Promise.all([
+    loadFonts(),
+    iconBufferPromise,
+    readPublicFile("/favicon.svg"),
+    iconBufferPromise.then((buffer) => iconEdgeColor(iconFile, buffer)),
+  ]);
+
+  const iconDataUri = toDataUri(iconFile, iconBuffer);
+  const logoDataUri = toDataUri("/favicon.svg", logoBuffer);
+  const labelColor = edgeColor ?? (isDefaultIcon ? "#f1f1f1" : "#ffffff");
 
   return new ImageResponse(
     <div
@@ -116,7 +175,7 @@ export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
           style={{
             width: "300px",
             height: "300px",
-            backgroundColor: isDefaultIcon ? "#f1f1f1" : "#ffffff",
+            backgroundColor: labelColor,
             borderRadius: "72px",
             display: "flex",
             alignItems: "center",
