@@ -40,6 +40,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   formatClockDate,
   formatClockTime,
+  formatMilliseconds,
   formatUnixTime,
   type ClockTimeFormat,
 } from "./format";
@@ -49,8 +50,18 @@ const PLACEHOLDER_TIME = "--:--:--";
 const PLACEHOLDER_DATE = "----";
 const PLACEHOLDER_UNIX = "--";
 
+const TIME_TEXT_CLASS = "text-6xl font-bold tabular-nums tracking-widest";
+// ミリ秒を足しても1行に収まるよう、狭い画面では時刻を一段小さくする
+const TIME_WITH_MILLISECONDS_TEXT_CLASS =
+  "text-5xl font-bold tabular-nums tracking-widest sm:text-6xl";
+// 秒に続くミリ秒。時刻より小さく、控えめな色で揃える
+const MILLISECONDS_TEXT_CLASS =
+  "ml-1 text-2xl font-semibold tracking-normal text-muted-foreground tabular-nums sm:text-3xl";
+
 const STORAGE_KEY = "clock-settings:v1";
 const WAKELOCK_SWITCH_ID = "clock-wakelock-switch";
+const UNIX_SWITCH_ID = "clock-unix-switch";
+const MILLISECONDS_SWITCH_ID = "clock-milliseconds-switch";
 const FONT_SELECT_ID = "clock-font-select";
 const TIME_FORMAT_SELECT_ID = "clock-time-format-select";
 
@@ -126,12 +137,16 @@ type ClockSettings = {
   wakelock: boolean;
   font: ClockFont;
   timeFormat: ClockTimeFormat;
+  showUnix: boolean;
+  showMilliseconds: boolean;
 };
 
 const DEFAULT_SETTINGS: ClockSettings = {
   wakelock: false,
   font: "geist-mono",
   timeFormat: "hh",
+  showUnix: true,
+  showMilliseconds: false,
 };
 
 // 対応判定はブラウザ名でなくAPIの有無で直接行う(HTTPSでない等の
@@ -160,6 +175,8 @@ const settingsStore = (() => {
             ? saved.font
             : DEFAULT_SETTINGS.font,
         timeFormat: saved.timeFormat === "h" ? "h" : "hh",
+        showUnix: saved.showUnix !== false,
+        showMilliseconds: saved.showMilliseconds === true,
       };
     } catch {
       // 壊れた保存データは無視する
@@ -241,6 +258,74 @@ function useClockSeconds(): number {
     () => Math.floor(Date.now() / 1000),
     // 0 は実在しない表示上のプレースホルダー扱い(SSR・hydration直後)
     () => 0
+  );
+}
+
+/**
+ * ミリ秒表示中だけ動く、フレーム単位の時刻ストア。
+ * 購読者がいなくなったらrAFを止める。バックグラウンドではrAF自体が
+ * 止まり、再表示時に再開する
+ */
+const frameClockStore = (() => {
+  const listeners = new Set<() => void>();
+  let frameId: number | undefined;
+  let snapshot = 0;
+
+  const tick = () => {
+    snapshot = Date.now();
+    for (const listener of listeners) listener();
+    frameId = requestAnimationFrame(tick);
+  };
+
+  return {
+    subscribe(listener: () => void): () => void {
+      listeners.add(listener);
+      if (frameId === undefined) frameId = requestAnimationFrame(tick);
+      return () => {
+        listeners.delete(listener);
+        if (listeners.size === 0 && frameId !== undefined) {
+          cancelAnimationFrame(frameId);
+          frameId = undefined;
+        }
+      };
+    },
+    get: (): number => snapshot,
+    getServer: (): number => 0,
+  };
+})();
+
+/** ミリ秒付きの時刻。表示中だけ毎フレーム再描画する */
+function ClockTimeWithMilliseconds({
+  timeFormat,
+  fontFamily,
+}: {
+  timeFormat: ClockTimeFormat;
+  fontFamily: string;
+}) {
+  const timestamp = useSyncExternalStore(
+    frameClockStore.subscribe,
+    frameClockStore.get,
+    frameClockStore.getServer
+  );
+  const now = timestamp === 0 ? null : new Date(timestamp);
+
+  return (
+    <p
+      className={TIME_WITH_MILLISECONDS_TEXT_CLASS}
+      role="timer"
+      style={{ fontFamily }}
+    >
+      {now === null ? (
+        PLACEHOLDER_TIME
+      ) : (
+        <>
+          {formatClockTime(now, timeFormat)}
+          <span className={MILLISECONDS_TEXT_CLASS} aria-hidden="true">
+            {formatMilliseconds(now)}
+          </span>
+        </>
+      )}
+    </p>
   );
 }
 
@@ -338,29 +423,34 @@ export default function Clock() {
         >
           {now === null ? PLACEHOLDER_DATE : formatClockDate(now)}
         </p>
-        <p
-          className="text-6xl font-bold tabular-nums tracking-widest"
-          role="timer"
-          style={{ fontFamily }}
-        >
-          {now === null
-            ? PLACEHOLDER_TIME
-            : formatClockTime(now, settings.timeFormat)}
-        </p>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <p
-                className="text-sm font-medium text-muted-foreground tabular-nums"
-                data-testid="unix-time"
-                style={{ fontFamily }}
-              >
-                {now === null ? PLACEHOLDER_UNIX : formatUnixTime(now)}
-              </p>
-            }
+        {settings.showMilliseconds ? (
+          <ClockTimeWithMilliseconds
+            timeFormat={settings.timeFormat}
+            fontFamily={fontFamily}
           />
-          <TooltipContent side="bottom">UNIX秒</TooltipContent>
-        </Tooltip>
+        ) : (
+          <p className={TIME_TEXT_CLASS} role="timer" style={{ fontFamily }}>
+            {now === null
+              ? PLACEHOLDER_TIME
+              : formatClockTime(now, settings.timeFormat)}
+          </p>
+        )}
+        {settings.showUnix && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <p
+                  className="text-sm font-medium text-muted-foreground tabular-nums"
+                  data-testid="unix-time"
+                  style={{ fontFamily }}
+                >
+                  {now === null ? PLACEHOLDER_UNIX : formatUnixTime(now)}
+                </p>
+              }
+            />
+            <TooltipContent side="bottom">UNIX秒</TooltipContent>
+          </Tooltip>
+        )}
         <div className="flex w-full items-center justify-end">
           <Tooltip>
             <TooltipTrigger
@@ -485,6 +575,42 @@ export default function Clock() {
                   </SelectContent>
                 </Select>
               </Field>
+
+              <FieldLabel htmlFor={UNIX_SWITCH_ID}>
+                <Field orientation="horizontal">
+                  <FieldContent>
+                    <FieldTitle>UNIX秒を表示する</FieldTitle>
+                    <FieldDescription>
+                      時刻の下にUNIXエポック秒を表示します。
+                    </FieldDescription>
+                  </FieldContent>
+                  <Switch
+                    id={UNIX_SWITCH_ID}
+                    checked={settings.showUnix}
+                    onCheckedChange={(checked) =>
+                      settingsStore.update({ showUnix: checked })
+                    }
+                  />
+                </Field>
+              </FieldLabel>
+
+              <FieldLabel htmlFor={MILLISECONDS_SWITCH_ID}>
+                <Field orientation="horizontal">
+                  <FieldContent>
+                    <FieldTitle>ミリ秒を表示する</FieldTitle>
+                    <FieldDescription>
+                      時刻の秒の後ろにミリ秒を表示します。表示中は画面の更新が増えるため、バッテリーを多く消費します。
+                    </FieldDescription>
+                  </FieldContent>
+                  <Switch
+                    id={MILLISECONDS_SWITCH_ID}
+                    checked={settings.showMilliseconds}
+                    onCheckedChange={(checked) =>
+                      settingsStore.update({ showMilliseconds: checked })
+                    }
+                  />
+                </Field>
+              </FieldLabel>
             </FieldSet>
           </FieldGroup>
         </div>
