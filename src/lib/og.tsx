@@ -17,17 +17,26 @@ export function ogImageUrl(key: string): string {
   return `${siteUrl}/og/${key}`;
 }
 
-async function readPublicFile(file: string): Promise<Buffer> {
-  return readFile(path.join(process.cwd(), "public", file));
+const fileCache = new Map<string, Promise<Buffer>>();
+
+/** public/ 配下の静的ファイルはビルド中に変わらないので、読み込みをキャッシュする */
+function readPublicFile(file: string): Promise<Buffer> {
+  const cached = fileCache.get(file);
+  if (cached) return cached;
+
+  const pending = readFile(path.join(process.cwd(), "public", file)).catch(
+    (error: unknown) => {
+      fileCache.delete(file);
+      throw error;
+    }
+  );
+  fileCache.set(file, pending);
+  return pending;
 }
 
 function toDataUri(file: string, buffer: Buffer): string {
   const mime = file.endsWith(".svg") ? "image/svg+xml" : "image/png";
   return `data:${mime};base64,${buffer.toString("base64")}`;
-}
-
-async function fileDataUri(file: string): Promise<string> {
-  return toDataUri(file, await readPublicFile(file));
 }
 
 let sharpModule: Promise<typeof import("sharp")> | undefined;
@@ -64,18 +73,17 @@ function iconEdgeColor(file: string, buffer: Buffer): Promise<string | null> {
   return pending;
 }
 
-let fontsCache: { extraBold: Buffer; bold: Buffer } | undefined;
+let fontsPromise: Promise<{ extraBold: Buffer; bold: Buffer }> | undefined;
 
-async function loadFonts() {
-  fontsCache ??= {
-    extraBold: await readFile(
+/** フォントはビルド中に変わらないので、読み込みを 1 度だけにする */
+function loadFonts() {
+  fontsPromise ??= Promise.all([
+    readFile(
       path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_ExtraBold.ttf")
     ),
-    bold: await readFile(
-      path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_Bold.ttf")
-    ),
-  };
-  return fontsCache;
+    readFile(path.join(process.cwd(), "src/font/og/LINESeedJP_OTF_Bold.ttf")),
+  ]).then(([extraBold, bold]) => ({ extraBold, bold }));
+  return fontsPromise;
 }
 
 let parserCache: Parser | undefined;
@@ -127,15 +135,20 @@ export function wrapDescription(text: string, maxUnits: number): string {
 
 /** toolMeta の内容から OGP 画像(1200×630)をレンダリングする */
 export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
-  const fonts = await loadFonts();
   const iconFile = meta.logo ?? "/favicon.png";
   const isDefaultIcon = iconFile === "/favicon.png";
-  const iconBuffer = await readPublicFile(iconFile);
+  const iconBufferPromise = readPublicFile(iconFile);
+
+  const [fonts, iconBuffer, logoBuffer, edgeColor] = await Promise.all([
+    loadFonts(),
+    iconBufferPromise,
+    readPublicFile("/favicon.svg"),
+    iconBufferPromise.then((buffer) => iconEdgeColor(iconFile, buffer)),
+  ]);
+
   const iconDataUri = toDataUri(iconFile, iconBuffer);
-  const logoDataUri = await fileDataUri("/favicon.svg");
-  const labelColor =
-    (await iconEdgeColor(iconFile, iconBuffer)) ??
-    (isDefaultIcon ? "#f1f1f1" : "#ffffff");
+  const logoDataUri = toDataUri("/favicon.svg", logoBuffer);
+  const labelColor = edgeColor ?? (isDefaultIcon ? "#f1f1f1" : "#ffffff");
 
   return new ImageResponse(
     <div
