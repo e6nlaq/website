@@ -1,4 +1,5 @@
 import jsQR, { type QRCode } from "jsqr";
+import { getScaledSize } from "@/lib/image";
 
 /** 読み取りに使う画像の最大辺(px)。これを超える画像は縮小される */
 const DECODE_MAX_DIM = 1600;
@@ -31,19 +32,6 @@ export interface QrReadResult {
 interface Decoded {
   data: string;
   version: number;
-}
-
-/** 縦横比を維持したまま、最大辺がmaxDim以下になるサイズを計算する */
-export function getScaledSize(
-  width: number,
-  height: number,
-  maxDim: number
-): { width: number; height: number } {
-  const scale = Math.min(1, maxDim / Math.max(width, height));
-  return {
-    width: Math.max(1, Math.round(width * scale)),
-    height: Math.max(1, Math.round(height * scale)),
-  };
 }
 
 function drawCanvas(

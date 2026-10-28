@@ -1,9 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import {
-  classifyCameraError,
-  nextCameraIndex,
-} from "@/app/tools/qr-reader/camera";
-import { getScaledSize } from "@/app/tools/qr-reader/decode";
+import { classifyCameraError, nextCameraIndex } from "@/lib/camera";
+import { getScaledSize } from "@/lib/image";
 
 describe("getScaledSize", () => {
   describe("basic tests", () => {
