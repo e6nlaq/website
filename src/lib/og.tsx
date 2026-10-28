@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { loadDefaultJapaneseParser, type Parser } from "budoux";
+import { dominantEdgeColor } from "@/lib/edge-color";
 import { siteUrl } from "@/text/meta";
 import type { ToolMeta } from "@/types/meta";
 
@@ -16,10 +17,51 @@ export function ogImageUrl(key: string): string {
   return `${siteUrl}/og/${key}`;
 }
 
-async function fileDataUri(file: string): Promise<string> {
-  const buffer = await readFile(path.join(process.cwd(), "public", file));
+async function readPublicFile(file: string): Promise<Buffer> {
+  return readFile(path.join(process.cwd(), "public", file));
+}
+
+function toDataUri(file: string, buffer: Buffer): string {
   const mime = file.endsWith(".svg") ? "image/svg+xml" : "image/png";
   return `data:${mime};base64,${buffer.toString("base64")}`;
+}
+
+async function fileDataUri(file: string): Promise<string> {
+  return toDataUri(file, await readPublicFile(file));
+}
+
+let sharpModule: Promise<typeof import("sharp")> | undefined;
+const loadSharp = () => (sharpModule ??= import("sharp"));
+
+const edgeColorCache = new Map<string, Promise<string | null>>();
+
+async function analyzeEdgeColor(buffer: Buffer): Promise<string | null> {
+  try {
+    const { default: sharp } = await loadSharp();
+    const { data, info } = await sharp(buffer)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    return dominantEdgeColor({
+      data,
+      width: info.width,
+      height: info.height,
+      channels: info.channels,
+    });
+  } catch (error) {
+    console.warn("OG 画像用のアイコン色を解析できませんでした", error);
+    return null;
+  }
+}
+
+/** アイコンの外周色を返す(解析結果はファイルごとにキャッシュする) */
+function iconEdgeColor(file: string, buffer: Buffer): Promise<string | null> {
+  const cached = edgeColorCache.get(file);
+  if (cached) return cached;
+
+  const pending = analyzeEdgeColor(buffer);
+  edgeColorCache.set(file, pending);
+  return pending;
 }
 
 let fontsCache: { extraBold: Buffer; bold: Buffer } | undefined;
@@ -88,8 +130,12 @@ export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
   const fonts = await loadFonts();
   const iconFile = meta.logo ?? "/favicon.png";
   const isDefaultIcon = iconFile === "/favicon.png";
-  const iconDataUri = await fileDataUri(iconFile);
+  const iconBuffer = await readPublicFile(iconFile);
+  const iconDataUri = toDataUri(iconFile, iconBuffer);
   const logoDataUri = await fileDataUri("/favicon.svg");
+  const labelColor =
+    (await iconEdgeColor(iconFile, iconBuffer)) ??
+    (isDefaultIcon ? "#f1f1f1" : "#ffffff");
 
   return new ImageResponse(
     <div
@@ -116,7 +162,7 @@ export async function renderOgImage(meta: ToolMeta): Promise<ImageResponse> {
           style={{
             width: "300px",
             height: "300px",
-            backgroundColor: isDefaultIcon ? "#f1f1f1" : "#ffffff",
+            backgroundColor: labelColor,
             borderRadius: "72px",
             display: "flex",
             alignItems: "center",
