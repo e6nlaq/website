@@ -27,3 +27,8 @@ export function formatClockDate(date: Date): string {
 export function formatUnixTime(date: Date): string {
   return String(Math.floor(date.getTime() / 1000));
 }
+
+/** ミリ秒を小数点付き3桁(.SSS)で返す */
+export function formatMilliseconds(date: Date): string {
+  return `.${String(date.getMilliseconds()).padStart(3, "0")}`;
+}

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   formatClockDate,
   formatClockTime,
+  formatMilliseconds,
   formatUnixTime,
 } from "@/app/tools/clock/format";
 
@@ -48,5 +49,16 @@ describe("formatUnixTime", () => {
     expect(formatUnixTime(new Date(1760761200 * 1000 + 999))).toBe(
       "1760761200"
     );
+  });
+});
+
+describe("formatMilliseconds", () => {
+  test("1〜3桁を3桁に0詰めし、小数点を付ける", () => {
+    expect(formatMilliseconds(new Date(0))).toBe(".000");
+    expect(formatMilliseconds(new Date(5))).toBe(".005");
+    expect(formatMilliseconds(new Date(999))).toBe(".999");
+  });
+  test("3桁の値はそのまま", () => {
+    expect(formatMilliseconds(new Date(123))).toBe(".123");
   });
 });
