@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "postinstall": "bun scripts/copy-zxing-wasm.ts",
     "format": "bun fmt",
     "format:check": "bun fmt --check",
     "lint": "oxlint",
