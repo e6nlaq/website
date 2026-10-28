@@ -1,6 +1,6 @@
 # AGENTS.md - e6nlaq's Lab
 
-このリポジトリで作業する AI エージェント用のガイドです。**GEMINI.md の一部の記載(Biome、Rust/WASM 等)は古いため、このファイルを正としてください。**
+このリポジトリで作業する AI エージェント用のガイドです。
 
 ## プロジェクト概要
 
@@ -48,7 +48,7 @@
 - `src/lib/` — `metadata.ts`(`convertMetadata`)、`layout.ts`(`NoneStyle`)、`utils.ts`(`cn`)
 - `src/text/meta.ts` — **全ページのメタデータ登録の唯一の窓口**(`toolMeta`)。nav のタイトル・SEO・sitemap はここから派生
 - `src/types/meta.ts` — `ToolMeta` 型(`title/description/logo?/index?/keywords?`)
-- `public/` — `icon/<tool>.png`(一覧アイコン)、`zxing_reader.wasm`(自己ホストする wasm)
+- `public/` — `icon/<tool>.png`(一覧アイコン)、`zxing_reader.wasm`(自己ホストする wasm。`postinstall` で `node_modules/zxing-wasm` から同期するので、`zxing-wasm` を更新したら `bun install` だけでよい)
 - `test/` — **ユニットテストは純粋なロジックのみ**(bun:test + `@/` エイリアス可)。ページコンポーネントはテストしない
 - `e2e/` + `playwright.config.ts` — **e2e テスト**(Playwright)。サーバ起動は設定の `webServer`(`bun run dev --port 3000`)に任せる。画像フィクスチャは `e2e/fixtures/` に置く(QR 画像は `bunx qrcode`、単色 PNG は zlib+CRC で生成)。失敗時のレポートは `test-results/`・`playwright-report/`(gitignore 済み)
 

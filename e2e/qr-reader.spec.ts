@@ -69,6 +69,26 @@ test("画像以外のファイルは読み取れない", async ({ page }) => {
   ).toHaveCount(0);
 });
 
+test("zxing の wasm が配信されている", async ({ page }) => {
+  // ZXing は jsQR で読めなかったときのフォールバックなので、
+  // 画像では発火しない。配信状態と wasm の妥当性を直接確かめる
+  const wasm = await page.evaluate(async () => {
+    const response = await fetch("/zxing_reader.wasm");
+    const bytes = await response.arrayBuffer();
+    return {
+      ok: response.ok,
+      contentType: response.headers.get("content-type"),
+      size: bytes.byteLength,
+      valid: WebAssembly.validate(bytes),
+    };
+  });
+
+  expect(wasm.ok).toBe(true);
+  expect(wasm.contentType).toContain("application/wasm");
+  expect(wasm.size).toBeGreaterThan(0);
+  expect(wasm.valid).toBe(true);
+});
+
 test("リセットで初期状態に戻る", async ({ page }) => {
   await runUntilDone({
     busy: () => page.getByText("読み取り中…").isVisible(),
