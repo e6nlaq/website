@@ -62,6 +62,7 @@ const STORES: {
     description: "便利系",
     items: [
       { key: "tools/qr-reader" },
+      { key: "tools/red-sheet" },
       { key: "tools/clock" },
       { key: "tools/sum-times" },
       { key: "tools/rinu-checker" },

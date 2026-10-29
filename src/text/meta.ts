@@ -47,6 +47,12 @@ export const toolMeta = {
       "カメラ",
     ],
   },
+  "tools/red-sheet": {
+    title: "Red Sheet",
+    description: "撮った写真に動かせる赤シートを重ねる暗記ツール",
+    logo: "/icon/red-sheet.png",
+    keywords: ["赤シート", "暗記", "勉強", "カメラ", "写真", "シート"],
+  },
   "tools/rinu-checker": {
     title: "rinu.jp Checker 2",
     description: "rinu.jpに特定ツールが仕込まれているかチェックするツール",
