@@ -44,15 +44,14 @@ import type { QrReadResult } from "./decode";
 import { readQrFromBlob } from "./decode";
 import {
   CAMERA_ERROR_MESSAGES,
-  SCAN_INTERVAL_MS,
   captureFrame,
   classifyCameraError,
-  createFrameScanner,
   isCameraSupported,
   listVideoInputs,
   nextCameraIndex,
   startCameraStream,
-} from "./camera";
+} from "@/lib/camera";
+import { SCAN_INTERVAL_MS, createFrameScanner } from "./camera";
 
 const imageInputId = "qr-reader-image-input";
 const resultInputId = "qr-reader-result-input";
